@@ -1,74 +1,40 @@
-import { ArrowRight, Sparkles } from "lucide-react";
-
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-red-950">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-red-500 blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-amber-500 blur-3xl" />
+    <section className="relative w-full h-[85vh] sm:h-[90vh] overflow-hidden bg-[#111]">
+      {/* Background — placeholder for campaign photo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#0a0a0a]">
+        {/* Subtle texture overlay */}
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=')]" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
-        <div className="flex flex-col items-center text-center">
-          {/* Badge */}
-          <div className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-amber-300 backdrop-blur-sm">
-            <Sparkles className="h-4 w-4" />
-            <span className="font-medium">Công nghệ NFC × Di sản văn hóa Việt</span>
-          </div>
+      {/* Content */}
+      <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
+        <p className="animate-fade-in text-[10px] sm:text-[11px] font-medium tracking-[0.3em] uppercase text-white/50 mb-6">
+          Hà Nội Heritage Collection
+        </p>
 
-          {/* Heading */}
-          <h1 className="animate-fade-in-up-delay-1 mt-8 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-            Mặc trên mình{" "}
-            <span className="bg-gradient-to-r from-red-400 via-amber-400 to-red-400 bg-clip-text text-transparent animate-gradient">
-              văn hóa Việt
-            </span>
-          </h1>
+        <h1 className="animate-fade-in-delay text-[clamp(2.5rem,8vw,6rem)] font-extrabold leading-[0.9] tracking-tight text-white uppercase">
+          WEAR YOUR
+          <br />
+          CITY.
+        </h1>
 
-          {/* Subtitle */}
-          <p className="animate-fade-in-up-delay-2 mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg md:text-xl">
-            Mỗi chiếc áo mang câu chuyện một thành phố. Chạm điện thoại vào thẻ NFC —
-            khám phá lịch sử, văn hóa và ẩm thực bản địa ngay tức thì.
-          </p>
+        <p className="animate-fade-in-delay-2 mt-6 text-sm sm:text-base text-white/60 max-w-md leading-relaxed">
+          Mỗi chiếc áo mang câu chuyện một thành phố.
+          <br className="hidden sm:block" />
+          Vietnamese heritage streetwear.
+        </p>
 
-          {/* CTA Buttons */}
-          <div className="animate-fade-in-up-delay-3 mt-10 flex flex-col gap-4 sm:flex-row">
-            <a
-              href="#products"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-red-700 hover:shadow-xl hover:shadow-red-500/20"
-            >
-              Khám phá bộ sưu tập
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a
-              href="#nfc-experience"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-8 py-3.5 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/10"
-            >
-              NFC hoạt động như nào?
-            </a>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-12">
-            {[
-              { value: "249K", label: "Giá từ" },
-              { value: "3+", label: "Gói sản phẩm" },
-              { value: "5+", label: "Thành phố" },
-              { value: "NFC", label: "Công nghệ" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-400">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <a
+          href="#t-shirts"
+          className="animate-fade-in-delay-2 mt-10 inline-block bg-white text-[#111] text-[12px] font-semibold tracking-[0.15em] uppercase px-10 py-4 hover:bg-[#f5f5f5] transition-colors"
+        >
+          SHOP T-SHIRTS
+        </a>
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+      {/* Bottom gradient fade to white */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 }
