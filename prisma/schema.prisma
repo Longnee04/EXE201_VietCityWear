@@ -1,0 +1,148 @@
+// Prisma Schema for VIET CITY WEAR
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------------------------------------------------
+// ENUMS
+// -------------------------------------------------------------
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPING
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+  VNPAY
+  MOMO
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
+
+// -------------------------------------------------------------
+// 1. NGƯỜI DÙNG & TÀI KHOẢN
+// -------------------------------------------------------------
+model User {
+  id            String         @id @default(uuid())
+  name          String?
+  email         String         @unique
+  password      String?        // Bỏ trống nếu login OAuth (Google)
+  role          Role           @default(USER)
+  image         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  orders        Order[]
+  passports     UserPassport[] // Hộ chiếu số & con dấu thành tựu
+}
+
+// -------------------------------------------------------------
+// 2. THÀNH PHỐ & ĐỊA DANH NFC (NFC Landing Page)
+// -------------------------------------------------------------
+model City {
+  id            String         @id @default(uuid())
+  name          String         // Ví dụ: Hà Nội, Huế, Hội An
+  slug          String         @unique // ví dụ: ha-noi
+  description   String         @db.Text
+  culturalStory String?        @db.Text // Câu chuyện văn hóa
+  travelGuide   String?        @db.Text // Cẩm nang du lịch (vé, di chuyển)
+  imageUrl      String?
+  videoUrl      String?        // Video giới thiệu hoặc AR target
+  audioUrlVi    String?        // Audio thuyết minh tiếng Việt
+  audioUrlEn    String?        // Audio thuyết minh tiếng Anh
+  nfcCode       String?        @unique // Mã định danh móc khóa NFC
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  products      Product[]
+  stamps        UserPassport[]
+}
+
+// -------------------------------------------------------------
+// 3. SẢN PHẨM ÁO THUN THEO GÓI
+// -------------------------------------------------------------
+model Product {
+  id            String         @id @default(uuid())
+  name          String         // Ví dụ: Áo thun Hà Nội Heritage
+  slug          String         @unique
+  description   String         @db.Text
+  price         Decimal        @db.Decimal(10, 2)
+  packageTier   String         // 'BASIC' (249k), 'STANDARD' (299k), 'SPECIAL' (349k)
+  cityId        String
+  city          City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  images        String[]
+  sizes         String[]       @default(["S", "M", "L", "XL", "2XL"])
+  stock         Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  orderItems    OrderItem[]
+}
+
+// -------------------------------------------------------------
+// 4. QUẢN LÝ ĐƠN HÀNG (E-Commerce)
+// -------------------------------------------------------------
+model Order {
+  id              String         @id @default(uuid())
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerName    String
+  customerPhone   String
+  customerEmail   String
+  shippingAddress String
+  totalAmount     Decimal        @db.Decimal(10, 2)
+  status          OrderStatus    @default(PENDING)
+  paymentMethod   PaymentMethod  @default(COD)
+  paymentStatus   PaymentStatus  @default(UNPAID)
+  note            String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id            String         @id @default(uuid())
+  orderId       String
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product        @relation(fields: [productId], references: [id])
+  size          String
+  quantity      Int            @default(1)
+  unitPrice     Decimal        @db.Decimal(10, 2)
+}
+
+// -------------------------------------------------------------
+// 5. HỘ CHIẾU SỐ & CON DẤU THÀNH TỰU (Gamification)
+// -------------------------------------------------------------
+model UserPassport {
+  id            String         @id @default(uuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cityId        String
+  city          City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  codeClaimed   String         // Mã code duy nhất trên thẻ địa danh
+  claimedAt     DateTime       @default(now())
+
+  @@unique([userId, cityId])
+}
