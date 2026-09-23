@@ -1,82 +1,98 @@
+import Image from "next/image";
+
 export default function CampaignSection() {
   return (
-    <section className="py-16 sm:py-24">
+    <section id="features" className="py-16 sm:py-24 border-t border-[#E5DFD5] bg-[#F7F4EE]">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-          {/* Left — Large campaign image */}
-          <div className="relative aspect-[4/5] sm:aspect-[3/4] bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] overflow-hidden group cursor-pointer">
-            {/* Content overlay */}
-            <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 lg:p-10 z-10">
-              <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-white/50 mb-2">
-                Hà Nội Collection
-              </p>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-white uppercase tracking-tight">
-                PHỐ CỔ
-                <br />
-                36 PHỐ PHƯỜNG
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#B4532A] mb-2">
+            Công nghệ & Trải nghiệm
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A2421] uppercase">
+            NFC & Hanoi Story Cards
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {/* Card 1: [BLOCK_MOC_KHOA_NFC] */}
+          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E5DFD5] shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#B4532A] bg-[#B4532A]/10 px-3 py-1 rounded-full">
+                  Móc khóa NFC
+                </span>
+                <span className="text-[11px] text-[#1A2421]/60">Quà tặng đi kèm</span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-black text-[#1A2421] uppercase mb-2">
+                Móc khóa gỗ NFC (HANOI)
               </h3>
-              <a
-                href="#t-shirts"
-                className="mt-4 inline-block text-[11px] font-semibold tracking-[0.12em] uppercase text-white border-b border-white/40 pb-0.5 hover:border-white transition-colors w-fit"
+
+              {/* Caption from requirements */}
+              <div className="p-3 bg-[#F7F4EE] rounded-lg border border-[#E5DFD5] mb-5">
+                <p className="text-xs sm:text-sm font-semibold text-[#B4532A]">
+                  Khách chạm điện thoại vào móc khóa → mở trang web của VIET CITY WEAR
+                </p>
+              </div>
+
+              {/* Image [BLOCK_MOC_KHOA_NFC] */}
+              <div
+                id="[BLOCK_MOC_KHOA_NFC]"
+                className="block-moc-khoa-nfc relative w-full aspect-square max-h-[340px] mx-auto rounded-xl overflow-hidden bg-[#F7F4EE] border border-[#E5DFD5]"
               >
-                EXPLORE
-              </a>
+                <Image
+                  src="/images/moc-khoa-nfc-hanoi.png"
+                  alt="Móc khóa gỗ NFC (HANOI) - Khách chạm điện thoại vào móc khóa mở trang web của VIET CITY WEAR"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 500px"
+                  className="object-contain p-4"
+                />
+              </div>
             </div>
-            {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            {/* Placeholder text */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <p className="text-[10px] text-white/20 tracking-widest uppercase">
-                Campaign Photo
-              </p>
-            </div>
+
+            <p className="mt-5 text-xs text-[#1A2421]/70 border-t border-[#E5DFD5] pt-3">
+              Mở ra câu chuyện về địa danh, hình ảnh, video và cẩm nang du lịch song ngữ Việt - Anh.
+            </p>
           </div>
 
-          {/* Right — Two stacked images */}
-          <div className="flex flex-col gap-4 sm:gap-5">
-            <div className="relative flex-1 min-h-[200px] bg-gradient-to-br from-[#e8e4e0] to-[#d5cfc9] overflow-hidden group cursor-pointer">
-              <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 z-10">
-                <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-[#111]/40 mb-1">
-                  NFC Technology
-                </p>
-                <h3 className="text-lg sm:text-xl font-extrabold text-[#111] uppercase tracking-tight">
-                  CHẠM ĐỂ KHÁM PHÁ
-                </h3>
-                <a
-                  href="#t-shirts"
-                  className="mt-3 inline-block text-[11px] font-semibold tracking-[0.12em] uppercase text-[#111] border-b border-[#111]/40 pb-0.5 hover:border-[#111] transition-colors w-fit"
-                >
-                  SHOP NOW
-                </a>
+          {/* Card 2: [BLOCK_THE_DIA_DANH] */}
+          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E5DFD5] shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#1A2421] bg-[#1A2421]/10 px-3 py-1 rounded-full">
+                  Thẻ địa danh
+                </span>
+                <span className="text-[11px] text-[#1A2421]/60">Hộp & Thẻ in hình</span>
               </div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <p className="text-[10px] text-[#bbb] tracking-widest uppercase">
-                  Lifestyle Photo
+
+              <h3 className="text-xl sm:text-2xl font-black text-[#1A2421] uppercase mb-2">
+                Bộ HANOI STORY CARDS
+              </h3>
+
+              <div className="p-3 bg-[#F7F4EE] rounded-lg border border-[#E5DFD5] mb-5">
+                <p className="text-xs sm:text-sm text-[#1A2421]/80">
+                  Hộp màu xanh và các thẻ địa danh in hình – giới thiệu các địa điểm xuất hiện trên áo.
                 </p>
+              </div>
+
+              {/* Image [BLOCK_THE_DIA_DANH] */}
+              <div
+                id="[BLOCK_THE_DIA_DANH]"
+                className="block-the-dia-danh relative w-full aspect-[1312/1199] max-h-[340px] mx-auto rounded-xl overflow-hidden bg-[#F7F4EE] border border-[#E5DFD5]"
+              >
+                <Image
+                  src="/images/hanoi-story-cards.png"
+                  alt="Bộ HANOI STORY CARDS - Hộp màu xanh và các thẻ địa danh in hình"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 500px"
+                  className="object-contain p-2"
+                />
               </div>
             </div>
 
-            <div className="relative flex-1 min-h-[200px] bg-gradient-to-br from-[#1a1a1a] to-[#333] overflow-hidden group cursor-pointer">
-              <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 z-10">
-                <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-white/40 mb-1">
-                  Digital Passport
-                </p>
-                <h3 className="text-lg sm:text-xl font-extrabold text-white uppercase tracking-tight">
-                  SƯU TẦM DI SẢN
-                </h3>
-                <a
-                  href="#t-shirts"
-                  className="mt-3 inline-block text-[11px] font-semibold tracking-[0.12em] uppercase text-white border-b border-white/40 pb-0.5 hover:border-white transition-colors w-fit"
-                >
-                  LEARN MORE
-                </a>
-              </div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <p className="text-[10px] text-white/20 tracking-widest uppercase">
-                  Campaign Photo
-                </p>
-              </div>
-            </div>
+            <p className="mt-5 text-xs text-[#1A2421]/70 border-t border-[#E5DFD5] pt-3">
+              10+ thẻ địa danh tuyển chọn, tích hợp mã QR xem video & nghe audio thuyết minh.
+            </p>
           </div>
         </div>
       </div>

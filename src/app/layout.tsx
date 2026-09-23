@@ -10,15 +10,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "VIETCITYWEAR — Wear Your City",
+  title: "VIET CITY WEAR — Mặc thành phố – Mang câu chuyện về nhà",
   description:
-    "Vietnamese heritage streetwear. Mỗi chiếc áo mang câu chuyện một thành phố — kết hợp công nghệ NFC và trải nghiệm du lịch số.",
+    "Thương hiệu thời trang lưu niệm lấy cảm hứng từ các thành phố và địa điểm du lịch Việt Nam, kết hợp thời trang, văn hóa, du lịch và công nghệ. LOCAL CITIES • REAL STORIES • WEAR IT.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="vi" className={`${inter.variable} h-full antialiased scroll-smooth`}>
-      <body className="min-h-full flex flex-col bg-white text-[#111]">
+      <body className="min-h-full flex flex-col bg-[#F7F4EE] text-[#1A2421]">
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

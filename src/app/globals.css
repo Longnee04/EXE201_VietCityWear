@@ -1,13 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
+  --background: #F7F4EE; /* Trắng kem - màu nền áo */
+  --foreground: #1A2421; /* Xanh navy đậm / Đen - màu chữ logo */
+  --sun-terracotta: #B4532A; /* Cam đất / Đỏ gạch - màu mặt trời */
+  --border-color: #E5DFD5;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-sun: var(--sun-terracotta);
+  --color-cream: #F7F4EE;
+  --color-navy: #1A2421;
   --font-sans: var(--font-inter);
 }
 
