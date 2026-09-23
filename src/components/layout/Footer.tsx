@@ -17,17 +17,13 @@ export default function Footer() {
                   className="object-cover"
                 />
               </div>
-              <div className="flex flex-col justify-center">
-                <span className="text-[15px] font-black tracking-[0.06em] uppercase text-[#111] leading-none">
-                  VIET CITY
-                </span>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="h-[1px] w-2 bg-[#111]/40"></span>
-                  <span className="text-[8px] font-bold tracking-[0.2em] uppercase text-[#666] leading-none">
-                    WEAR
-                  </span>
-                  <span className="h-[1px] w-2 bg-[#111]/40"></span>
-                </div>
+              <div className="relative h-8 w-[105px] flex items-center">
+                <Image
+                  src="/images/logo-text-crisp.png"
+                  alt="VIET CITY — WEAR —"
+                  fill
+                  className="object-contain object-left"
+                />
               </div>
             </div>
             <p className="text-[12px] font-semibold text-[#111] uppercase tracking-wide">
