@@ -24,23 +24,32 @@ export default function Header() {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <Link href="/" className="flex items-center gap-2.5 group">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group">
               <div
                 id="[BLOCK_LOGO]"
-                className="block-logo relative w-9 h-9 sm:w-10 sm:h-10 overflow-hidden rounded-full border border-[#eaeaea] bg-white flex-shrink-0"
+                className="block-logo relative w-11 h-11 sm:w-12 sm:h-12 overflow-hidden rounded-md border border-[#eaeaea] bg-[#F7F4EE] shadow-2xs flex-shrink-0"
               >
                 <Image
                   src="/images/logo-vietcitywear.png"
                   alt="Logo VIET CITY WEAR"
                   fill
-                  sizes="(max-width: 768px) 36px, 40px"
-                  className="object-contain p-0.5"
+                  sizes="(max-width: 768px) 44px, 48px"
+                  className="object-cover"
                   priority
                 />
               </div>
-              <span className="text-[15px] sm:text-base font-extrabold tracking-[0.08em] uppercase text-[#111]">
-                VIETCITYWEAR
-              </span>
+              <div className="flex flex-col justify-center">
+                <span className="text-[16px] sm:text-[18px] font-black tracking-[0.06em] uppercase text-[#111] leading-none">
+                  VIET CITY
+                </span>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="h-[1px] w-2.5 sm:w-3.5 bg-[#111]/40"></span>
+                  <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.25em] uppercase text-[#555] leading-none">
+                    WEAR
+                  </span>
+                  <span className="h-[1px] w-2.5 sm:w-3.5 bg-[#111]/40"></span>
+                </div>
+              </div>
             </Link>
           </div>
 
@@ -97,18 +106,27 @@ export default function Header() {
           {/* Drawer */}
           <div className="absolute top-0 left-0 h-full w-[300px] bg-white shadow-xl flex flex-col">
             <div className="flex items-center justify-between px-5 h-[60px] border-b border-[#eaeaea]">
-              <div className="flex items-center gap-2">
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#eaeaea] bg-white">
+              <div className="flex items-center gap-2.5">
+                <div className="relative w-9 h-9 rounded-md overflow-hidden border border-[#eaeaea] bg-[#F7F4EE] flex-shrink-0">
                   <Image
                     src="/images/logo-vietcitywear.png"
                     alt="Logo VIET CITY WEAR"
                     fill
-                    className="object-contain p-0.5"
+                    className="object-cover"
                   />
                 </div>
-                <span className="text-sm font-extrabold tracking-[0.08em] uppercase text-[#111]">
-                  VIETCITYWEAR
-                </span>
+                <div className="flex flex-col justify-center">
+                  <span className="text-[14px] font-black tracking-[0.06em] uppercase text-[#111] leading-none">
+                    VIET CITY
+                  </span>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className="h-[1px] w-2 bg-[#111]/40"></span>
+                    <span className="text-[8px] font-bold tracking-[0.2em] uppercase text-[#555] leading-none">
+                      WEAR
+                    </span>
+                    <span className="h-[1px] w-2 bg-[#111]/40"></span>
+                  </div>
+                </div>
               </div>
               <button
                 onClick={() => setMobileOpen(false)}

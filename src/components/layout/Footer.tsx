@@ -9,17 +9,26 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="col-span-2 sm:col-span-1 space-y-3">
             <div className="flex items-center gap-2.5">
-              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#eaeaea] bg-white">
+              <div className="relative w-10 h-10 rounded-md overflow-hidden border border-[#eaeaea] bg-[#F7F4EE] flex-shrink-0">
                 <Image
                   src="/images/logo-vietcitywear.png"
                   alt="Logo VIET CITY WEAR"
                   fill
-                  className="object-contain p-0.5"
+                  className="object-cover"
                 />
               </div>
-              <span className="text-sm font-extrabold tracking-[0.08em] uppercase text-[#111]">
-                VIETCITYWEAR
-              </span>
+              <div className="flex flex-col justify-center">
+                <span className="text-[15px] font-black tracking-[0.06em] uppercase text-[#111] leading-none">
+                  VIET CITY
+                </span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="h-[1px] w-2 bg-[#111]/40"></span>
+                  <span className="text-[8px] font-bold tracking-[0.2em] uppercase text-[#666] leading-none">
+                    WEAR
+                  </span>
+                  <span className="h-[1px] w-2 bg-[#111]/40"></span>
+                </div>
+              </div>
             </div>
             <p className="text-[12px] font-semibold text-[#111] uppercase tracking-wide">
               Mặc thành phố – Mang câu chuyện về nhà
