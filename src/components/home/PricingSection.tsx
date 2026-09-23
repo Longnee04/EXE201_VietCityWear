@@ -12,7 +12,7 @@ export default function PricingSection() {
     {
       name: "Gói Tiêu chuẩn",
       price: "299.000đ",
-      badge: "Phổ biến nhất",
+      badge: "PHỔ BIẾN NHẤT",
       features: [
         "Áo thun văn hóa",
         "5 thẻ địa danh",
@@ -23,7 +23,7 @@ export default function PricingSection() {
     {
       name: "Gói Phiên bản đặc biệt",
       price: "349.000đ",
-      badge: "Đặc biệt",
+      badge: "ĐẶC BIỆT",
       features: [
         "Áo chất liệu tốt hơn",
         "5 thẻ địa danh",
@@ -35,16 +35,16 @@ export default function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="py-16 sm:py-24 border-t border-[#E5DFD5] bg-[#F7F4EE]">
+    <section id="pricing" className="py-16 sm:py-24 border-t border-[#eaeaea] bg-white">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#B4532A] mb-2">
+          <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-[#999] mb-2">
             Bảng giá sản phẩm
           </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A2421] uppercase">
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
             CÁC GÓI SẢN PHẨM
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-[#1A2421]/70">
+          <p className="mt-2 text-xs sm:text-sm text-[#666]">
             Lựa chọn gói sản phẩm phù hợp để lưu giữ kỷ niệm thành phố và câu chuyện di sản.
           </p>
         </div>
@@ -54,37 +54,37 @@ export default function PricingSection() {
           {packages.map((pkg, idx) => (
             <div
               key={idx}
-              className={`relative bg-white rounded-2xl p-7 sm:p-8 flex flex-col justify-between transition-all ${
+              className={`relative rounded-xl p-7 sm:p-8 flex flex-col justify-between transition-all ${
                 pkg.isPopular
-                  ? "border-2 border-[#B4532A] shadow-md md:scale-105 z-10"
-                  : "border border-[#E5DFD5] shadow-xs"
+                  ? "bg-white border-2 border-[#111] shadow-lg md:scale-105 z-10"
+                  : "bg-[#fafafa] border border-[#eaeaea]"
               }`}
             >
               {pkg.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#B4532A] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#111] text-white text-[10px] font-semibold tracking-wider px-3 py-0.5 uppercase">
                   {pkg.badge}
                 </div>
               )}
 
               <div>
-                <div className="text-center pb-6 border-b border-[#E5DFD5]">
-                  <h3 className="text-lg font-bold text-[#1A2421] mb-1">
+                <div className="text-center pb-6 border-b border-[#eaeaea]">
+                  <h3 className="text-base font-bold text-[#111] uppercase mb-1">
                     {pkg.name}
                   </h3>
-                  <div className="text-3xl sm:text-4xl font-black text-[#1A2421] tracking-tight">
+                  <div className="text-3xl sm:text-4xl font-extrabold text-[#111] tracking-tight">
                     {pkg.price}
                   </div>
                 </div>
 
                 <div className="py-6 space-y-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#1A2421]/60">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#999]">
                     Bao gồm:
                   </p>
                   <ul className="space-y-2.5">
                     {pkg.features.map((feature, fIdx) => (
-                      <li key={fIdx} className="flex items-center gap-2 text-xs sm:text-sm text-[#1A2421]/80">
+                      <li key={fIdx} className="flex items-center gap-2.5 text-xs sm:text-sm text-[#333]">
                         <svg
-                          className="w-4 h-4 text-[#B4532A] flex-shrink-0"
+                          className="w-4 h-4 text-[#111] flex-shrink-0"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -101,10 +101,10 @@ export default function PricingSection() {
               <div className="pt-4">
                 <button
                   type="button"
-                  className={`w-full py-3 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${
+                  className={`w-full py-3 text-[11px] font-semibold uppercase tracking-wider transition-colors ${
                     pkg.isPopular
-                      ? "bg-[#B4532A] text-white hover:bg-[#96421F]"
-                      : "bg-[#F7F4EE] text-[#1A2421] hover:bg-[#E5DFD5]"
+                      ? "bg-[#111] text-white hover:bg-[#333]"
+                      : "bg-white border border-[#111] text-[#111] hover:bg-[#111] hover:text-white"
                   }`}
                 >
                   Chọn {pkg.name}

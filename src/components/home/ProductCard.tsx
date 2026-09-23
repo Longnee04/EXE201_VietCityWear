@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       }}
     >
       {/* Image Container */}
-      <div className="relative aspect-product overflow-hidden bg-white border border-[#E5DFD5] rounded-lg mb-3">
+      <div className="relative aspect-product overflow-hidden bg-[#f5f5f5] mb-3">
         {/* Product image */}
         <div
           className={cn(
@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         >
           {product.images && product.images[0] ? (
-            <div className="relative w-full h-full p-3 bg-[#F7F4EE]">
+            <div className="relative w-full h-full p-2">
               <Image
                 src={product.images[0]}
                 alt={product.name}
@@ -60,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               />
             </div>
           ) : (
-            <div className="w-full h-full bg-[#F7F4EE] flex items-center justify-center">
+            <div className="w-full h-full bg-[#f0f0f0] flex items-center justify-center">
               <span className="text-[#999] text-xs tracking-wider uppercase font-medium">
                 {product.name}
               </span>
@@ -75,9 +75,9 @@ export default function ProductCard({ product }: ProductCardProps) {
               className={cn(
                 "text-[10px] font-semibold tracking-[0.1em] uppercase px-2.5 py-1",
                 product.badge === "NEW"
-                  ? "bg-[#1A2421] text-white"
+                  ? "bg-[#111] text-white"
                   : product.badge === "BEST SELLER"
-                  ? "bg-[#B4532A] text-white"
+                  ? "bg-white text-[#111] border border-[#ddd]"
                   : "bg-[#8B4513] text-white"
               )}
             >
@@ -96,12 +96,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           {!quickAddOpen ? (
             <button
               onClick={() => setQuickAddOpen(true)}
-              className="w-full bg-[#1A2421]/95 backdrop-blur-xs text-white text-[11px] font-semibold tracking-[0.12em] uppercase py-3 hover:bg-[#1A2421] transition-colors"
+              className="w-full bg-[#111]/90 backdrop-blur-xs text-white text-[11px] font-semibold tracking-[0.12em] uppercase py-3.5 hover:bg-[#111] transition-colors"
             >
               QUICK ADD
             </button>
           ) : (
-            <div className="bg-white border-t border-[#E5DFD5] p-3">
+            <div className="bg-white border-t border-[#eaeaea] p-3">
               {/* Size selector */}
               <div className="flex flex-wrap gap-1.5 mb-2.5">
                 {product.sizes.map((size) => (
@@ -109,10 +109,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={cn(
-                      "min-w-[34px] h-[32px] px-2 text-[11px] font-semibold border transition-colors",
+                      "min-w-[36px] h-[34px] px-2 text-[11px] font-medium border transition-colors",
                       selectedSize === size
-                        ? "bg-[#1A2421] text-white border-[#1A2421]"
-                        : "bg-white text-[#1A2421] border-[#E5DFD5] hover:border-[#1A2421]"
+                        ? "bg-[#111] text-white border-[#111]"
+                        : "bg-white text-[#333] border-[#ddd] hover:border-[#111]"
                     )}
                   >
                     {size}
@@ -124,10 +124,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                 onClick={handleAddToCart}
                 disabled={!selectedSize}
                 className={cn(
-                  "w-full py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-colors",
+                  "w-full py-2.5 text-[11px] font-semibold tracking-[0.1em] uppercase transition-colors",
                   selectedSize
-                    ? "bg-[#B4532A] text-white hover:bg-[#96421F]"
-                    : "bg-[#E5DFD5] text-[#999] cursor-not-allowed"
+                    ? "bg-[#111] text-white hover:bg-[#333]"
+                    : "bg-[#e5e5e5] text-[#999] cursor-not-allowed"
                 )}
               >
                 ADD TO CART
@@ -139,21 +139,21 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Mobile Quick Add button */}
         <button
           onClick={() => setQuickAddOpen(!quickAddOpen)}
-          className="lg:hidden absolute bottom-3 right-3 z-10 w-8 h-8 bg-white border border-[#E5DFD5] flex items-center justify-center shadow-xs text-[#1A2421]"
+          className="lg:hidden absolute bottom-3 right-3 z-10 w-8 h-8 bg-white border border-[#ddd] flex items-center justify-center shadow-xs text-[#111]"
         >
           <span className="text-[16px] leading-none font-bold">+</span>
         </button>
       </div>
 
       {/* Product Info */}
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         {/* Color dots */}
         {product.colors.length > 1 && (
-          <div className="flex gap-1.5 pb-0.5">
+          <div className="flex gap-1.5">
             {product.colors.map((color) => (
               <span
                 key={color.name}
-                className="w-3 h-3 rounded-full border border-[#E5DFD5]"
+                className="w-3 h-3 rounded-full border border-[#ddd]"
                 style={{ backgroundColor: color.value }}
                 title={color.name}
               />
@@ -162,13 +162,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         {/* Name */}
-        <h3 className="text-[13px] font-semibold text-[#1A2421] leading-snug line-clamp-1">
+        <h3 className="text-[13px] font-medium text-[#111] leading-snug line-clamp-1">
           {product.name}
         </h3>
 
         {/* Price */}
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-bold text-[#1A2421]">
+          <span className="text-[13px] font-semibold text-[#111]">
             {formatPrice(product.price)}
           </span>
           {product.compareAtPrice && (
@@ -181,17 +181,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Mobile Quick Add panel */}
       {quickAddOpen && (
-        <div className="lg:hidden mt-2 p-3 border border-[#E5DFD5] bg-white rounded-md">
+        <div className="lg:hidden mt-2 p-3 border border-[#eaeaea] bg-white">
           <div className="flex flex-wrap gap-1.5 mb-2.5">
             {product.sizes.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
                 className={cn(
-                  "min-w-[34px] h-[32px] px-2 text-[11px] font-semibold border transition-colors",
+                  "min-w-[36px] h-[34px] px-2 text-[11px] font-medium border transition-colors",
                   selectedSize === size
-                    ? "bg-[#1A2421] text-white border-[#1A2421]"
-                    : "bg-white text-[#1A2421] border-[#E5DFD5] hover:border-[#1A2421]"
+                    ? "bg-[#111] text-white border-[#111]"
+                    : "bg-white text-[#333] border-[#ddd] hover:border-[#111]"
                 )}
               >
                 {size}
@@ -202,10 +202,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={handleAddToCart}
             disabled={!selectedSize}
             className={cn(
-              "w-full py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-colors",
+              "w-full py-2.5 text-[11px] font-semibold tracking-[0.1em] uppercase transition-colors",
               selectedSize
-                ? "bg-[#B4532A] text-white hover:bg-[#96421F]"
-                : "bg-[#E5DFD5] text-[#999] cursor-not-allowed"
+                ? "bg-[#111] text-white hover:bg-[#333]"
+                : "bg-[#e5e5e5] text-[#999] cursor-not-allowed"
             )}
           >
             ADD TO CART
