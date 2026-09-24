@@ -32,8 +32,8 @@ function formatAuthError(message: string): string {
   if (message.includes("Too many requests") || message.includes("rate limit")) {
     return "Bạn đã thử đăng nhập quá nhiều lần. Vui lòng chờ ít phút rồi thử lại.";
   }
-  if (message.includes("Failed to fetch") || message.includes("NetworkError")) {
-    return "Không thể kết nối đến máy chủ xác thực. Vui lòng kiểm tra kết nối mạng.";
+  if (message.includes("Database error querying schema")) {
+    return "Lỗi dữ liệu hệ thống xác thực (auth.users có trường token NULL do chèn trực tiếp bằng SQL). Vui lòng cập nhật token rỗng trong Supabase SQL Editor hoặc tạo User qua Supabase Dashboard.";
   }
   return message || "Đã có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại.";
 }
