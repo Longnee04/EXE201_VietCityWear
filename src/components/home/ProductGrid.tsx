@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { products, getByCategory } from "@/data/products";
+import { getByCategory } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { cn } from "@/lib/utils";
 

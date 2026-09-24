@@ -16,10 +16,11 @@ export interface Database {
         Row: {
           id: string;
           full_name: string | null;
-          phone: string | null;
+          email?: string | null;
+          phone?: string | null;
           role: UserRole;
           created_at: string;
-          updated_at: string;
+          updated_at?: string;
         };
         Insert: {
           id: string;

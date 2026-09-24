@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, ShoppingBag, Menu, X, User } from "lucide-react";
 import { mainNav } from "@/data/navigation";
 import { useCart } from "@/lib/cart-context";
 
@@ -78,6 +78,14 @@ export default function Header() {
             >
               <Search className="w-[18px] h-[18px]" />
             </button>
+            <Link
+              href="/login"
+              className="p-2.5 text-[#555] hover:text-[#111] transition-colors"
+              aria-label="Tài khoản / Đăng nhập"
+              title="Đăng nhập tài khoản"
+            >
+              <User className="w-[18px] h-[18px]" />
+            </Link>
             <button
               className="relative p-2.5 text-[#555] hover:text-[#111] transition-colors"
               aria-label="Cart"
@@ -144,10 +152,18 @@ export default function Header() {
               <a
                 href="#pricing"
                 onClick={() => setMobileOpen(false)}
-                className="py-3 text-[13px] font-medium tracking-[0.08em] uppercase text-[#333] hover:text-[#111]"
+                className="py-3 text-[13px] font-medium tracking-[0.08em] uppercase text-[#333] hover:text-[#111] border-b border-[#f0f0f0]"
               >
                 BẢNG GIÁ
               </a>
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between"
+              >
+                <span>ĐĂNG NHẬP / TÀI KHOẢN</span>
+                <User className="w-4 h-4" />
+              </Link>
             </nav>
             <div className="p-5 border-t border-[#eaeaea] text-[11px] text-[#777]">
               Mặc thành phố – Mang câu chuyện về nhà
