@@ -145,3 +145,116 @@ CREATE POLICY "Users update own profile"
     ON public.users FOR UPDATE TO authenticated 
     USING (auth.uid() = id) 
     WITH CHECK (auth.uid() = id);
+
+-- ------------------------------------------------------------------------------
+-- 6. DỮ LIỆU MẪU (SEED DATA) CHO AUTH & USERS (ĐÃ SỬA LỖI PROVIDER_ID)
+-- Mật khẩu cho tài khoản: password123
+-- ------------------------------------------------------------------------------
+DO $$
+DECLARE
+  admin_uid UUID := gen_random_uuid();
+  user_uid UUID := gen_random_uuid();
+BEGIN
+  -- Dọn dẹp tài khoản cũ nếu đã tồn tại để tránh trùng email
+  DELETE FROM auth.users WHERE email IN ('admin@vietcitywear.com', 'khachhang@gmail.com');
+
+  -- 1. TẠO TÀI KHOẢN ADMIN (admin@vietcitywear.com)
+  INSERT INTO auth.users (
+    id, 
+    instance_id, 
+    email, 
+    encrypted_password, 
+    email_confirmed_at, 
+    raw_app_meta_data, 
+    raw_user_meta_data, 
+    aud, 
+    role, 
+    created_at, 
+    updated_at
+  ) VALUES (
+    admin_uid, 
+    '00000000-0000-0000-0000-000000000000', 
+    'admin@vietcitywear.com', 
+    crypt('password123', gen_salt('bf')), 
+    now(), 
+    '{"provider": "email", "providers": ["email"]}', 
+    '{"full_name": "Quản trị viên"}', 
+    'authenticated', 
+    'authenticated', 
+    now(), 
+    now()
+  );
+
+  INSERT INTO auth.identities (
+    id,
+    provider_id,
+    user_id, 
+    identity_data, 
+    provider, 
+    last_sign_in_at, 
+    created_at, 
+    updated_at
+  ) VALUES (
+    gen_random_uuid(),
+    admin_uid::text, -- <-- Bắt buộc trong Supabase Auth
+    admin_uid, 
+    format('{"sub":"%s","email":"%s"}', admin_uid::text, 'admin@vietcitywear.com')::jsonb, 
+    'email', 
+    now(), 
+    now(), 
+    now()
+  );
+
+  -- Cập nhật role admin trong public.users
+  UPDATE public.users 
+  SET role = 'admin' 
+  WHERE id = admin_uid;
+
+  -- 2. TẠO TÀI KHOẢN USER DEMO (khachhang@gmail.com)
+  INSERT INTO auth.users (
+    id, 
+    instance_id, 
+    email, 
+    encrypted_password, 
+    email_confirmed_at, 
+    raw_app_meta_data, 
+    raw_user_meta_data, 
+    aud, 
+    role, 
+    created_at, 
+    updated_at
+  ) VALUES (
+    user_uid, 
+    '00000000-0000-0000-0000-000000000000', 
+    'khachhang@gmail.com', 
+    crypt('password123', gen_salt('bf')), 
+    now(), 
+    '{"provider": "email", "providers": ["email"]}', 
+    '{"full_name": "Khách hàng Demo"}', 
+    'authenticated', 
+    'authenticated', 
+    now(), 
+    now()
+  );
+
+  INSERT INTO auth.identities (
+    id,
+    provider_id,
+    user_id, 
+    identity_data, 
+    provider, 
+    last_sign_in_at, 
+    created_at, 
+    updated_at
+  ) VALUES (
+    gen_random_uuid(),
+    user_uid::text, -- <-- Bắt buộc trong Supabase Auth
+    user_uid, 
+    format('{"sub":"%s","email":"%s"}', user_uid::text, 'khachhang@gmail.com')::jsonb, 
+    'email', 
+    now(), 
+    now(), 
+    now()
+  );
+
+END $$;
