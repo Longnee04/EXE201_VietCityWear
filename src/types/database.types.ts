@@ -16,15 +16,16 @@ export interface Database {
         Row: {
           id: string;
           full_name: string | null;
-          email?: string | null;
-          phone?: string | null;
+          email: string | null;
+          phone: string | null;
           role: UserRole;
           created_at: string;
-          updated_at?: string;
+          updated_at: string;
         };
         Insert: {
           id: string;
           full_name?: string | null;
+          email?: string | null;
           phone?: string | null;
           role?: UserRole;
           created_at?: string;
@@ -33,10 +34,12 @@ export interface Database {
         Update: {
           id?: string;
           full_name?: string | null;
+          email?: string | null;
           phone?: string | null;
           role?: UserRole;
           updated_at?: string;
         };
+        Relationships: [];
       };
       cities: {
         Row: {
@@ -59,6 +62,7 @@ export interface Database {
           description?: string | null;
           image_url?: string | null;
         };
+        Relationships: [];
       };
       landmarks: {
         Row: {
@@ -93,6 +97,7 @@ export interface Database {
           travel_timeline?: string | null;
           food_suggestions?: string | null;
         };
+        Relationships: [];
       };
       products: {
         Row: {
@@ -130,6 +135,7 @@ export interface Database {
           size_guide_text?: string | null;
           package_type?: string | null;
         };
+        Relationships: [];
       };
       product_inventory: {
         Row: {
@@ -158,6 +164,7 @@ export interface Database {
           stock_quantity?: number;
           status?: boolean;
         };
+        Relationships: [];
       };
       nfc_tags: {
         Row: {
@@ -186,6 +193,7 @@ export interface Database {
           scan_count?: number;
           experience_url?: string;
         };
+        Relationships: [];
       };
       orders: {
         Row: {
@@ -223,6 +231,7 @@ export interface Database {
           status?: OrderStatus;
           updated_at?: string;
         };
+        Relationships: [];
       };
       order_items: {
         Row: {
@@ -246,6 +255,7 @@ export interface Database {
           quantity?: number;
           price_at_purchase?: number;
         };
+        Relationships: [];
       };
       articles: {
         Row: {
@@ -271,6 +281,7 @@ export interface Database {
           image_url?: string | null;
           video_url?: string | null;
         };
+        Relationships: [];
       };
       website_content: {
         Row: {
@@ -291,7 +302,11 @@ export interface Database {
           content_body?: Json;
           updated_at?: string;
         };
+        Relationships: [];
       };
+    };
+    Views: {
+      [_ in never]: never;
     };
     Functions: {
       is_admin: {
@@ -302,6 +317,13 @@ export interface Database {
         Args: { tag_code: string };
         Returns: void;
       };
+    };
+    Enums: {
+      user_role: UserRole;
+      order_status: OrderStatus;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }
