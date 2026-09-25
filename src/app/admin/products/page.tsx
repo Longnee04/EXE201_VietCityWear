@@ -65,11 +65,36 @@ const mockDefaultProducts: Product[] = [
   },
 ];
 
+const STORAGE_KEY = "vcw_admin_products";
+
+function getStoredProducts(): Product[] {
+  if (typeof window === "undefined") return mockDefaultProducts;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return mockDefaultProducts;
+}
+
+function saveStoredProducts(products: Product[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: "success" | "warning" | "error"; text: string } | null>(null);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,15 +127,18 @@ export default function AdminProductsPage() {
 
         if (!ignore) {
           if (error || !data || data.length === 0) {
-            setProducts(mockDefaultProducts);
+            // Khi Supabase chưa có bảng/dữ liệu, lấy từ localStorage để không mất khi F5
+            setProducts(getStoredProducts());
           } else {
+            // Có dữ liệu thật trên Supabase -> đồng bộ vào LocalStorage
             setProducts(data as Product[]);
+            saveStoredProducts(data as Product[]);
           }
           setIsLoading(false);
         }
       } catch {
         if (!ignore) {
-          setProducts(mockDefaultProducts);
+          setProducts(getStoredProducts());
           setIsLoading(false);
         }
       }
@@ -161,55 +189,101 @@ export default function AdminProductsPage() {
     try {
       if (isEditing && currentId) {
         // Cập nhật sản phẩm
-        const { error } = await supabase
-          .from("products")
-          .update({
-            name: formData.name,
-            base_price: Number(formData.base_price),
-            package_type: formData.package_type,
-            front_image: formData.front_image,
-            back_image: formData.back_image,
-            description: formData.description,
-            size_guide_text: formData.size_guide_text,
-          })
-          .eq("id", currentId);
+        let dbSaved = false;
+        let errorReason = "";
 
-        if (error) {
-          // Update in local state fallback
-          setProducts((prev) =>
-            prev.map((p) => (p.id === currentId ? { ...p, ...formData } : p))
-          );
-        } else {
-          setRefreshIndex((prev) => prev + 1);
+        try {
+          const { error } = await supabase
+            .from("products")
+            .update({
+              name: formData.name,
+              base_price: Number(formData.base_price),
+              package_type: formData.package_type,
+              front_image: formData.front_image,
+              back_image: formData.back_image,
+              description: formData.description,
+              size_guide_text: formData.size_guide_text,
+            })
+            .eq("id", currentId);
+
+          if (!error) {
+            dbSaved = true;
+          } else {
+            errorReason = error.message;
+          }
+        } catch (err: unknown) {
+          errorReason = err instanceof Error ? err.message : String(err);
         }
-        setMessage({ type: "success", text: "Đã cập nhật sản phẩm thành công!" });
+
+        // Lưu vào LocalStorage để F5 không bao giờ bị mất
+        setProducts((prev) => {
+          const updated = prev.map((p) =>
+            p.id === currentId ? { ...p, ...formData } : p
+          );
+          saveStoredProducts(updated);
+          return updated;
+        });
+
+        if (dbSaved) {
+          setMessage({ type: "success", text: "Đã cập nhật sản phẩm thành công lên Supabase Cloud!" });
+        } else {
+          setMessage({
+            type: "warning",
+            text: `Đã lưu sản phẩm vào bộ nhớ trình duyệt (F5 không mất). Chưa lưu lên Supabase Cloud (${errorReason || "Bảng thiếu cột hoặc chặn RLS"}). Hãy chạy file schema_full.sql trên Supabase để lưu vĩnh viễn.`,
+          });
+        }
       } else {
         // Thêm sản phẩm mới
-        const { data, error } = await supabase
-          .from("products")
-          .insert({
-            name: formData.name,
-            base_price: Number(formData.base_price),
-            package_type: formData.package_type,
-            front_image: formData.front_image,
-            back_image: formData.back_image,
-            description: formData.description,
-            size_guide_text: formData.size_guide_text,
-          })
-          .select()
-          .single();
+        let dbSaved = false;
+        let errorReason = "";
+        let newProdId = `prod-${Date.now()}`;
 
-        if (error || !data) {
-          const newLocalProduct: Product = {
-            id: `prod-${Date.now()}`,
-            ...formData,
-            created_at: new Date().toISOString(),
-          };
-          setProducts((prev) => [newLocalProduct, ...prev]);
-        } else {
-          setRefreshIndex((prev) => prev + 1);
+        try {
+          const { data, error } = await supabase
+            .from("products")
+            .insert({
+              name: formData.name,
+              base_price: Number(formData.base_price),
+              package_type: formData.package_type,
+              front_image: formData.front_image,
+              back_image: formData.back_image,
+              description: formData.description,
+              size_guide_text: formData.size_guide_text,
+            })
+            .select()
+            .single();
+
+          if (!error && data) {
+            dbSaved = true;
+            newProdId = data.id;
+          } else if (error) {
+            errorReason = error.message;
+          }
+        } catch (err: unknown) {
+          errorReason = err instanceof Error ? err.message : String(err);
         }
-        setMessage({ type: "success", text: "Đã thêm sản phẩm mới vào danh mục!" });
+
+        const newLocalProduct: Product = {
+          id: newProdId,
+          ...formData,
+          created_at: new Date().toISOString(),
+        };
+
+        // Lưu vào LocalStorage
+        setProducts((prev) => {
+          const updated = [newLocalProduct, ...prev];
+          saveStoredProducts(updated);
+          return updated;
+        });
+
+        if (dbSaved) {
+          setMessage({ type: "success", text: "Đã thêm sản phẩm mới thành công lên Supabase Cloud!" });
+        } else {
+          setMessage({
+            type: "warning",
+            text: `Đã lưu sản phẩm vào bộ nhớ trình duyệt (F5 không bị mất). Chưa lưu được lên Supabase Cloud (${errorReason || "Bảng thiếu cột hoặc chặn RLS"}). Vui lòng chạy schema_full.sql trên Supabase để lưu vĩnh viễn.`,
+          });
+        }
       }
       setIsModalOpen(false);
     } catch {
@@ -223,15 +297,19 @@ export default function AdminProductsPage() {
     if (!confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${name}" không?`)) return;
 
     try {
-      const { error } = await supabase.from("products").delete().eq("id", id);
-      if (error) {
-        setProducts((prev) => prev.filter((p) => p.id !== id));
-      } else {
-        setRefreshIndex((prev) => prev + 1);
-      }
+      await supabase.from("products").delete().eq("id", id);
+      setProducts((prev) => {
+        const updated = prev.filter((p) => p.id !== id);
+        saveStoredProducts(updated);
+        return updated;
+      });
       setMessage({ type: "success", text: `Đã xóa sản phẩm "${name}".` });
     } catch {
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+      setProducts((prev) => {
+        const updated = prev.filter((p) => p.id !== id);
+        saveStoredProducts(updated);
+        return updated;
+      });
       setMessage({ type: "success", text: `Đã xóa sản phẩm "${name}".` });
     }
   };
@@ -282,6 +360,8 @@ export default function AdminProductsPage() {
           className={`p-3.5 rounded-xl border flex items-center justify-between text-xs sm:text-sm animate-fade-in ${
             message.type === "success"
               ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : message.type === "warning"
+              ? "bg-amber-50 border-amber-300 text-amber-900"
               : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
@@ -289,11 +369,15 @@ export default function AdminProductsPage() {
             {message.type === "success" ? (
               <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+              <AlertCircle
+                className={`w-4 h-4 flex-shrink-0 ${
+                  message.type === "warning" ? "text-amber-600" : "text-red-600"
+                }`}
+              />
             )}
             <span>{message.text}</span>
           </div>
-          <button onClick={() => setMessage(null)} className="p-1 hover:opacity-70">
+          <button onClick={() => setMessage(null)} className="p-1 hover:opacity-70 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>

@@ -63,6 +63,31 @@ const mockDefaultTags: NfcTag[] = [
   },
 ];
 
+const NFC_STORAGE_KEY = "vcw_admin_nfc";
+
+function getStoredTags(): NfcTag[] {
+  if (typeof window === "undefined") return mockDefaultTags;
+  try {
+    const raw = localStorage.getItem(NFC_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return mockDefaultTags;
+}
+
+function saveStoredTags(tags: NfcTag[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(NFC_STORAGE_KEY, JSON.stringify(tags));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
+}
+
 export default function AdminNfcPage() {
   const [tags, setTags] = useState<NfcTag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,7 +117,7 @@ export default function AdminNfcPage() {
         if (ignore) return;
 
         if (error || !data || data.length === 0) {
-          setTags(mockDefaultTags);
+          setTags(getStoredTags());
         } else {
           const enriched: NfcTag[] = data.map((t) => ({
             ...t,
@@ -100,10 +125,11 @@ export default function AdminNfcPage() {
             city_name: "Hà Nội",
           }));
           setTags(enriched);
+          saveStoredTags(enriched);
         }
       } catch {
         if (!ignore) {
-          setTags(mockDefaultTags);
+          setTags(getStoredTags());
         }
       } finally {
         if (!ignore) {
@@ -121,9 +147,11 @@ export default function AdminNfcPage() {
   // Giả lập quét thẻ NFC
   const handleSimulateScan = async (id: string, nfc_code: string) => {
     try {
-      setTags((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, scan_count: t.scan_count + 1 } : t))
-      );
+      setTags((prev) => {
+        const updated = prev.map((t) => (t.id === id ? { ...t, scan_count: t.scan_count + 1 } : t));
+        saveStoredTags(updated);
+        return updated;
+      });
       setMessage({
         type: "success",
         text: `Đã mô phỏng 1 lượt chạm NFC vào thẻ "${nfc_code}"! Lượt quét đã tăng.`,
@@ -152,7 +180,12 @@ export default function AdminNfcPage() {
         created_at: new Date().toISOString(),
       };
 
-      setTags((prev) => [newTag, ...prev]);
+      setTags((prev) => {
+        const updated = [newTag, ...prev];
+        saveStoredTags(updated);
+        return updated;
+      });
+
       setMessage({ type: "success", text: `Đã tạo mã thẻ NFC "${newTag.nfc_code}" thành công!` });
       setIsModalOpen(false);
       setFormData({
@@ -171,7 +204,11 @@ export default function AdminNfcPage() {
   // Xóa thẻ NFC
   const handleDeleteTag = async (id: string, code: string) => {
     if (!confirm(`Bạn có chắc muốn xóa mã thẻ NFC "${code}"?`)) return;
-    setTags((prev) => prev.filter((t) => t.id !== id));
+    setTags((prev) => {
+      const updated = prev.filter((t) => t.id !== id);
+      saveStoredTags(updated);
+      return updated;
+    });
     setMessage({ type: "success", text: `Đã xóa mã thẻ NFC "${code}".` });
   };
 

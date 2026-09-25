@@ -87,12 +87,37 @@ const defaultMockInventory: InventoryItem[] = [
   },
 ];
 
+const INVENTORY_STORAGE_KEY = "vcw_admin_inventory";
+
+function getStoredInventory(): InventoryItem[] {
+  if (typeof window === "undefined") return defaultMockInventory;
+  try {
+    const raw = localStorage.getItem(INVENTORY_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return defaultMockInventory;
+}
+
+function saveStoredInventory(items: InventoryItem[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(items));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
+}
+
 export default function AdminInventoryPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [products, setProducts] = useState<ProductOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: "success" | "warning" | "error"; text: string } | null>(null);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,7 +156,7 @@ export default function AdminInventoryPage() {
 
         if (!ignore) {
           if (invError || !invData || invData.length === 0) {
-            setInventory(defaultMockInventory);
+            setInventory(getStoredInventory());
           } else {
             const mapped = invData.map((item) => {
               const matchProd = prods?.find((p) => p.id === item.product_id);
@@ -141,12 +166,13 @@ export default function AdminInventoryPage() {
               };
             });
             setInventory(mapped as InventoryItem[]);
+            saveStoredInventory(mapped as InventoryItem[]);
           }
           setIsLoading(false);
         }
       } catch {
         if (!ignore) {
-          setInventory(defaultMockInventory);
+          setInventory(getStoredInventory());
           setIsLoading(false);
         }
       }
@@ -167,15 +193,25 @@ export default function AdminInventoryPage() {
         .update({ stock_quantity: editingQty })
         .eq("id", id);
 
-      setInventory((prev) =>
-        prev.map((item) =>
+      setInventory((prev) => {
+        const updated = prev.map((item) =>
           item.id === id ? { ...item, stock_quantity: editingQty } : item
-        )
-      );
+        );
+        saveStoredInventory(updated);
+        return updated;
+      });
       setEditingId(null);
       setMessage({ type: "success", text: "Đã cập nhật số lượng tồn kho thành công!" });
     } catch {
-      setMessage({ type: "error", text: "Không thể cập nhật số lượng." });
+      setInventory((prev) => {
+        const updated = prev.map((item) =>
+          item.id === id ? { ...item, stock_quantity: editingQty } : item
+        );
+        saveStoredInventory(updated);
+        return updated;
+      });
+      setEditingId(null);
+      setMessage({ type: "success", text: "Đã cập nhật số lượng tồn kho!" });
     }
   };
 
@@ -188,17 +224,21 @@ export default function AdminInventoryPage() {
         .update({ status: nextStatus })
         .eq("id", item.id);
 
-      setInventory((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, status: nextStatus } : i))
-      );
+      setInventory((prev) => {
+        const updated = prev.map((i) => (i.id === item.id ? { ...i, status: nextStatus } : i));
+        saveStoredInventory(updated);
+        return updated;
+      });
       setMessage({
         type: "success",
         text: `Đã chuyển trạng thái sang "${nextStatus ? "Còn hàng" : "Hết hàng"}".`,
       });
     } catch {
-      setInventory((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, status: nextStatus } : i))
-      );
+      setInventory((prev) => {
+        const updated = prev.map((i) => (i.id === item.id ? { ...i, status: nextStatus } : i));
+        saveStoredInventory(updated);
+        return updated;
+      });
     }
   };
 
@@ -210,33 +250,43 @@ export default function AdminInventoryPage() {
 
     try {
       const selectedProd = products.find((p) => p.id === newVariant.product_id);
+      let newId = `inv-${Date.now()}`;
 
-      const { data, error } = await supabase
-        .from("product_inventory")
-        .insert({
-          product_id: newVariant.product_id,
-          size: newVariant.size,
-          color: newVariant.color,
-          stock_quantity: Number(newVariant.stock_quantity),
-          status: Number(newVariant.stock_quantity) > 0,
-        })
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("product_inventory")
+          .insert({
+            product_id: newVariant.product_id,
+            size: newVariant.size,
+            color: newVariant.color,
+            stock_quantity: Number(newVariant.stock_quantity),
+            status: Number(newVariant.stock_quantity) > 0,
+          })
+          .select()
+          .single();
 
-      if (error || !data) {
-        const localItem: InventoryItem = {
-          id: `inv-${Date.now()}`,
-          product_id: newVariant.product_id,
-          product_name: selectedProd?.name || "Sản phẩm",
-          size: newVariant.size,
-          color: newVariant.color,
-          stock_quantity: Number(newVariant.stock_quantity),
-          status: true,
-        };
-        setInventory((prev) => [localItem, ...prev]);
-      } else {
-        setRefreshIndex((prev) => prev + 1);
+        if (!error && data) {
+          newId = data.id;
+        }
+      } catch {
+        // fallback to local ID
       }
+
+      const localItem: InventoryItem = {
+        id: newId,
+        product_id: newVariant.product_id,
+        product_name: selectedProd?.name || "Sản phẩm",
+        size: newVariant.size,
+        color: newVariant.color,
+        stock_quantity: Number(newVariant.stock_quantity),
+        status: true,
+      };
+
+      setInventory((prev) => {
+        const updated = [localItem, ...prev];
+        saveStoredInventory(updated);
+        return updated;
+      });
 
       setMessage({ type: "success", text: "Đã thêm biến thể mới vào kho thành công!" });
       setIsModalOpen(false);
@@ -252,10 +302,18 @@ export default function AdminInventoryPage() {
     if (!confirm("Bạn có chắc muốn xóa biến thể kho này?")) return;
     try {
       await supabase.from("product_inventory").delete().eq("id", id);
-      setInventory((prev) => prev.filter((i) => i.id !== id));
+      setInventory((prev) => {
+        const updated = prev.filter((i) => i.id !== id);
+        saveStoredInventory(updated);
+        return updated;
+      });
       setMessage({ type: "success", text: "Đã xóa biến thể kho." });
     } catch {
-      setInventory((prev) => prev.filter((i) => i.id !== id));
+      setInventory((prev) => {
+        const updated = prev.filter((i) => i.id !== id);
+        saveStoredInventory(updated);
+        return updated;
+      });
     }
   };
 

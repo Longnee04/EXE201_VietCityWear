@@ -92,6 +92,31 @@ const mockDefaultCities: City[] = [
   },
 ];
 
+const CITIES_STORAGE_KEY = "vcw_admin_cities";
+
+function getStoredCities(): City[] {
+  if (typeof window === "undefined") return mockDefaultCities;
+  try {
+    const raw = localStorage.getItem(CITIES_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return mockDefaultCities;
+}
+
+function saveStoredCities(cities: City[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CITIES_STORAGE_KEY, JSON.stringify(cities));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
+}
+
 export default function AdminCitiesPage() {
   const [cities, setCities] = useState<City[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,20 +146,23 @@ export default function AdminCitiesPage() {
         if (ignore) return;
 
         if (error || !data || data.length === 0) {
-          setCities(mockDefaultCities);
-          setSelectedCity(mockDefaultCities[0]);
+          const stored = getStoredCities();
+          setCities(stored);
+          setSelectedCity(stored[0] || null);
         } else {
           const enriched: City[] = data.map((c) => ({
             ...c,
             landmarks: mockDefaultCities.find((mc) => mc.name === c.name)?.landmarks || [],
           }));
           setCities(enriched);
-          setSelectedCity(enriched[0]);
+          setSelectedCity(enriched[0] || null);
+          saveStoredCities(enriched);
         }
       } catch {
         if (!ignore) {
-          setCities(mockDefaultCities);
-          setSelectedCity(mockDefaultCities[0]);
+          const stored = getStoredCities();
+          setCities(stored);
+          setSelectedCity(stored[0] || null);
         }
       } finally {
         if (!ignore) {
@@ -162,7 +190,11 @@ export default function AdminCitiesPage() {
       landmarks: [],
     };
 
-    setCities((prev) => [...prev, newCity]);
+    setCities((prev) => {
+      const updated = [...prev, newCity];
+      saveStoredCities(updated);
+      return updated;
+    });
     setSelectedCity(newCity);
     setIsCityModalOpen(false);
     setCityName("");
@@ -183,13 +215,15 @@ export default function AdminCitiesPage() {
       food_suggestions: lmFood,
     };
 
-    setCities((prev) =>
-      prev.map((c) =>
+    setCities((prev) => {
+      const updated = prev.map((c) =>
         c.id === selectedCity.id
           ? { ...c, landmarks: [...(c.landmarks || []), newLm] }
           : c
-      )
-    );
+      );
+      saveStoredCities(updated);
+      return updated;
+    });
 
     setSelectedCity((prev) =>
       prev ? { ...prev, landmarks: [...(prev.landmarks || []), newLm] } : null

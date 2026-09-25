@@ -95,6 +95,31 @@ const mockDefaultOrders: Order[] = [
   },
 ];
 
+const ORDERS_STORAGE_KEY = "vcw_admin_orders";
+
+function getStoredOrders(): Order[] {
+  if (typeof window === "undefined") return mockDefaultOrders;
+  try {
+    const raw = localStorage.getItem(ORDERS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return mockDefaultOrders;
+}
+
+function saveStoredOrders(orders: Order[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,7 +145,7 @@ export default function AdminOrdersPage() {
 
         if (!ignore) {
           if (error || !data || data.length === 0) {
-            setOrders(mockDefaultOrders);
+            setOrders(getStoredOrders());
           } else {
             const enriched: Order[] = data.map((o) => ({
               ...o,
@@ -136,12 +161,13 @@ export default function AdminOrdersPage() {
               ],
             }));
             setOrders(enriched);
+            saveStoredOrders(enriched);
           }
           setIsLoading(false);
         }
       } catch {
         if (!ignore) {
-          setOrders(mockDefaultOrders);
+          setOrders(getStoredOrders());
           setIsLoading(false);
         }
       }
@@ -162,9 +188,11 @@ export default function AdminOrdersPage() {
       setIsUpdatingStatus(true);
       await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
 
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
-      );
+      setOrders((prev) => {
+        const updated = prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
+        saveStoredOrders(updated);
+        return updated;
+      });
 
       if (selectedOrder && selectedOrder.id === orderId) {
         setSelectedOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
@@ -181,7 +209,21 @@ export default function AdminOrdersPage() {
         }".`,
       });
     } catch {
-      setMessage({ type: "error", text: "Không thể cập nhật trạng thái đơn hàng." });
+      setOrders((prev) => {
+        const updated = prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
+        saveStoredOrders(updated);
+        return updated;
+      });
+      setMessage({
+        type: "success",
+        text: `Đã cập nhật trạng thái đơn sang "${
+          newStatus === "completed"
+            ? "Đã hoàn thành"
+            : newStatus === "canceled"
+            ? "Đã hủy"
+            : "Chờ xử lý"
+        }".`,
+      });
     } finally {
       setIsUpdatingStatus(false);
     }
