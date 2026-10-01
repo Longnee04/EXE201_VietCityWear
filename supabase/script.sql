@@ -7,39 +7,8 @@
 --  + Bổ sung Row Level Security (RLS) & Trigger tự động đồng bộ tài khoản
 -- ==============================================================================
 
--- ==============================================================================
--- 0. DỌN SẠCH TOÀN BỘ CÁC BẢNG CŨ (CẢ VIẾT HOA VÀ VIẾT THƯỜNG)
--- ==============================================================================
-DROP TABLE IF EXISTS "OrderItem" CASCADE;
-DROP TABLE IF EXISTS "Order" CASCADE;
-DROP TABLE IF EXISTS "NFCTag" CASCADE;
-DROP TABLE IF EXISTS "ProductAccessory" CASCADE;
-DROP TABLE IF EXISTS "ProductVariant" CASCADE;
-DROP TABLE IF EXISTS "Product" CASCADE;
-DROP TABLE IF EXISTS "FoodSpot" CASCADE;
-DROP TABLE IF EXISTS "TravelTimeline" CASCADE;
-DROP TABLE IF EXISTS "LandmarkMedia" CASCADE;
-DROP TABLE IF EXISTS "Landmark" CASCADE;
-DROP TABLE IF EXISTS "City" CASCADE;
-DROP TABLE IF EXISTS "Blog" CASCADE;
-DROP TABLE IF EXISTS "User" CASCADE;
 
-DROP TABLE IF EXISTS public.order_items CASCADE;
-DROP TABLE IF EXISTS public.orders CASCADE;
-DROP TABLE IF EXISTS public.nfc_tags CASCADE;
-DROP TABLE IF EXISTS public.product_accessories CASCADE;
-DROP TABLE IF EXISTS public.product_variants CASCADE;
-DROP TABLE IF EXISTS public.product_inventory CASCADE;
-DROP TABLE IF EXISTS public.products CASCADE;
-DROP TABLE IF EXISTS public.food_spots CASCADE;
-DROP TABLE IF EXISTS public.travel_timelines CASCADE;
-DROP TABLE IF EXISTS public.landmark_media CASCADE;
-DROP TABLE IF EXISTS public.landmarks CASCADE;
-DROP TABLE IF EXISTS public.cities CASCADE;
-DROP TABLE IF EXISTS public.blogs CASCADE;
-DROP TABLE IF EXISTS public.articles CASCADE;
-DROP TABLE IF EXISTS public.website_content CASCADE;
-DROP TABLE IF EXISTS public.users CASCADE;
+
 
 -- ------------------------------------------------------------------------------
 -- 1. EXTENSIONS
