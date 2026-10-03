@@ -6,9 +6,11 @@ import Image from "next/image";
 import { Search, ShoppingBag, Menu, X, User } from "lucide-react";
 import { mainNav } from "@/data/navigation";
 import { useCart } from "@/lib/cart-context";
+import CartDrawer from "./CartDrawer";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const { itemCount } = useCart();
 
   return (
@@ -87,6 +89,7 @@ export default function Header() {
               <User className="w-[18px] h-[18px]" />
             </Link>
             <button
+              onClick={() => setCartOpen(true)}
               className="relative p-2.5 text-[#555] hover:text-[#111] transition-colors"
               aria-label="Cart"
             >
@@ -171,6 +174,9 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </header>
   );
 }

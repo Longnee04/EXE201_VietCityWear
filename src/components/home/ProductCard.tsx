@@ -5,6 +5,7 @@ import Image from "next/image";
 import { type Product, formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface ProductCardProps {
   product: Product;
@@ -43,9 +44,9 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image Container */}
       <div className="relative aspect-product overflow-hidden bg-[#f5f5f5] mb-3">
         {/* Product image */}
-        <div
+        <Link href={`/products/${product.slug}`}
           className={cn(
-            "absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-out",
+            "absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-out z-0",
             isHovered ? "scale-105" : "scale-100"
           )}
         >
@@ -66,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Badge */}
         {product.badge && (
@@ -162,9 +163,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         {/* Name */}
-        <h3 className="text-[13px] font-medium text-[#111] leading-snug line-clamp-1">
-          {product.name}
-        </h3>
+        <Link href={`/products/${product.slug}`}>
+          <h3 className="text-[13px] font-medium text-[#111] leading-snug line-clamp-1 hover:underline">
+            {product.name}
+          </h3>
+        </Link>
 
         {/* Price */}
         <div className="flex items-center gap-2">
