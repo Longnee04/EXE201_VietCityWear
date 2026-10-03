@@ -1,5 +1,7 @@
-// Prisma Schema for VIET CITY WEAR
-// Database: PostgreSQL
+// =========================================================
+// VIET CITY WEAR - PRISMA SCHEMA (PostgreSQL)
+// Khớp với database script mới
+// =========================================================
 
 generator client {
   provider = "prisma-client-js"
@@ -10,139 +12,228 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// -------------------------------------------------------------
-// ENUMS
-// -------------------------------------------------------------
-enum Role {
-  USER
-  ADMIN
-}
-
-enum OrderStatus {
-  PENDING
-  PAID
-  SHIPPING
-  COMPLETED
-  CANCELLED
-}
-
-enum PaymentMethod {
-  COD
-  VNPAY
-  MOMO
-}
-
-enum PaymentStatus {
-  UNPAID
-  PAID
-  FAILED
-}
-
-// -------------------------------------------------------------
-// 1. NGƯỜI DÙNG & TÀI KHOẢN
-// -------------------------------------------------------------
+// =========================================================
+// USER
+// Role: constant (vd: 'Admin', 'Customer')
+// =========================================================
 model User {
-  id            String         @id @default(uuid())
-  name          String?
-  email         String         @unique
-  password      String?        // Bỏ trống nếu login OAuth (Google)
-  role          Role           @default(USER)
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  UserId    Int       @id @default(autoincrement())
+  Email     String    @unique @db.VarChar(150)
+  FullName  String    @db.VarChar(100)
+  Phone     String?   @db.VarChar(10)
+  Password  String    @db.VarChar(255)
+  Address   String?   @db.VarChar(255)
+  Role      String    @db.VarChar(30)
+  CreatedAt DateTime  @default(now())
 
-  orders        Order[]
-  passports     UserPassport[] // Hộ chiếu số & con dấu thành tựu
+  orders    Order[]
+  blogs     Blog[]
+
+  @@map("User")
 }
 
-// -------------------------------------------------------------
-// 2. THÀNH PHỐ & ĐỊA DANH NFC (NFC Landing Page)
-// -------------------------------------------------------------
+// =========================================================
+// CITY
+// =========================================================
 model City {
-  id            String         @id @default(uuid())
-  name          String         // Ví dụ: Hà Nội, Huế, Hội An
-  slug          String         @unique // ví dụ: ha-noi
-  description   String         @db.Text
-  culturalStory String?        @db.Text // Câu chuyện văn hóa
-  travelGuide   String?        @db.Text // Cẩm nang du lịch (vé, di chuyển)
-  imageUrl      String?
-  videoUrl      String?        // Video giới thiệu hoặc AR target
-  audioUrlVi    String?        // Audio thuyết minh tiếng Việt
-  audioUrlEn    String?        // Audio thuyết minh tiếng Anh
-  nfcCode       String?        @unique // Mã định danh móc khóa NFC
-  isActive      Boolean        @default(true)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  CityId      Int       @id @default(autoincrement())
+  Name        String    @db.VarChar(100)
+  Description String?   @db.Text
+  CoverImage  String?   @db.VarChar(500)
 
-  products      Product[]
-  stamps        UserPassport[]
+  landmarks   Landmark[]
+  foodSpots   FoodSpot[]
+  products    Product[]
+
+  @@map("City")
 }
 
-// -------------------------------------------------------------
-// 3. SẢN PHẨM ÁO THUN THEO GÓI
-// -------------------------------------------------------------
+// =========================================================
+// LANDMARK
+// =========================================================
+model Landmark {
+  LandmarkId Int       @id @default(autoincrement())
+  CityId     Int
+  Name       String    @db.VarChar(150)
+  Story      String?   @db.Text
+  History    String?   @db.Text
+  OrderIndex Int       @default(0)
+
+  city            City              @relation(fields: [CityId], references: [CityId])
+  media           LandmarkMedia[]
+  travelTimeline  TravelTimeline[]
+
+  @@map("Landmark")
+}
+
+// =========================================================
+// LANDMARK MEDIA
+// Type: constant (vd: 'Image', 'Video')
+// =========================================================
+model LandmarkMedia {
+  MediaId    Int       @id @default(autoincrement())
+  LandmarkId Int
+  Type       String    @db.VarChar(30)
+  Url        String    @db.VarChar(500)
+  Caption    String?   @db.VarChar(255)
+
+  landmark   Landmark  @relation(fields: [LandmarkId], references: [LandmarkId])
+
+  @@map("LandmarkMedia")
+}
+
+// =========================================================
+// TRAVEL TIMELINE
+// =========================================================
+model TravelTimeline {
+  Id         Int       @id @default(autoincrement())
+  LandmarkId Int
+  StepOrder  Int
+  Duration   String?   @db.VarChar(50)
+  Note       String?   @db.VarChar(255)
+
+  landmark   Landmark  @relation(fields: [LandmarkId], references: [LandmarkId])
+
+  @@map("TravelTimeline")
+}
+
+// =========================================================
+// FOOD SPOT
+// =========================================================
+model FoodSpot {
+  FoodSpotId  Int       @id @default(autoincrement())
+  CityId      Int
+  Name        String    @db.VarChar(150)
+  Description String?   @db.Text
+  ImageUrl    String?   @db.VarChar(500)
+  MapLink     String?   @db.VarChar(500)
+
+  city        City      @relation(fields: [CityId], references: [CityId])
+
+  @@map("FoodSpot")
+}
+
+// =========================================================
+// PRODUCT
+// Status: constant (vd: 'Active', 'Inactive', 'OutOfStock')
+// =========================================================
 model Product {
-  id            String         @id @default(uuid())
-  name          String         // Ví dụ: Áo thun Hà Nội Heritage
-  slug          String         @unique
-  description   String         @db.Text
-  price         Decimal        @db.Decimal(10, 2)
-  packageTier   String         // 'BASIC' (249k), 'STANDARD' (299k), 'SPECIAL' (349k)
-  cityId        String
-  city          City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  images        String[]
-  sizes         String[]       @default(["S", "M", "L", "XL", "2XL"])
-  stock         Int            @default(0)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  ProductId   Int       @id @default(autoincrement())
+  CityId      Int
+  Name        String    @db.VarChar(150)
+  BasePrice   Decimal   @db.Decimal(18, 2)
+  Description String?   @db.Text
+  SizeGuide   String?   @db.Text
+  Status      String    @db.VarChar(30)
+  CreatedAt   DateTime  @default(now())
 
+  city         City               @relation(fields: [CityId], references: [CityId])
+  variants     ProductVariant[]
+  accessories  ProductAccessory[]
+  nfcTags      NFCTag[]
+
+  @@map("Product")
+}
+
+// =========================================================
+// PRODUCT VARIANT
+// =========================================================
+model ProductVariant {
+  VariantId     Int       @id @default(autoincrement())
+  ProductId     Int
+  Image         String?   @db.VarChar(500)
+  Color         String    @db.VarChar(50)
+  Size          String    @db.VarChar(10)
+  Price         Decimal   @db.Decimal(18, 2)
+  StockQuantity Int       @default(0)
+
+  product       Product     @relation(fields: [ProductId], references: [ProductId])
   orderItems    OrderItem[]
+
+  @@map("ProductVariant")
 }
 
-// -------------------------------------------------------------
-// 4. QUẢN LÝ ĐƠN HÀNG (E-Commerce)
-// -------------------------------------------------------------
+// =========================================================
+// PRODUCT ACCESSORY
+// Type: constant (vd: 'LandmarkCard', 'NfcKeychain')
+// =========================================================
+model ProductAccessory {
+  AccessoryId Int       @id @default(autoincrement())
+  ProductId   Int
+  Type        String    @db.VarChar(30)
+  Name        String    @db.VarChar(100)
+  Quantity    Int       @default(1)
+
+  product     Product   @relation(fields: [ProductId], references: [ProductId])
+
+  @@map("ProductAccessory")
+}
+
+// =========================================================
+// NFC TAG
+// =========================================================
+model NFCTag {
+  NfcId     Int       @id @default(autoincrement())
+  NfcCode   String    @unique @db.VarChar(50)
+  ProductId Int
+  ScanCount Int       @default(0)
+  CreatedAt DateTime  @default(now())
+
+  product   Product   @relation(fields: [ProductId], references: [ProductId])
+
+  @@map("NFCTag")
+}
+
+// =========================================================
+// ORDER
+// Status: constant (vd: 'Pending', 'Processing', 'Shipped', 'Completed', 'Cancelled')
+// PaymentMethod: constant (vd: 'COD')
+// =========================================================
 model Order {
-  id              String         @id @default(uuid())
-  userId          String?
-  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-  customerName    String
-  customerPhone   String
-  customerEmail   String
-  shippingAddress String
-  totalAmount     Decimal        @db.Decimal(10, 2)
-  status          OrderStatus    @default(PENDING)
-  paymentMethod   PaymentMethod  @default(COD)
-  paymentStatus   PaymentStatus  @default(UNPAID)
-  note            String?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  OrderId       Int       @id @default(autoincrement())
+  UserId        Int
+  TotalAmount   Decimal   @db.Decimal(18, 2)
+  Status        String    @db.VarChar(30)
+  PaymentMethod String    @db.VarChar(30)
+  CreatedAt     DateTime  @default(now())
 
-  items           OrderItem[]
+  user          User        @relation(fields: [UserId], references: [UserId])
+  items         OrderItem[]
+
+  @@map("Order")
 }
 
+// =========================================================
+// ORDER ITEM
+// =========================================================
 model OrderItem {
-  id            String         @id @default(uuid())
-  orderId       String
-  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId     String
-  product       Product        @relation(fields: [productId], references: [id])
-  size          String
-  quantity      Int            @default(1)
-  unitPrice     Decimal        @db.Decimal(10, 2)
+  OrderItemId Int       @id @default(autoincrement())
+  OrderId     Int
+  VariantId   Int
+  Quantity    Int
+  UnitPrice   Decimal   @db.Decimal(18, 2)
+
+  order       Order           @relation(fields: [OrderId], references: [OrderId])
+  variant     ProductVariant  @relation(fields: [VariantId], references: [VariantId])
+
+  @@map("OrderItem")
 }
 
-// -------------------------------------------------------------
-// 5. HỘ CHIẾU SỐ & CON DẤU THÀNH TỰU (Gamification)
-// -------------------------------------------------------------
-model UserPassport {
-  id            String         @id @default(uuid())
-  userId        String
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cityId        String
-  city          City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  codeClaimed   String         // Mã code duy nhất trên thẻ địa danh
-  claimedAt     DateTime       @default(now())
+// =========================================================
+// BLOG
+// Category, Status: constant (vd: Category 'Culture'/'Travel'/'Landmark', Status 'Draft'/'Published')
+// =========================================================
+model Blog {
+  BlogId      Int       @id @default(autoincrement())
+  AuthorId    Int
+  Title       String    @db.VarChar(200)
+  Content     String?   @db.Text
+  CoverImage  String?   @db.VarChar(500)
+  Category    String?   @db.VarChar(50)
+  Status      String    @db.VarChar(30)
+  PublishedAt DateTime?
 
-  @@unique([userId, cityId])
+  author      User      @relation(fields: [AuthorId], references: [UserId])
+
+  @@map("Blog")
 }

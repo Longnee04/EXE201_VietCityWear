@@ -18,6 +18,8 @@ import {
   X,
   ShieldCheck,
   Loader2,
+  FileText,
+  Settings,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
@@ -57,6 +59,16 @@ const adminNavItems = [
     label: "Thành phố & Địa danh",
     icon: MapPin,
   },
+  {
+    href: "/admin/posts",
+    label: "Bài viết",
+    icon: FileText,
+  },
+  {
+    href: "/admin/content",
+    label: "Nội dung Website",
+    icon: Settings,
+  },
 ];
 
 export default function AdminLayout({
@@ -77,11 +89,13 @@ export default function AdminLayout({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Kiểm tra phiên đăng nhập Admin
+  // Kiểm tra phiên đăng nhập Admin (hỗ trợ cả Supabase và Mock)
   useEffect(() => {
     async function checkAuth() {
       try {
         setIsLoadingAuth(true);
+
+        // Check Supabase session
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -129,7 +143,10 @@ export default function AdminLayout({
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
+      
+      // Logout Supabase
       await supabase.auth.signOut();
+      
       startTransition(() => {
         router.refresh();
         router.replace("/login");

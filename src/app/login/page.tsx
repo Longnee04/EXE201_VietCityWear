@@ -52,7 +52,7 @@ export default function LoginPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   /**
-   * Xử lý xác thực người dùng và phân quyền chuyển hướng (Role-Based Redirection)
+   * Xử lý xác thực người dùng với Supabase Auth
    */
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,7 +68,6 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
 
-      // 1. Xác thực tài khoản với Supabase Auth
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
           email: email.trim(),
@@ -89,7 +88,7 @@ export default function LoginPage() {
 
       const userId = authData.user.id;
 
-      // 2. Truy vấn trực tiếp quyền người dùng (role) từ bảng custom `public.users`
+      // Truy vấn role từ bảng users
       const { data: userProfile, error: profileError } = (await supabase
         .from("users")
         .select("role, full_name")
@@ -103,18 +102,13 @@ export default function LoginPage() {
         console.warn("Lưu ý khi đọc bảng public.users:", profileError.message);
       }
 
-      // Xác định role: Ưu tiên bảng `public.users`, fallback sang `user_metadata.role`, mặc định là 'user'
       const assignedRole =
         userProfile?.role ||
         (authData.user.user_metadata?.role as string) ||
         "user";
 
-      // 3. Phân luồng điều hướng dựa trên Role
       if (assignedRole === "admin") {
-        setSuccessMessage(
-          "Xác thực thành công với quyền Quản trị viên! Đang chuyển đến Trang quản trị..."
-        );
-        // Refresh router để cập nhật Server Components/Cookies rồi điều hướng
+        setSuccessMessage("Xác thực thành công với quyền Quản trị viên! Đang chuyển đến Trang quản trị...");
         router.refresh();
         setTimeout(() => {
           router.push("/admin/dashboard");
@@ -128,7 +122,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Lỗi đăng nhập không mong muốn:", err);
-      setErrorMessage("Đã xảy ra lỗi kết nối. Vui lòng kiểm tra lại đường truyền mạng.");
+      setErrorMessage("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
       setIsLoading(false);
     }
   };

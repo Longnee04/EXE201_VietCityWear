@@ -1,0 +1,109 @@
+╔══════════════════════════════════════════════════════════════╗
+║          VIET CITY WEAR - ADMIN PANEL TEST                   ║
+║                    HƯỚNG DẪN NHANH                           ║
+╚══════════════════════════════════════════════════════════════╝
+
+⚠️  LỖI: "Failed to fetch" 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Nguyên nhân: Supabase chưa được cấu hình trong file .env
+
+
+✅  GIẢI PHÁP: Dùng DEMO LOGIN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔥 3 BƯỚC ĐƠN GIẢN (30 GIÂY):
+
+┌──────────────────────────────────────────────────────────┐
+│ BƯỚC 1: Mở trình duyệt                                   │
+│         Truy cập: http://localhost:3000/demo-login       │
+├──────────────────────────────────────────────────────────┤
+│ BƯỚC 2: Click nút "👤 Admin"                             │
+│         (Tự động điền email/password)                    │
+├──────────────────────────────────────────────────────────┤
+│ BƯỚC 3: Click "Đăng nhập"                                │
+│         → Vào Admin Panel thành công! ✨                 │
+└──────────────────────────────────────────────────────────┘
+
+
+📋 THÔNG TIN ĐĂNG NHẬP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Admin Account:
+  📧 Email:    admin@vietcitywear.com
+  🔒 Password: Admin@123456
+  👤 Role:     Admin (Full Access)
+
+User Account:
+  📧 Email:    user@example.com
+  🔒 Password: User@123456
+  👤 Role:     User (Limited)
+
+
+🎯 SAU KHI ĐĂNG NHẬP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Bạn có thể test tất cả 9 chức năng Admin:
+
+1. 📊 Dashboard (Tổng quan)          /admin/dashboard
+2. 👕 Quản lý Sản phẩm               /admin/products
+3. 📦 Quản lý Tồn kho                /admin/inventory
+4. 🛍️ Quản lý Đơn hàng               /admin/orders
+5. 👥 Quản lý Tài khoản              /admin/users
+6. 🏷️ Quản lý NFC                    /admin/nfc
+7. 🗺️ Quản lý Thành phố & Địa danh   /admin/cities
+8. 📝 Quản lý Bài viết               /admin/posts
+9. ⚙️ Quản lý Nội dung Website       /admin/content
+
+
+✨ ƯU ĐIỂM DEMO LOGIN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Không cần cấu hình Supabase
+✅ Không cần tạo database
+✅ Không cần tạo tài khoản
+✅ Test được toàn bộ UI/UX Admin
+✅ Mất chỉ 30 giây
+✅ Hoạt động ngay lập tức
+
+
+📚 TÀI LIỆU THAM KHẢO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📄 DEMO_LOGIN_GUIDE.md     → Chi tiết về Demo Login
+📄 QUICK_START.md          → Hướng dẫn đầy đủ
+📄 ADMIN_FEATURES.md       → Danh sách features
+📄 ADMIN_SETUP_SUMMARY.txt → Tóm tắt tổng quan
+
+
+⚠️  LƯU Ý
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Demo Login chỉ dùng cho DEVELOPMENT
+• Dùng mock authentication (không an toàn)
+• Session lưu trong localStorage
+• KHÔNG dùng trong PRODUCTION
+
+Khi deploy production:
+→ Cấu hình Supabase thật
+→ Xóa /demo-login và /api/mock-login
+→ Dùng authentication thực tế
+
+
+🔗 QUICK LINKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Website:      http://localhost:3000
+Demo Login:   http://localhost:3000/demo-login
+Admin Panel:  http://localhost:3000/admin
+
+
+╔══════════════════════════════════════════════════════════════╗
+║               BẮT ĐẦU NGAY BÂY GIỜ!                         ║
+║                                                              ║
+║   Mở: http://localhost:3000/demo-login                      ║
+║   Click: "👤 Admin"                                          ║
+║   → DONE! ✅                                                 ║
+╚══════════════════════════════════════════════════════════════╝
+
+VIET CITY WEAR 2024 🏛️👕
+Mặc thành phố - Mang câu chuyện về nhà
