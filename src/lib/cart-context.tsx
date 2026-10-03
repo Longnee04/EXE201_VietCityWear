@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 
 export interface CartItem {
   productId: string;
@@ -16,6 +16,7 @@ interface CartContextType {
   items: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity">) => void;
   removeFromCart: (productId: string, size: string) => void;
+  updateQuantity: (productId: string, size: string, quantity: number) => void;
   itemCount: number;
   toast: string | null;
 }
@@ -25,6 +26,27 @@ const CartContext = createContext<CartContextType | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [toast, setToast] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const storedCart = localStorage.getItem("vcw_cart");
+    if (storedCart) {
+      try {
+        setItems(JSON.parse(storedCart));
+      } catch (err) {
+        console.error("Failed to parse cart from local storage", err);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save cart to localStorage whenever items change
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("vcw_cart", JSON.stringify(items));
+    }
+  }, [items, isLoaded]);
 
   const addToCart = useCallback((item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
@@ -51,10 +73,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const updateQuantity = useCallback((productId: string, size: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(productId, size);
+      return;
+    }
+    setItems((prev) =>
+      prev.map((i) =>
+        i.productId === productId && i.size === size
+          ? { ...i, quantity }
+          : i
+      )
+    );
+  }, [removeFromCart]);
+
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, itemCount, toast }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, itemCount, toast }}>
       {children}
       {/* Toast notification */}
       {toast && (
