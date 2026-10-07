@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Search, ShoppingBag, Menu, X, User } from "lucide-react";
 import { mainNav } from "@/data/navigation";
 import { useCart } from "@/lib/cart-context";
+import { BRAND_SLOGAN } from "@/data/brand";
 import CartDrawer from "./CartDrawer";
 
 export default function Header() {
@@ -169,7 +170,7 @@ export default function Header() {
               </Link>
             </nav>
             <div className="p-5 border-t border-[#eaeaea] text-[11px] text-[#777]">
-              Mặc thành phố – Mang câu chuyện về nhà
+              {BRAND_SLOGAN.vi}
             </div>
           </div>
         </div>

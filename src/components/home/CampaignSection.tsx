@@ -21,7 +21,7 @@ export default function CampaignSection() {
                 <span className="text-[10px] font-semibold tracking-[0.15em] uppercase bg-[#111] text-white px-3 py-1">
                   MÓC KHÓA NFC
                 </span>
-                <span className="text-[11px] text-[#777]">Quà tặng đi kèm</span>
+                <span className="text-[11px] text-[#777]">Kèm gói Tiêu chuẩn & Đặc biệt</span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#111] uppercase mb-2">
@@ -62,7 +62,7 @@ export default function CampaignSection() {
                 <span className="text-[10px] font-semibold tracking-[0.15em] uppercase bg-[#111] text-white px-3 py-1">
                   THẺ ĐỊA DANH
                 </span>
-                <span className="text-[11px] text-[#777]">Hộp & Thẻ in hình</span>
+                <span className="text-[11px] text-[#777]">Sưu tập văn hóa</span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#111] uppercase mb-2">
@@ -71,7 +71,10 @@ export default function CampaignSection() {
 
               <div className="p-3 bg-white rounded-md border border-[#eaeaea] mb-5">
                 <p className="text-xs sm:text-sm text-[#555]">
-                  Hộp màu xanh và các thẻ địa danh in hình – giới thiệu các địa điểm xuất hiện trên áo.
+                  Hộp màu xanh và các thẻ địa danh in hình – giới thiệu các địa điểm xuất hiện trên áo (kèm mã QR).
+                </p>
+                <p className="text-[11px] text-[#888] mt-1">
+                  * Bộ HANOI STORY CARDS (10 thẻ) là sản phẩm sưu tập riêng; gói áo chỉ kèm 3 hoặc 5 thẻ.
                 </p>
               </div>
 
@@ -91,7 +94,7 @@ export default function CampaignSection() {
             </div>
 
             <p className="mt-5 text-xs text-[#666] border-t border-[#eaeaea] pt-3">
-              10+ thẻ địa danh tuyển chọn, tích hợp mã QR xem video & nghe audio thuyết minh.
+              10 thẻ địa danh tuyển chọn, tích hợp mã QR xem video & nghe audio thuyết minh.
             </p>
           </div>
         </div>

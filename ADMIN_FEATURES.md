@@ -297,4 +297,4 @@
 - Email: admin@vietcitywear.com
 - Hotline: 0901 234 567
 
-**Mặc thành phố - Mang câu chuyện về nhà** 🏛️👕
+**Mặc thành phố – Chạm câu chuyện** 🏛️👕

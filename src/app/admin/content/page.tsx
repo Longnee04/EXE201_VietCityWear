@@ -51,7 +51,7 @@ export default function ContentManagementPage() {
           title: "Giới thiệu VIET CITY WEAR",
           content: `VIET CITY WEAR là thương hiệu thời trang văn hóa độc đáo, kết hợp áo thun lưu niệm với công nghệ NFC để mang đến trải nghiệm khám phá di sản Việt Nam.
 
-**Sứ mệnh:** Mặc thành phố - Mang câu chuyện về nhà
+**Sứ mệnh:** Mặc thành phố – Chạm câu chuyện
 
 **Sản phẩm:**
 - Áo thun văn hóa theo từng thành phố

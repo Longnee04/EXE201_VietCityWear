@@ -179,31 +179,19 @@ export default function CheckoutClient() {
               <div className="pt-4 border-t border-gray-300">
                 <h3 className="text-sm font-bold uppercase tracking-widest mb-4">Phương Thức Thanh Toán</h3>
                 <div className="flex flex-col gap-3">
-                  <label className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-black bg-gray-50' : 'border-gray-300 bg-white hover:border-black'}`}>
+                  <label className="flex items-start gap-3 p-4 border border-[#1A2E24] bg-white rounded-sm cursor-pointer shadow-xs">
                     <input 
                       type="radio" 
                       name="payment"
-                      checked={paymentMethod === 'COD'} 
-                      onChange={() => setPaymentMethod('COD')}
-                      className="w-4 h-4 text-black focus:ring-black cursor-pointer" 
+                      checked={true}
+                      readOnly
+                      className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
                     />
-                    <span className="text-sm font-medium">Thanh toán khi nhận hàng (COD)</span>
-                  </label>
-                  
-                  <label className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'VNPAY' ? 'border-black bg-gray-50' : 'border-gray-300 bg-white hover:border-black'}`}>
-                    <input 
-                      type="radio" 
-                      name="payment"
-                      checked={paymentMethod === 'VNPAY'} 
-                      onChange={() => setPaymentMethod('VNPAY')}
-                      className="w-4 h-4 text-black focus:ring-black cursor-pointer" 
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium flex items-center gap-2">
-                        Thanh toán trực tuyến (VNPAY)
-                        <span className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold uppercase">Mới</span>
-                      </span>
-                      <span className="text-xs text-gray-500 mt-1">Quét mã QR, Thẻ ATM, hoặc Visa/Mastercard</span>
+                    <div>
+                      <span className="text-sm font-semibold text-[#1C2621]">Thanh toán khi nhận hàng (COD)</span>
+                      <p className="text-xs text-[#57534E] mt-1">
+                        Kiểm tra hàng trước khi thanh toán. Hiện tại thương hiệu chỉ áp dụng phương thức COD để đảm bảo quyền lợi tối đa cho khách hàng.
+                      </p>
                     </div>
                   </label>
                 </div>

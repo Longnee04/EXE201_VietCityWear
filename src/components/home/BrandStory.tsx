@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BRAND_SLOGAN } from "@/data/brand";
 
 export default function BrandStory() {
   return (
@@ -25,7 +26,7 @@ export default function BrandStory() {
               VIETCITYWEAR
             </h2>
             <p className="text-sm font-bold text-[#111] uppercase tracking-wider">
-              Mặc thành phố – Mang câu chuyện về nhà
+              {BRAND_SLOGAN.vi}
             </p>
             <div className="space-y-3.5 text-xs sm:text-sm leading-relaxed text-[#555] max-w-lg">
               <p>

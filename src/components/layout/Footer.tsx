@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { footerNav } from "@/data/navigation";
+import { BRAND_SLOGAN, BRAND_TAGLINE } from "@/data/brand";
 
 export default function Footer() {
   return (
@@ -27,7 +28,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-[12px] font-semibold text-[#111] uppercase tracking-wide">
-              Mặc thành phố – Mang câu chuyện về nhà
+              {BRAND_SLOGAN.vi}
             </p>
             <p className="text-[12px] text-[#666] leading-relaxed">
               Thương hiệu thời trang lưu niệm lấy cảm hứng từ các thành phố và địa điểm du lịch Việt Nam.
@@ -91,19 +92,11 @@ export default function Footer() {
           {/* Follow Us */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#111] mb-5">
-              Follow Us
+              Chính sách
             </h4>
-            <ul className="space-y-3">
-              {footerNav.social.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+            <ul className="space-y-2.5 text-[12px] text-[#666]">
+              <li>Thanh toán: <span className="font-semibold text-[#111]">Duy nhất COD</span></li>
+              <li>Vận chuyển: <span className="font-semibold text-[#111]">Freeship từ 500K</span></li>
             </ul>
           </div>
         </div>
@@ -114,7 +107,7 @@ export default function Footer() {
             © 2025 VIETCITYWEAR. All rights reserved.
           </p>
           <p className="text-[10px] text-[#999] tracking-widest uppercase">
-            LOCAL CITIES • REAL STORIES • WEAR IT
+            {BRAND_TAGLINE}
           </p>
         </div>
       </div>

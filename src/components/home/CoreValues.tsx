@@ -4,7 +4,7 @@ export default function CoreValues() {
       number: "01",
       title: "Áo = Kỷ niệm.",
       subtitle: "Áo thun văn hóa",
-      description: "Lưu giữ kỷ niệm về từng thành phố và địa danh nơi bạn đã đi qua.",
+      description: "Mang biểu tượng thành phố đồng hành cùng bạn trên mọi hành trình.",
     },
     {
       number: "02",
