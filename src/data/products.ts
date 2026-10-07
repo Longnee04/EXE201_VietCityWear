@@ -10,6 +10,7 @@ export interface Product {
   sizes: string[];
   badge?: "NEW" | "BEST SELLER" | "LIMITED";
   category: "new" | "best-seller" | "all";
+  city?: "Hà Nội" | "Hải Phòng";
   description: string;
   inStock: boolean;
 }
@@ -33,6 +34,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "2XL"],
     badge: "NEW",
     category: "new",
+    city: "Hải Phòng",
     description: "Mặt trước in logo VIET CITY WEAR, mặt sau in hình bến cảng và tọa độ 20.8449°N, 106.6881°E.",
     inStock: true,
   },
@@ -49,6 +51,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "2XL"],
     badge: "BEST SELLER",
     category: "best-seller",
+    city: "Hà Nội",
     description: "Áo thun phố cổ Hà Nội 36 phố phường — Cotton 100%, form Oversized.",
     inStock: true,
   },
@@ -65,6 +68,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "2XL"],
     badge: "LIMITED",
     category: "new",
+    city: "Hà Nội",
     description: "Hồ Hoàn Kiếm — Phiên bản đặc biệt kèm thẻ địa danh và chip NFC.",
     inStock: true,
   },
@@ -80,6 +84,7 @@ export const products: Product[] = [
     ],
     sizes: ["S", "M", "L", "XL"],
     category: "all",
+    city: "Hà Nội",
     description: "Văn Miếu — Quốc Tử Giám, biểu tượng tri thức ngàn năm.",
     inStock: true,
   },
@@ -96,6 +101,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "2XL"],
     badge: "BEST SELLER",
     category: "best-seller",
+    city: "Hà Nội",
     description: "Cầu Long Biên — Di sản kiến trúc nối liền quá khứ và hiện tại.",
     inStock: true,
   },
@@ -111,6 +117,7 @@ export const products: Product[] = [
     ],
     sizes: ["S", "M", "L", "XL", "2XL"],
     category: "all",
+    city: "Hà Nội",
     description: "Quảng trường Đông Kinh Nghĩa Thục — Tinh thần Hà Nội hiện đại.",
     inStock: true,
   },
@@ -128,6 +135,62 @@ export function getByCategory(cat: "new" | "best-seller" | "all"): Product[] {
       (cat === "best-seller" && p.badge === "BEST SELLER") ||
       (cat === "new" && p.badge === "NEW")
   );
+}
+
+export interface ProductFilterOptions {
+  category?: "new" | "best-seller" | "all";
+  city?: "all" | "Hà Nội" | "Hải Phòng";
+  priceRange?: "all" | "under_300" | "above_300";
+  sort?: "default" | "price_asc" | "price_desc" | "newest";
+  searchQuery?: string;
+}
+
+export function filterProducts(options: ProductFilterOptions = {}): Product[] {
+  let result = [...products];
+
+  // Category filter
+  if (options.category && options.category !== "all") {
+    result = result.filter(
+      (p) =>
+        p.category === options.category ||
+        (options.category === "best-seller" && p.badge === "BEST SELLER") ||
+        (options.category === "new" && p.badge === "NEW")
+    );
+  }
+
+  // City filter
+  if (options.city && options.city !== "all") {
+    result = result.filter((p) => p.city === options.city);
+  }
+
+  // Price range filter
+  if (options.priceRange === "under_300") {
+    result = result.filter((p) => p.price < 300000);
+  } else if (options.priceRange === "above_300") {
+    result = result.filter((p) => p.price >= 300000);
+  }
+
+  // Search query filter
+  if (options.searchQuery && options.searchQuery.trim() !== "") {
+    const q = options.searchQuery.toLowerCase().trim();
+    result = result.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        (p.city && p.city.toLowerCase().includes(q))
+    );
+  }
+
+  // Sorting
+  if (options.sort === "price_asc") {
+    result.sort((a, b) => a.price - b.price);
+  } else if (options.sort === "price_desc") {
+    result.sort((a, b) => b.price - a.price);
+  } else if (options.sort === "newest") {
+    result.sort((a, b) => (b.badge === "NEW" ? 1 : 0) - (a.badge === "NEW" ? 1 : 0));
+  }
+
+  return result;
 }
 
 export function formatPrice(price: number): string {

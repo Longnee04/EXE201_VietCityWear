@@ -342,6 +342,127 @@ export default function ExploreClient() {
             </div>
           </div>
         </div>
+
+        {/* 1-Day Travel Itinerary Timeline Section */}
+        <section className="mt-14 pt-12 border-t border-[#eaeaea]">
+          <div className="max-w-3xl mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#111] text-white text-[10px] font-bold tracking-widest uppercase mb-2">
+              {lang === "vi" ? "TIMELINE DI CHUYỂN" : "RECOMMENDED ITINERARY"}
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-[#111] uppercase tracking-tight">
+              {lang === "vi"
+                ? "Lịch trình 1 ngày chạm trọn 5 địa danh Hà Nội"
+                : "1-Day Travel Timeline Across 5 Hanoi Icons"}
+            </h3>
+            <p className="text-xs sm:text-sm text-[#666] mt-1">
+              {lang === "vi"
+                ? "Gợi ý lộ trình di chuyển tối ưu giúp bạn khám phá đầy đủ 5 địa danh xuất hiện trên áo và thưởng thức ẩm thực chuẩn vị."
+                : "Optimized route schedule designed to guide your journey through all 5 icons featured on the tee."}
+            </p>
+          </div>
+
+          <div className="relative border-l-2 border-[#111] ml-4 sm:ml-6 pl-6 sm:pl-8 space-y-8">
+            {/* Stop 1 */}
+            <div className="relative">
+              <span className="absolute -left-[31px] sm:-left-[39px] top-0 w-4 h-4 rounded-full bg-[#111] ring-4 ring-white" />
+              <div className="bg-white border border-[#eaeaea] p-4 sm:p-5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
+                  06:00 – 07:30
+                </span>
+                <h4 className="text-sm sm:text-base font-bold text-[#111] mt-0.5">
+                  {lang === "vi"
+                    ? "Lăng Bác – Lễ Thượng cờ & Ăn sáng Bánh cuốn"
+                    : "Ba Dinh Square – Flag Raising & Breakfast"}
+                </h4>
+                <p className="text-xs text-[#555] mt-1 leading-relaxed">
+                  {lang === "vi"
+                    ? "Chứng kiến nghi lễ thượng cờ trang nghiêm lúc 06:00 tại Quảng trường Ba Đình, sau đó thưởng thức bánh cuốn nóng thơm lừng tại Đội Cấn."
+                    : "Witness the solemn 6:00 AM flag raising ceremony at Ba Dinh Square, followed by hot steamed rice rolls on Doi Can."}
+                </p>
+              </div>
+            </div>
+
+            {/* Stop 2 */}
+            <div className="relative">
+              <span className="absolute -left-[31px] sm:-left-[39px] top-0 w-4 h-4 rounded-full bg-[#111] ring-4 ring-white" />
+              <div className="bg-white border border-[#eaeaea] p-4 sm:p-5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
+                  08:30 – 11:00
+                </span>
+                <h4 className="text-sm sm:text-base font-bold text-[#111] mt-0.5">
+                  {lang === "vi"
+                    ? "Văn Miếu – Quốc Tử Giám & Bún chả Sinh Từ"
+                    : "Temple of Literature & Bun Cha Lunch"}
+                </h4>
+                <p className="text-xs text-[#555] mt-1 leading-relaxed">
+                  {lang === "vi"
+                    ? "Dạo bước qua Khuê Văn Các và 82 bia tiến sĩ nghìn năm hiếu học. Bữa trưa ăn bún chả nướng than hoa thơm nức phố Nguyễn Khuyến."
+                    : "Explore Khue Van Pavilion and 82 UNESCO stone stele. Enjoy charcoal-grilled bun cha on Nguyen Khuyen street."}
+                </p>
+              </div>
+            </div>
+
+            {/* Stop 3 */}
+            <div className="relative">
+              <span className="absolute -left-[31px] sm:-left-[39px] top-0 w-4 h-4 rounded-full bg-[#111] ring-4 ring-white" />
+              <div className="bg-white border border-[#eaeaea] p-4 sm:p-5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
+                  13:30 – 16:00
+                </span>
+                <h4 className="text-sm sm:text-base font-bold text-[#111] mt-0.5">
+                  {lang === "vi"
+                    ? "Lạc bước 36 Phố Phường & Phở Bát Đàn"
+                    : "Old Quarter 36 Streets & Heritage Pho"}
+                </h4>
+                <p className="text-xs text-[#555] mt-1 leading-relaxed">
+                  {lang === "vi"
+                    ? "Khám phá phố nghề Hàng Bạc, Hàng Mã, Hàng Buồm và thưởng thức phở bò tái lăn nước dùng trong thanh ngọt xương tại 49 Bát Đàn."
+                    : "Walk ancient craft streets and savor slow-simmered beef pho at legendary 49 Bat Dan."}
+                </p>
+              </div>
+            </div>
+
+            {/* Stop 4 */}
+            <div className="relative">
+              <span className="absolute -left-[31px] sm:-left-[39px] top-0 w-4 h-4 rounded-full bg-[#111] ring-4 ring-white" />
+              <div className="bg-white border border-[#eaeaea] p-4 sm:p-5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
+                  16:30 – 18:00
+                </span>
+                <h4 className="text-sm sm:text-base font-bold text-[#111] mt-0.5">
+                  {lang === "vi"
+                    ? "Nhà Thờ Lớn – Chuông chiều & Trà chanh vỉa hè"
+                    : "St. Joseph's Cathedral – Twilight Chimes & Lemon Tea"}
+                </h4>
+                <p className="text-xs text-[#555] mt-1 leading-relaxed">
+                  {lang === "vi"
+                    ? "Chiêm ngưỡng kiến trúc Gothic cổ kính rêu phong và trải nghiệm văn hóa trà chanh nem nướng vỉa hè phố Nhà Chung."
+                    : "Admire revival Gothic architecture and experience quintessential pavement lemon tea culture."}
+                </p>
+              </div>
+            </div>
+
+            {/* Stop 5 */}
+            <div className="relative">
+              <span className="absolute -left-[31px] sm:-left-[39px] top-0 w-4 h-4 rounded-full bg-[#111] ring-4 ring-white" />
+              <div className="bg-white border border-[#eaeaea] p-4 sm:p-5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
+                  18:30 – 21:30
+                </span>
+                <h4 className="text-sm sm:text-base font-bold text-[#111] mt-0.5">
+                  {lang === "vi"
+                    ? "Hồ Hoàn Kiếm – Tháp Rùa lên đèn, Kem Tràng Tiền & Cà phê Đinh"
+                    : "Hoan Kiem Lake – Night Lights, Trang Tien Ice Cream & Egg Coffee"}
+                </h4>
+                <p className="text-xs text-[#555] mt-1 leading-relaxed">
+                  {lang === "vi"
+                    ? "Dạo quanh hồ ngắm Tháp Rùa và cầu Thê Húc son đỏ rực rỡ trong đêm, nhâm nhi kem que cốm Tràng Tiền và ly cà phê trứng ngắm hồ từ ban công tầng 2 phố Đinh Tiên Hoàng."
+                    : "Stroll the illuminated lake, visit scarlet The Huc bridge, enjoy Trang Tien ice cream and rich egg coffee overlooking the water."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
