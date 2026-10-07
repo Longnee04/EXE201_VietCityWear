@@ -5,16 +5,18 @@ export interface NavLink {
 
 export const mainNav: NavLink[] = [
   { label: "HOME", href: "/" },
-  { label: "T-SHIRTS", href: "#t-shirts" },
-  { label: "ABOUT US", href: "#brand-story" },
-  { label: "CONTACT", href: "#contact" },
+  { label: "T-SHIRTS", href: "/#t-shirts" },
+  { label: "KHÁM PHÁ DI SẢN", href: "/explore/hanoi" },
+  { label: "ABOUT US", href: "/#brand-story" },
+  { label: "CONTACT", href: "/#contact" },
 ];
 
 export const footerNav = {
-  shop: [{ label: "T-Shirts", href: "#t-shirts" }],
+  shop: [{ label: "T-Shirts", href: "/#t-shirts" }],
   about: [
-    { label: "About Us", href: "#brand-story" },
-    { label: "Contact", href: "#contact" },
+    { label: "About Us", href: "/#brand-story" },
+    { label: "NFC & Thẻ di sản", href: "/explore/hanoi" },
+    { label: "Contact", href: "/#contact" },
   ],
   support: [
     { label: "Shipping", href: "#" },

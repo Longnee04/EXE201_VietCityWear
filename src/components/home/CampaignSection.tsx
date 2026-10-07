@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CampaignSection() {
   return (
@@ -50,9 +51,17 @@ export default function CampaignSection() {
               </div>
             </div>
 
-            <p className="mt-5 text-xs text-[#666] border-t border-[#eaeaea] pt-3">
-              Mở ra câu chuyện về địa danh, hình ảnh, video và cẩm nang du lịch song ngữ Việt - Anh.
-            </p>
+            <div className="mt-5 border-t border-[#eaeaea] pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p className="text-xs text-[#666]">
+                Mở ra câu chuyện về địa danh, hình ảnh, video và cẩm nang du lịch song ngữ Việt - Anh.
+              </p>
+              <Link
+                href="/explore/hanoi"
+                className="inline-flex items-center justify-center px-4 py-2.5 bg-[#111] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#333] transition-colors flex-shrink-0"
+              >
+                Chạm thử NFC →
+              </Link>
+            </div>
           </div>
 
           {/* Card 2: [BLOCK_THE_DIA_DANH] */}
@@ -93,9 +102,17 @@ export default function CampaignSection() {
               </div>
             </div>
 
-            <p className="mt-5 text-xs text-[#666] border-t border-[#eaeaea] pt-3">
-              10 thẻ địa danh tuyển chọn, tích hợp mã QR xem video & nghe audio thuyết minh.
-            </p>
+            <div className="mt-5 border-t border-[#eaeaea] pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p className="text-xs text-[#666]">
+                10 thẻ địa danh tuyển chọn, tích hợp mã QR xem video & nghe audio thuyết minh.
+              </p>
+              <Link
+                href="/explore/hanoi"
+                className="inline-flex items-center justify-center px-4 py-2.5 border border-[#111] text-[#111] text-[11px] font-bold uppercase tracking-wider hover:bg-[#111] hover:text-white transition-colors flex-shrink-0"
+              >
+                Quét thử QR →
+              </Link>
+            </div>
           </div>
         </div>
       </div>

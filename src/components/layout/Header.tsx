@@ -66,7 +66,7 @@ export default function Header() {
               </a>
             ))}
             <a
-              href="#pricing"
+              href="/#pricing"
               className="px-4 py-2 text-[12px] font-medium tracking-[0.1em] uppercase text-[#555] transition-colors hover:text-[#111]"
             >
               BẢNG GIÁ
@@ -154,7 +154,7 @@ export default function Header() {
                 </a>
               ))}
               <a
-                href="#pricing"
+                href="/#pricing"
                 onClick={() => setMobileOpen(false)}
                 className="py-3 text-[13px] font-medium tracking-[0.08em] uppercase text-[#333] hover:text-[#111] border-b border-[#f0f0f0]"
               >

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { BRAND_SLOGAN, HERO_HEADLINE, BRAND_TAGLINE } from "@/data/brand";
 
 export default function HeroSection() {
@@ -31,12 +32,12 @@ export default function HeroSection() {
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
-              <a
-                href="#features"
+              <Link
+                href="/explore/hanoi"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white text-[#111] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#eaeaea] transition-all shadow-sm"
               >
                 Khám phá câu chuyện
-              </a>
+              </Link>
               <a
                 href="#t-shirts"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 border border-white/30 text-white text-[11px] font-semibold tracking-[0.15em] uppercase hover:border-white hover:bg-white/10 transition-all"
