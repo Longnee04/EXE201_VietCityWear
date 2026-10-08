@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
 export default function CheckoutClient() {
   const { items, itemCount, removeFromCart } = useCart();
@@ -84,25 +85,48 @@ export default function CheckoutClient() {
       }
     }
 
-    // COD Flow
-    try {
-      const existingRaw = localStorage.getItem("vcw_admin_orders");
-      let existingOrders = [];
-      if (existingRaw) {
-        existingOrders = JSON.parse(existingRaw);
+      // COD Flow
+      try {
+        // 1. Lưu trực tiếp vào bảng orders trên Supabase Database
+        try {
+          const { data: dbOrder, error: dbErr } = await supabase.from("orders").insert([
+            {
+              receiver_name: formData.name.trim(),
+              receiver_phone: formData.phone.trim(),
+              shipping_address: formData.address.trim(),
+              payment_method: "COD",
+              total_amount: total,
+              status: "processing",
+            },
+          ]).select().single();
+
+          if (dbErr) {
+            console.warn("Lỗi lưu đơn vào Supabase (dùng fallback localStorage):", dbErr.message);
+          } else {
+            console.log("Đã đồng bộ đơn hàng lên Supabase DB thành công! ID:", dbOrder?.id);
+          }
+        } catch (dbException) {
+          console.warn("Exception khi gọi Supabase:", dbException);
+        }
+
+        // 2. Đồng thời lưu vào localStorage làm bộ nhớ đệm
+        const existingRaw = localStorage.getItem("vcw_admin_orders");
+        let existingOrders = [];
+        if (existingRaw) {
+          existingOrders = JSON.parse(existingRaw);
+        }
+        localStorage.setItem("vcw_admin_orders", JSON.stringify([newOrder, ...existingOrders]));
+        
+        // Clear cart
+        items.forEach(item => removeFromCart(item.productId, item.size));
+        
+        setIsSuccess(true);
+      } catch (err) {
+        console.error("Failed to save order", err);
+        alert("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.");
+      } finally {
+        setIsSubmitting(false);
       }
-      localStorage.setItem("vcw_admin_orders", JSON.stringify([newOrder, ...existingOrders]));
-      
-      // Clear cart
-      items.forEach(item => removeFromCart(item.productId, item.size));
-      
-      setIsSuccess(true);
-    } catch (err) {
-      console.error("Failed to save order", err);
-      alert("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.");
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   if (isSuccess) {
