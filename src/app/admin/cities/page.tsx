@@ -141,18 +141,33 @@ export default function AdminCitiesPage() {
 
     async function loadCities() {
       try {
-        const { data, error } = await supabase.from("cities").select("*");
+        const [citiesRes, landmarksRes] = await Promise.all([
+          supabase.from("cities").select("*").order("created_at", { ascending: true }),
+          supabase.from("landmarks").select("*").order("order_index", { ascending: true }),
+        ]);
 
         if (ignore) return;
 
-        if (error || !data || data.length === 0) {
+        if (citiesRes.error || !citiesRes.data || citiesRes.data.length === 0) {
           const stored = getStoredCities();
           setCities(stored);
           setSelectedCity(stored[0] || null);
         } else {
-          const enriched: City[] = data.map((c) => ({
-            ...c,
-            landmarks: mockDefaultCities.find((mc) => mc.name === c.name)?.landmarks || [],
+          const allLandmarks = landmarksRes.data || [];
+          const enriched: City[] = citiesRes.data.map((c) => ({
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            image_url: c.cover_image || "/images/hanoi-banner.jpg",
+            landmarks: allLandmarks
+              .filter((lm) => lm.city_id === c.id)
+              .map((lm) => ({
+                id: lm.id,
+                name: lm.name,
+                story: lm.story,
+                travel_timeline: lm.history || "Tham quan tự do",
+                food_suggestions: "Đặc sản địa phương",
+              })),
           }));
           setCities(enriched);
           setSelectedCity(enriched[0] || null);
@@ -182,8 +197,26 @@ export default function AdminCitiesPage() {
     e.preventDefault();
     if (!cityName.trim()) return;
 
+    let newCityId = `c-${Date.now()}`;
+    try {
+      const { data, error } = await supabase
+        .from("cities")
+        .insert({
+          name: cityName.trim(),
+          description: cityDesc,
+          cover_image: "/images/hanoi-banner.jpg",
+        })
+        .select()
+        .single();
+      if (!error && data) {
+        newCityId = data.id;
+      }
+    } catch {
+      // fallback
+    }
+
     const newCity: City = {
-      id: `c-${Date.now()}`,
+      id: newCityId,
       name: cityName.trim(),
       description: cityDesc,
       image_url: "/images/hanoi-banner.jpg",
@@ -203,12 +236,32 @@ export default function AdminCitiesPage() {
   };
 
   // Thêm địa danh
-  const handleAddLandmark = (e: React.FormEvent) => {
+  const handleAddLandmark = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCity || !lmName.trim()) return;
 
+    let newLmId = `lm-${Date.now()}`;
+    try {
+      const { data, error } = await supabase
+        .from("landmarks")
+        .insert({
+          city_id: selectedCity.id,
+          name: lmName.trim(),
+          story: lmStory,
+          history: lmTimeline || lmStory,
+          order_index: (selectedCity.landmarks?.length || 0) + 1,
+        })
+        .select()
+        .single();
+      if (!error && data) {
+        newLmId = data.id;
+      }
+    } catch {
+      // fallback
+    }
+
     const newLm: Landmark = {
-      id: `lm-${Date.now()}`,
+      id: newLmId,
       name: lmName.trim(),
       story: lmStory,
       travel_timeline: lmTimeline,

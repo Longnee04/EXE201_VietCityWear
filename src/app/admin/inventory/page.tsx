@@ -28,6 +28,7 @@ interface InventoryItem {
 interface ProductOption {
   id: string;
   name: string;
+  base_price?: number;
 }
 
 const defaultMockInventory: InventoryItem[] = [
@@ -141,7 +142,7 @@ export default function AdminInventoryPage() {
     async function loadData() {
       try {
         // 1. Tải danh sách sản phẩm để làm dropdown
-        const { data: prods } = await supabase.from("products").select("id, name");
+        const { data: prods } = await supabase.from("products").select("id, name, base_price");
         if (!ignore && prods && prods.length > 0) {
           setProducts(prods as ProductOption[]);
           setNewVariant((prev) =>
@@ -149,10 +150,10 @@ export default function AdminInventoryPage() {
           );
         }
 
-        // 2. Tải biến thể tồn kho
+        // 2. Tải biến thể tồn kho từ Supabase
         const { data: invData, error: invError } = await supabase
-          .from("product_inventory")
-          .select("id, product_id, size, color, stock_quantity, status");
+          .from("product_variants")
+          .select("id, product_id, size, color, stock_quantity");
 
         if (!ignore) {
           if (invError || !invData || invData.length === 0) {
@@ -161,7 +162,12 @@ export default function AdminInventoryPage() {
             const mapped = invData.map((item) => {
               const matchProd = prods?.find((p) => p.id === item.product_id);
               return {
-                ...item,
+                id: item.id,
+                product_id: item.product_id,
+                size: item.size,
+                color: item.color,
+                stock_quantity: Number(item.stock_quantity) || 0,
+                status: (Number(item.stock_quantity) || 0) > 0,
                 product_name: matchProd?.name || "Sản phẩm",
               };
             });
@@ -189,7 +195,7 @@ export default function AdminInventoryPage() {
   const handleSaveQuantity = async (id: string) => {
     try {
       await supabase
-        .from("product_inventory")
+        .from("product_variants")
         .update({ stock_quantity: editingQty })
         .eq("id", id);
 
@@ -218,14 +224,17 @@ export default function AdminInventoryPage() {
   // Đổi trạng thái còn hàng / hết hàng
   const handleToggleStatus = async (item: InventoryItem) => {
     const nextStatus = !item.status;
+    const nextStock = nextStatus ? (item.stock_quantity > 0 ? item.stock_quantity : 20) : 0;
     try {
       await supabase
-        .from("product_inventory")
-        .update({ status: nextStatus })
+        .from("product_variants")
+        .update({ stock_quantity: nextStock })
         .eq("id", item.id);
 
       setInventory((prev) => {
-        const updated = prev.map((i) => (i.id === item.id ? { ...i, status: nextStatus } : i));
+        const updated = prev.map((i) =>
+          i.id === item.id ? { ...i, status: nextStatus, stock_quantity: nextStock } : i
+        );
         saveStoredInventory(updated);
         return updated;
       });
@@ -235,7 +244,9 @@ export default function AdminInventoryPage() {
       });
     } catch {
       setInventory((prev) => {
-        const updated = prev.map((i) => (i.id === item.id ? { ...i, status: nextStatus } : i));
+        const updated = prev.map((i) =>
+          i.id === item.id ? { ...i, status: nextStatus, stock_quantity: nextStock } : i
+        );
         saveStoredInventory(updated);
         return updated;
       });
@@ -254,13 +265,13 @@ export default function AdminInventoryPage() {
 
       try {
         const { data, error } = await supabase
-          .from("product_inventory")
+          .from("product_variants")
           .insert({
             product_id: newVariant.product_id,
             size: newVariant.size,
             color: newVariant.color,
+            price: Number(selectedProd?.base_price || 299000),
             stock_quantity: Number(newVariant.stock_quantity),
-            status: Number(newVariant.stock_quantity) > 0,
           })
           .select()
           .single();
@@ -279,7 +290,7 @@ export default function AdminInventoryPage() {
         size: newVariant.size,
         color: newVariant.color,
         stock_quantity: Number(newVariant.stock_quantity),
-        status: true,
+        status: Number(newVariant.stock_quantity) > 0,
       };
 
       setInventory((prev) => {
@@ -301,7 +312,7 @@ export default function AdminInventoryPage() {
   const handleDeleteVariant = async (id: string) => {
     if (!confirm("Bạn có chắc muốn xóa biến thể kho này?")) return;
     try {
-      await supabase.from("product_inventory").delete().eq("id", id);
+      await supabase.from("product_variants").delete().eq("id", id);
       setInventory((prev) => {
         const updated = prev.filter((i) => i.id !== id);
         saveStoredInventory(updated);

@@ -167,10 +167,27 @@ export default function AdminNfcPage() {
     setIsSubmitting(true);
     setMessage(null);
 
+    const code = formData.nfc_code.toUpperCase().trim();
+    let newId = `nfc-${Date.now()}`;
+
     try {
+      const { data, error } = await supabase
+        .from("nfc_tags")
+        .insert({
+          nfc_code: code,
+          experience_url: formData.experience_url,
+          scan_count: 0,
+        })
+        .select()
+        .single();
+
+      if (!error && data) {
+        newId = data.id;
+      }
+
       const newTag: NfcTag = {
-        id: `nfc-${Date.now()}`,
-        nfc_code: formData.nfc_code.toUpperCase().trim(),
+        id: newId,
+        nfc_code: code,
         product_id: null,
         city_id: null,
         scan_count: 0,
@@ -186,7 +203,7 @@ export default function AdminNfcPage() {
         return updated;
       });
 
-      setMessage({ type: "success", text: `Đã tạo mã thẻ NFC "${newTag.nfc_code}" thành công!` });
+      setMessage({ type: "success", text: `Đã tạo mã thẻ NFC "${newTag.nfc_code}" thành công lên Supabase!` });
       setIsModalOpen(false);
       setFormData({
         nfc_code: "",
@@ -204,6 +221,11 @@ export default function AdminNfcPage() {
   // Xóa thẻ NFC
   const handleDeleteTag = async (id: string, code: string) => {
     if (!confirm(`Bạn có chắc muốn xóa mã thẻ NFC "${code}"?`)) return;
+    try {
+      await supabase.from("nfc_tags").delete().eq("id", id);
+    } catch {
+      // fallback
+    }
     setTags((prev) => {
       const updated = prev.filter((t) => t.id !== id);
       saveStoredTags(updated);

@@ -138,28 +138,50 @@ export default function AdminOrdersPage() {
 
     async function loadOrders() {
       try {
-        const { data, error } = await supabase
-          .from("orders")
-          .select("*")
-          .order("created_at", { ascending: false });
+        const [
+          { data: ordersData, error: ordersErr },
+          { data: itemsData },
+          { data: productsData },
+        ] = await Promise.all([
+          supabase.from("orders").select("*").order("created_at", { ascending: false }),
+          supabase.from("order_items").select("*"),
+          supabase.from("products").select("id, name"),
+        ]);
 
         if (!ignore) {
-          if (error || !data || data.length === 0) {
+          if (ordersErr || !ordersData || ordersData.length === 0) {
             setOrders(getStoredOrders());
           } else {
-            const enriched: Order[] = data.map((o) => ({
-              ...o,
-              status: o.status as "processing" | "completed" | "canceled",
-              items: [
-                {
-                  product_name: "Áo Thun Văn Hóa VietCityWear",
-                  size: "L",
-                  color: "Đen Tiêu Chuẩn",
-                  quantity: 1,
-                  price: Number(o.total_amount),
-                },
-              ],
-            }));
+            const enriched: Order[] = ordersData.map((o) => {
+              const matchedItems = (itemsData || []).filter((item) => item.order_id === o.id);
+              const itemsList: OrderItemDetail[] =
+                matchedItems.length > 0
+                  ? matchedItems.map((it) => {
+                      const prod = (productsData || []).find((p) => p.id === it.product_id);
+                      return {
+                        product_name: prod?.name || "Áo Thun Văn Hóa VietCityWear",
+                        size: "L",
+                        color: "Tiêu chuẩn",
+                        quantity: Number(it.quantity) || 1,
+                        price: Number(it.unit_price) || Number(o.total_amount),
+                      };
+                    })
+                  : [
+                      {
+                        product_name: "Áo Thun Văn Hóa VietCityWear",
+                        size: "L",
+                        color: "Đen Tiêu Chuẩn",
+                        quantity: 1,
+                        price: Number(o.total_amount),
+                      },
+                    ];
+
+              return {
+                ...o,
+                status: o.status as "processing" | "completed" | "canceled",
+                items: itemsList,
+              };
+            });
             setOrders(enriched);
             saveStoredOrders(enriched);
           }
