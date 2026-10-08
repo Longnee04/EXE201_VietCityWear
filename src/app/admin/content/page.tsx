@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
 interface ContentPage {
   id: string;
@@ -20,6 +21,31 @@ interface ContentPage {
   title: string;
   content: string;
   updatedAt: string;
+}
+
+const CONTENT_STORAGE_KEY = "vcw_admin_content";
+
+function getStoredContents(fallback: ContentPage[]): ContentPage[] {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = localStorage.getItem(CONTENT_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return fallback;
+}
+
+function saveStoredContents(items: ContentPage[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(items));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
 }
 
 export default function ContentManagementPage() {
@@ -191,7 +217,35 @@ Tiêu đề: [Vị trí ứng tuyển] - [Họ tên]`,
         },
       ];
 
-      setContents(mockContents);
+      let loadedFromDb = false;
+      try {
+        const { data, error } = await supabase.from("website_content").select("*");
+        if (!error && data && data.length > 0) {
+          const dbContents: ContentPage[] = mockContents.map((mc) => {
+            const match = data.find((row) => row.page_name === mc.type);
+            if (match && typeof match.content_body === "object" && match.content_body !== null) {
+              const body = match.content_body as { title?: string; content?: string };
+              return {
+                ...mc,
+                id: match.id || mc.id,
+                title: body.title || mc.title,
+                content: body.content || mc.content,
+                updatedAt: match.updated_at || mc.updatedAt,
+              };
+            }
+            return mc;
+          });
+          setContents(dbContents);
+          saveStoredContents(dbContents);
+          loadedFromDb = true;
+        }
+      } catch {
+        // Supabase table not created yet
+      }
+
+      if (!loadedFromDb) {
+        setContents(getStoredContents(mockContents));
+      }
     } catch (error) {
       console.error("Error loading contents:", error);
     } finally {
@@ -208,16 +262,40 @@ Tiêu đề: [Vị trí ứng tuyển] - [Họ tên]`,
 
     setIsSaving(true);
     try {
-      // TODO: API call to save content
-      setContents(
-        contents.map((c) =>
-          c.id === editingContent.id
-            ? { ...editingContent, updatedAt: new Date().toISOString() }
-            : c
-        )
+      const updated = contents.map((c) =>
+        c.id === editingContent.id
+          ? { ...editingContent, updatedAt: new Date().toISOString() }
+          : c
       );
+      setContents(updated);
+      saveStoredContents(updated);
+
+      let savedToCloud = false;
+      try {
+        const { error } = await supabase
+          .from("website_content")
+          .upsert(
+            {
+              page_name: editingContent.type,
+              content_body: {
+                title: editingContent.title,
+                content: editingContent.content,
+              },
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "page_name" }
+          );
+        if (!error) savedToCloud = true;
+      } catch {
+        // fallback
+      }
+
       setEditingContent(null);
-      alert("Đã lưu nội dung thành công!");
+      if (savedToCloud) {
+        alert("Đã lưu nội dung thành công lên Supabase Cloud!");
+      } else {
+        alert("Đã lưu nội dung thành công vào bộ nhớ hệ thống (F5 không mất)!");
+      }
     } catch (error) {
       console.error("Error saving content:", error);
       alert("Có lỗi xảy ra khi lưu nội dung!");
