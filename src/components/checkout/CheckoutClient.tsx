@@ -17,7 +17,7 @@ export default function CheckoutClient() {
     phone: "",
     address: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "VNPAY">("COD");
+  const [paymentMethod, setPaymentMethod] = useState<"COD" | "SEPAY">("COD");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -53,35 +53,13 @@ export default function CheckoutClient() {
       })),
     };
 
-    if (paymentMethod === "VNPAY") {
+    if (paymentMethod === "SEPAY") {
       // 1. Save order as pending
       localStorage.setItem("vcw_pending_order", JSON.stringify(newOrder));
       
-      // 2. Call VNPAY API
-      try {
-        const response = await fetch("/api/vnpay/create", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            orderId: newOrder.id,
-            amount: total,
-            orderInfo: `Thanh toan don hang ${newOrder.id}`,
-          }),
-        });
-
-        const data = await response.json();
-        if (data.url) {
-          window.location.href = data.url; // Redirect to VNPAY
-          return;
-        } else {
-          throw new Error("Không nhận được URL thanh toán");
-        }
-      } catch (err) {
-        console.error("VNPAY Error:", err);
-        alert("Lỗi khi kết nối với VNPAY. Vui lòng thử lại.");
-        setIsSubmitting(false);
-        return;
-      }
+      // 2. Redirect to SePay QR page
+      router.push(`/checkout/sepay?orderId=${newOrder.id}&amount=${total}`);
+      return;
     }
 
     // COD Flow
@@ -190,20 +168,19 @@ export default function CheckoutClient() {
                     <span className="text-sm font-medium">Thanh toán khi nhận hàng (COD)</span>
                   </label>
                   
-                  <label className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'VNPAY' ? 'border-black bg-gray-50' : 'border-gray-300 bg-white hover:border-black'}`}>
+                  <label className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'SEPAY' ? 'border-black bg-gray-50' : 'border-gray-300 bg-white hover:border-black'}`}>
                     <input 
                       type="radio" 
                       name="payment"
-                      checked={paymentMethod === 'VNPAY'} 
-                      onChange={() => setPaymentMethod('VNPAY')}
+                      checked={paymentMethod === 'SEPAY'} 
+                      onChange={() => setPaymentMethod('SEPAY')}
                       className="w-4 h-4 text-black focus:ring-black cursor-pointer" 
                     />
                     <div className="flex flex-col">
                       <span className="text-sm font-medium flex items-center gap-2">
-                        Thanh toán trực tuyến (VNPAY)
-                        <span className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold uppercase">Mới</span>
+                        Thanh toán chuyển khoản (SePay)
                       </span>
-                      <span className="text-xs text-gray-500 mt-1">Quét mã QR, Thẻ ATM, hoặc Visa/Mastercard</span>
+                      <span className="text-xs text-gray-500 mt-1">Quét mã QR để chuyển khoản</span>
                     </div>
                   </label>
                 </div>
