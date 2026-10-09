@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const dbPath = path.join(process.cwd(), "sepay_orders.json");
+const dbPath = path.join(process.cwd(), "data", "sepay_orders.json");
 
 export async function POST(req: Request) {
   try {
