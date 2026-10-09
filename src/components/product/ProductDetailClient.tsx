@@ -185,24 +185,24 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
           </div>
 
-          {/* Package Inclusions Preview */}
+          {/* Standard Inclusions Preview */}
           <div className="mb-6 p-3.5 bg-[#fafafa] border border-[#eaeaea]">
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#111] mb-2 flex items-center gap-1.5">
               <Box className="w-3.5 h-3.5" />
-              <span>Thành phần bộ sản phẩm theo gói:</span>
+              <span>Bộ sản phẩm bao gồm:</span>
             </p>
             <ul className="text-xs text-[#555] space-y-1.5">
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                <span><strong>Gói Cơ bản (249k):</strong> 01 Áo thun + 03 Thẻ địa danh QR</span>
+                <span>01 Áo thun văn hóa Streetwear cao cấp</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                <span><strong>Gói Tiêu chuẩn (299k):</strong> 01 Áo + 05 Thẻ địa danh + 01 Móc khóa gỗ NFC</span>
+                <span>Bộ thẻ địa danh & di sản độc quyền</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                <span><strong>Gói Đặc biệt (349k):</strong> Áo chất lượng cao + 05 Thẻ + NFC + Hộp quà đẹp</span>
+                <span>01 Móc khóa gỗ khắc Laser tích hợp chip NFC</span>
               </li>
             </ul>
           </div>

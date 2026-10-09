@@ -52,14 +52,6 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/#pricing"
-                  className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
-                >
-                  Bảng giá gói
-                </Link>
-              </li>
             </ul>
           </div>
 

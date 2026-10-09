@@ -79,12 +79,6 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
-            <a
-              href="/#pricing"
-              className="px-4 py-2 text-[12px] font-medium tracking-[0.1em] uppercase text-[#555] transition-colors hover:text-[#111]"
-            >
-              BẢNG GIÁ
-            </a>
           </nav>
 
           {/* RIGHT — Actions (Icons & Cart badge) */}
@@ -301,13 +295,6 @@ export default function Header() {
                   {link.label}
                 </a>
               ))}
-              <a
-                href="/#pricing"
-                onClick={() => setMobileOpen(false)}
-                className="py-3 text-[13px] font-medium tracking-[0.08em] uppercase text-[#333] hover:text-[#111] border-b border-[#f0f0f0]"
-              >
-                BẢNG GIÁ
-              </a>
               <Link
                 href="/login"
                 onClick={() => setMobileOpen(false)}

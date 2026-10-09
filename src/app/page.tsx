@@ -1,13 +1,11 @@
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Header from "@/components/layout/Header";
 import HeroSection from "@/components/home/HeroSection";
-import CoreValues from "@/components/home/CoreValues";
 import CityCollections from "@/components/home/CityCollections";
 import NewArrivals from "@/components/home/NewArrivals";
 import ProductGrid from "@/components/home/ProductGrid";
 import CampaignSection from "@/components/home/CampaignSection";
 import LandmarkHighlights from "@/components/home/LandmarkHighlights";
-import PricingSection from "@/components/home/PricingSection";
 import BrandStory from "@/components/home/BrandStory";
 import BrandStatement from "@/components/home/BrandStatement";
 import Newsletter from "@/components/home/Newsletter";
@@ -20,13 +18,11 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <HeroSection />
-        <CoreValues />
         <CityCollections />
         <NewArrivals />
         <ProductGrid />
         <CampaignSection />
         <LandmarkHighlights />
-        <PricingSection />
         <BrandStory />
         <BrandStatement />
         <Newsletter />

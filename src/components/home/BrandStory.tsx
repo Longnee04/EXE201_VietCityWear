@@ -38,10 +38,10 @@ export default function BrandStory() {
             </div>
             <div className="pt-2">
               <a
-                href="#pricing"
+                href="#t-shirts"
                 className="inline-block text-[12px] font-semibold tracking-[0.12em] uppercase text-[#111] border-b-2 border-[#111] pb-1 hover:text-[#555] hover:border-[#555] transition-colors"
               >
-                XEM BẢNG GIÁ SẢN PHẨM
+                KHÁM PHÁ BỘ SƯU TẬP ÁO
               </a>
             </div>
           </div>
