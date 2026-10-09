@@ -64,7 +64,6 @@ export default function CheckoutClient() {
       }
 
       // COD Flow
-<<<<<<< HEAD
       // Clear cart
       clearCart();
       setIsSuccess(true);
@@ -75,49 +74,6 @@ export default function CheckoutClient() {
     } finally {
       setIsSubmitting(false);
     }
-=======
-      try {
-        // 1. Lưu trực tiếp vào bảng orders trên Supabase Database
-        try {
-          const { data: dbOrder, error: dbErr } = await supabase.from("orders").insert([
-            {
-              receiver_name: formData.name.trim(),
-              receiver_phone: formData.phone.trim(),
-              shipping_address: formData.address.trim(),
-              payment_method: "COD",
-              total_amount: total,
-              status: "processing",
-            },
-          ]).select().single();
-
-          if (dbErr) {
-            console.warn("Lỗi lưu đơn vào Supabase (dùng fallback localStorage):", dbErr.message);
-          } else {
-            console.log("Đã đồng bộ đơn hàng lên Supabase DB thành công! ID:", dbOrder?.id);
-          }
-        } catch (dbException) {
-          console.warn("Exception khi gọi Supabase:", dbException);
-        }
-
-        // 2. Đồng thời lưu vào localStorage làm bộ nhớ đệm
-        const existingRaw = localStorage.getItem("vcw_admin_orders");
-        let existingOrders = [];
-        if (existingRaw) {
-          existingOrders = JSON.parse(existingRaw);
-        }
-        localStorage.setItem("vcw_admin_orders", JSON.stringify([newOrder, ...existingOrders]));
-        
-        // Clear cart
-        items.forEach(item => removeFromCart(item.productId, item.size));
-        
-        setIsSuccess(true);
-      } catch (err) {
-        console.error("Failed to save order", err);
-        alert("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.");
-      } finally {
-        setIsSubmitting(false);
-      }
->>>>>>> main
   };
 
   if (isSuccess) {
@@ -202,30 +158,27 @@ export default function CheckoutClient() {
                       readOnly
                       className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
                     />
-<<<<<<< HEAD
-                    <span className="text-sm font-medium">Thanh toán khi nhận hàng (COD)</span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">Thanh toán khi nhận hàng (COD)</span>
+                      <p className="text-xs text-[#57534E] mt-1">
+                        Kiểm tra hàng trước khi thanh toán.
+                      </p>
+                    </div>
                   </label>
                   
-                  <label className={`flex items-center gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'SEPAY' ? 'border-black bg-gray-50' : 'border-gray-300 bg-white hover:border-black'}`}>
+                  <label className={`flex items-start gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'SEPAY' ? 'border-[#1A2E24] bg-gray-50' : 'border-gray-300 bg-white hover:border-[#1A2E24]'}`}>
                     <input 
                       type="radio" 
                       name="payment"
                       checked={paymentMethod === 'SEPAY'} 
                       onChange={() => setPaymentMethod('SEPAY')}
-                      className="w-4 h-4 text-black focus:ring-black cursor-pointer" 
+                      className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
                     />
                     <div className="flex flex-col">
                       <span className="text-sm font-medium flex items-center gap-2">
                         Thanh toán chuyển khoản (SePay)
                       </span>
                       <span className="text-xs text-gray-500 mt-1">Quét mã QR để chuyển khoản</span>
-=======
-                    <div>
-                      <span className="text-sm font-semibold text-[#1C2621]">Thanh toán khi nhận hàng (COD)</span>
-                      <p className="text-xs text-[#57534E] mt-1">
-                        Kiểm tra hàng trước khi thanh toán. Hiện tại thương hiệu chỉ áp dụng phương thức COD để đảm bảo quyền lợi tối đa cho khách hàng.
-                      </p>
->>>>>>> main
                     </div>
                   </label>
                 </div>
