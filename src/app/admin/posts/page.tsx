@@ -103,10 +103,8 @@ export default function PostsManagementPage() {
           };
         });
         setPosts(mappedPosts);
-        setFilteredPosts(mappedPosts);
       } else {
         setPosts([]);
-        setFilteredPosts([]);
       }
     } catch (error) {
       console.error("Error loading posts:", error);

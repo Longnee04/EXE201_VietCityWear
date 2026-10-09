@@ -22,6 +22,7 @@ import {
   Save,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { type User as SupabaseUser } from "@supabase/supabase-js";
 
 function formatAuthError(message: string): string {
   if (message.includes("Invalid login credentials")) {
@@ -47,7 +48,7 @@ export default function LoginPage() {
 
   // Mode: "login" | "register" | "profile"
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [currentUser, setCurrentUser] = useState<Record<string, unknown> | null>(null);
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<{
     full_name: string;
     phone: string;
@@ -207,7 +208,8 @@ export default function LoginPage() {
             full_name: regFullName.trim() || "Khách hàng",
             phone: regPhone.trim(),
             role: "user",
-          } as Record<string, unknown>);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any);
         } catch (dbErr) {
           console.warn("Không thể ghi vào public.users, tiếp tục phiên:", dbErr);
         }
@@ -237,7 +239,8 @@ export default function LoginPage() {
         .update({
           full_name: editFullName.trim(),
           phone: editPhone.trim(),
-        } as Record<string, unknown>)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any)
         .eq("id", currentUser.id);
 
       // Update auth metadata

@@ -189,7 +189,8 @@ export default async function BlogDetailPage({ params }: Props) {
               Câu chuyện di sản khác
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {relatedBlogs.map((rel: { id: string | number; slug?: string; title?: string; cover_image?: string; category?: string; [key: string]: unknown }) => (
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {relatedBlogs.map((rel: any) => (
                 <Link
                   key={rel.id}
                   href={`/blog/${rel.slug || rel.id}`}
