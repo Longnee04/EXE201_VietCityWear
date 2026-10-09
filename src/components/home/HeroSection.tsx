@@ -5,10 +5,8 @@ import { BRAND_SLOGAN, HERO_HEADLINE, BRAND_TAGLINE } from "@/data/brand";
 export default function HeroSection() {
   return (
     <section className="relative w-full min-h-[85vh] sm:min-h-[90vh] py-14 sm:py-20 flex items-center overflow-hidden bg-[#111]">
-      {/* Background dark gradient like previous deploy */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#242424] to-[#0a0a0a]">
-        <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=')]" />
-      </div>
+      {/* Background rich dark gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#161616] via-[#111111] to-[#0a0a0a]" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 w-full">
@@ -51,9 +49,9 @@ export default function HeroSection() {
           <div className="lg:col-span-6 flex justify-center">
             <div
               id="[BLOCK_AO_HAIPHONG]"
-              className="block-ao-haiphong relative w-full max-w-2xl bg-white/5 backdrop-blur-md p-3 sm:p-5 rounded-2xl border border-white/10 shadow-2xl"
+              className="block-ao-haiphong relative w-full max-w-xl bg-neutral-900/60 p-3 sm:p-4 border border-neutral-800 shadow-xl"
             >
-              <div className="relative w-full aspect-[1553/1032] overflow-hidden rounded-xl bg-white">
+              <div className="relative w-full aspect-[1553/1032] overflow-hidden bg-white">
                 <Image
                   src="/images/ao-thun-hai-phong.png"
                   alt={`Áo thun lưu niệm VIET CITY WEAR — ${BRAND_SLOGAN.vi}`}
@@ -65,12 +63,12 @@ export default function HeroSection() {
               </div>
 
               {/* Sub-bar explaining the shirt */}
-              <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-white/70 gap-1.5 px-1">
-                <span className="font-semibold text-white uppercase tracking-wider">
-                  Áo thun VIET CITY WEAR
+              <div className="mt-3 pt-2.5 border-t border-neutral-800 flex items-center justify-between text-[11px] text-white/70 px-1 font-mono">
+                <span className="font-semibold text-white uppercase tracking-wider text-[10px] sm:text-[11px]">
+                  HẢI PHÒNG CHAPTER 01
                 </span>
-                <span className="text-center sm:text-right text-white/50">
-                  Mặt trước: In logo nhỏ • Mặt sau: In hình di sản & tọa độ
+                <span className="text-[10px] text-white/50 tracking-wider">
+                  HEAVYWEIGHT COTTON 260GSM
                 </span>
               </div>
             </div>
