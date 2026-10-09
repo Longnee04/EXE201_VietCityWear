@@ -17,7 +17,7 @@ import { supabase } from "@/lib/supabase/client";
 
 interface ContentPage {
   id: string;
-  type: "about" | "terms" | "privacy" | "contact" | "careers";
+  type: "about" | "terms" | "privacy" | "contact";
   title: string;
   content: string;
   updatedAt: string;
@@ -31,7 +31,10 @@ function getStoredContents(fallback: ContentPage[]): ContentPage[] {
     const raw = localStorage.getItem(CONTENT_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // filter out careers if stored previously
+        return parsed.filter((item: any) => item.type !== "careers");
+      }
     }
   } catch (e) {
     console.error("Error reading localStorage:", e);
@@ -59,7 +62,6 @@ export default function ContentManagementPage() {
     { type: "terms", label: "Điều khoản sử dụng", icon: FileText, color: "purple" },
     { type: "privacy", label: "Chính sách bảo mật", icon: Shield, color: "emerald" },
     { type: "contact", label: "Liên hệ với chúng tôi", icon: Mail, color: "amber" },
-    { type: "careers", label: "Tuyển dụng", icon: Briefcase, color: "red" },
   ];
 
   useEffect(() => {
@@ -176,43 +178,6 @@ Thứ 2 - Thứ 6: 8:00 - 18:00
 Thứ 7 - Chủ nhật: 9:00 - 17:00
 
 Chúng tôi luôn sẵn sàng hỗ trợ và lắng nghe ý kiến của bạn!`,
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: "5",
-          type: "careers",
-          title: "Tuyển dụng tại VIET CITY WEAR",
-          content: `**Tham gia đội ngũ VIET CITY WEAR!**
-
-Chúng tôi đang tìm kiếm những người đam mê văn hóa Việt Nam và muốn góp phần quảng bá di sản qua thời trang.
-
-**Vị trí đang tuyển:**
-
-**1. Nhân viên Marketing (2 vị trí)**
-- Kinh nghiệm: 1-2 năm
-- Yêu cầu: Am hiểu Social Media, Content Marketing
-- Mức lương: 8-12 triệu VNĐ
-
-**2. Nhân viên Thiết kế Đồ họa (1 vị trí)**
-- Kinh nghiệm: 1-3 năm
-- Yêu cầu: Thành thạo Adobe Creative Suite
-- Mức lương: 10-15 triệu VNĐ
-
-**3. Nhân viên Chăm sóc khách hàng (2 vị trí)**
-- Kinh nghiệm: Không yêu cầu
-- Yêu cầu: Giao tiếp tốt, nhiệt tình
-- Mức lương: 7-10 triệu VNĐ
-
-**Quyền lợi:**
-- Lương tháng 13, thưởng hiệu suất
-- Bảo hiểm đầy đủ theo luật
-- Nghỉ phép 12 ngày/năm
-- Team building, du lịch hàng năm
-- Môi trường trẻ trung, sáng tạo
-
-**Cách thức ứng tuyển:**
-Gửi CV về email: hr@vietcitywear.com
-Tiêu đề: [Vị trí ứng tuyển] - [Họ tên]`,
           updatedAt: new Date().toISOString(),
         },
       ];

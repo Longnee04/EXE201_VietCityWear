@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { footerNav } from "@/data/navigation";
 import { BRAND_SLOGAN, BRAND_TAGLINE } from "@/data/brand";
 
@@ -43,21 +44,21 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerNav.shop.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li>
-                <a
-                  href="#pricing"
+                <Link
+                  href="/#pricing"
                   className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
                 >
                   Bảng giá gói
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -70,33 +71,39 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerNav.about.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
-              <li>
-                <a
-                  href="#features"
-                  className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
-                >
-                  NFC & Thẻ
-                </a>
-              </li>
             </ul>
           </div>
 
-          {/* Follow Us */}
+          {/* Chính sách */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#111] mb-5">
               Chính sách
             </h4>
-            <ul className="space-y-2.5 text-[12px] text-[#666]">
-              <li>Thanh toán: <span className="font-semibold text-[#111]">Duy nhất COD</span></li>
-              <li>Vận chuyển: <span className="font-semibold text-[#111]">Freeship từ 500K</span></li>
+            <ul className="space-y-3 text-[13px] text-[#666]">
+              {footerNav.support.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-[13px] text-[#666] hover:text-[#111] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li className="pt-2 text-[12px] border-t border-[#f0f0f0]">
+                Thanh toán: <span className="font-semibold text-[#111]">Duy nhất COD</span>
+              </li>
+              <li className="text-[12px]">
+                Vận chuyển: <span className="font-semibold text-[#111]">Freeship từ 500K</span>
+              </li>
             </ul>
           </div>
         </div>
