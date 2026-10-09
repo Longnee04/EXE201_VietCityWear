@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FileText,
   Plus,
@@ -9,9 +9,7 @@ import {
   Trash2,
   Eye,
   Calendar,
-  User,
   Tag,
-  Image as ImageIcon,
   Video,
   Loader2,
 } from "lucide-react";
@@ -37,7 +35,7 @@ interface Post {
 
 export default function PostsManagementPage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  // filteredPosts is computed via useMemo below
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
@@ -64,10 +62,10 @@ export default function PostsManagementPage() {
 
   // Load posts
   useEffect(() => {
-    loadPosts();
+    Promise.resolve().then(() => loadPosts());
   }, []);
 
-  const loadPosts = async () => {
+  async function loadPosts() {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -105,10 +103,8 @@ export default function PostsManagementPage() {
           };
         });
         setPosts(mappedPosts);
-        setFilteredPosts(mappedPosts);
       } else {
         setPosts([]);
-        setFilteredPosts([]);
       }
     } catch (error) {
       console.error("Error loading posts:", error);
@@ -118,7 +114,7 @@ export default function PostsManagementPage() {
   };
 
   // Filter posts
-  useEffect(() => {
+  const filteredPosts = React.useMemo(() => {
     let filtered = posts;
 
     // Filter by category
@@ -136,7 +132,7 @@ export default function PostsManagementPage() {
       );
     }
 
-    setFilteredPosts(filtered);
+    return filtered;
   }, [searchQuery, selectedCategory, posts]);
 
   const handleDeletePost = async (id: string) => {
@@ -337,6 +333,7 @@ export default function PostsManagementPage() {
                       <div className="flex items-start gap-3">
                         {post.featuredImage ? (
                           <div className="w-16 h-16 rounded-lg overflow-hidden bg-neutral-100 flex-shrink-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={post.featuredImage}
                               alt={post.title}

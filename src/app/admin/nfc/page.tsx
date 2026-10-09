@@ -19,7 +19,6 @@ import {
   Radio,
   BookOpen,
   Search,
-  ChevronRight,
   ShieldCheck,
   Cpu,
 } from "lucide-react";
@@ -120,7 +119,7 @@ export default function AdminNfcPage() {
   };
 
   useEffect(() => {
-    loadData();
+    Promise.resolve().then(() => loadData());
   }, []);
 
   // Filtered Tags

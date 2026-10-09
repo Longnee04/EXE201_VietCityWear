@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
+
 
 export default function CheckoutClient() {
-  const { items, itemCount, removeFromCart } = useCart();
+  const { items, itemCount, clearCart } = useCart();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -18,7 +18,7 @@ export default function CheckoutClient() {
     phone: "",
     address: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "VNPAY">("COD");
+  const [paymentMethod, setPaymentMethod] = useState<"COD" | "SEPAY">("COD");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -32,101 +32,48 @@ export default function CheckoutClient() {
     
     setIsSubmitting(true);
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // 1. Create order in Database
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          receiver_name: formData.name,
+          receiver_phone: formData.phone,
+          shipping_address: formData.address,
+          total_amount: total,
+          payment_method: paymentMethod,
+          items: items.map((item) => ({
+            productId: item.productId,
+            name: item.name,
+            size: item.size,
+            color: item.color || "Tiêu chuẩn",
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }),
+      });
 
-    // Create order object matching the Admin Orders mock format
-    const newOrder = {
-      id: `ord-${Math.floor(1000 + Math.random() * 9000)}`,
-      receiver_name: formData.name,
-      receiver_phone: formData.phone,
-      shipping_address: formData.address,
-      total_amount: total,
-      payment_method: paymentMethod,
-      status: "processing",
-      created_at: new Date().toISOString(),
-      items: items.map((item) => ({
-        product_name: item.name,
-        size: item.size,
-        color: item.color || "Tiêu chuẩn",
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    };
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to create order");
 
-    if (paymentMethod === "VNPAY") {
-      // 1. Save order as pending
-      localStorage.setItem("vcw_pending_order", JSON.stringify(newOrder));
-      
-      // 2. Call VNPAY API
-      try {
-        const response = await fetch("/api/vnpay/create", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            orderId: newOrder.id,
-            amount: total,
-            orderInfo: `Thanh toan don hang ${newOrder.id}`,
-          }),
-        });
-
-        const data = await response.json();
-        if (data.url) {
-          window.location.href = data.url; // Redirect to VNPAY
-          return;
-        } else {
-          throw new Error("Không nhận được URL thanh toán");
-        }
-      } catch (err) {
-        console.error("VNPAY Error:", err);
-        alert("Lỗi khi kết nối với VNPAY. Vui lòng thử lại.");
-        setIsSubmitting(false);
+      if (paymentMethod === "SEPAY") {
+        // 2. Redirect to SePay QR page using real OrderId
+        router.push(`/checkout/sepay?orderId=${data.orderId}&amount=${total}`);
         return;
       }
-    }
 
       // COD Flow
-      try {
-        // 1. Lưu trực tiếp vào bảng orders trên Supabase Database
-        try {
-          const { data: dbOrder, error: dbErr } = await supabase.from("orders").insert([
-            {
-              receiver_name: formData.name.trim(),
-              receiver_phone: formData.phone.trim(),
-              shipping_address: formData.address.trim(),
-              payment_method: "COD",
-              total_amount: total,
-              status: "processing",
-            },
-          ]).select().single();
-
-          if (dbErr) {
-            console.warn("Lỗi lưu đơn vào Supabase (dùng fallback localStorage):", dbErr.message);
-          } else {
-            console.log("Đã đồng bộ đơn hàng lên Supabase DB thành công! ID:", dbOrder?.id);
-          }
-        } catch (dbException) {
-          console.warn("Exception khi gọi Supabase:", dbException);
-        }
-
-        // 2. Đồng thời lưu vào localStorage làm bộ nhớ đệm
-        const existingRaw = localStorage.getItem("vcw_admin_orders");
-        let existingOrders = [];
-        if (existingRaw) {
-          existingOrders = JSON.parse(existingRaw);
-        }
-        localStorage.setItem("vcw_admin_orders", JSON.stringify([newOrder, ...existingOrders]));
-        
-        // Clear cart
-        items.forEach(item => removeFromCart(item.productId, item.size));
-        
-        setIsSuccess(true);
-      } catch (err) {
-        console.error("Failed to save order", err);
-        alert("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.");
-      } finally {
-        setIsSubmitting(false);
-      }
+      // Clear cart
+      clearCart();
+      setIsSuccess(true);
+      
+    } catch (err) {
+      console.error("Failed to save order", err);
+      alert("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -211,11 +158,27 @@ export default function CheckoutClient() {
                       readOnly
                       className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
                     />
-                    <div>
-                      <span className="text-sm font-semibold text-[#1C2621]">Thanh toán khi nhận hàng (COD)</span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">Thanh toán khi nhận hàng (COD)</span>
                       <p className="text-xs text-[#57534E] mt-1">
-                        Kiểm tra hàng trước khi thanh toán. Hiện tại thương hiệu chỉ áp dụng phương thức COD để đảm bảo quyền lợi tối đa cho khách hàng.
+                        Kiểm tra hàng trước khi thanh toán.
                       </p>
+                    </div>
+                  </label>
+                  
+                  <label className={`flex items-start gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'SEPAY' ? 'border-[#1A2E24] bg-gray-50' : 'border-gray-300 bg-white hover:border-[#1A2E24]'}`}>
+                    <input 
+                      type="radio" 
+                      name="payment"
+                      checked={paymentMethod === 'SEPAY'} 
+                      onChange={() => setPaymentMethod('SEPAY')}
+                      className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium flex items-center gap-2">
+                        Thanh toán chuyển khoản (SePay)
+                      </span>
+                      <span className="text-xs text-gray-500 mt-1">Quét mã QR để chuyển khoản</span>
                     </div>
                   </label>
                 </div>
