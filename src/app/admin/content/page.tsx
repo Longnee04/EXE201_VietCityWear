@@ -13,13 +13,42 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
 interface ContentPage {
   id: string;
-  type: "about" | "terms" | "privacy" | "contact" | "careers";
+  type: "about" | "terms" | "privacy" | "contact";
   title: string;
   content: string;
   updatedAt: string;
+}
+
+const CONTENT_STORAGE_KEY = "vcw_admin_content";
+
+function getStoredContents(fallback: ContentPage[]): ContentPage[] {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = localStorage.getItem(CONTENT_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // filter out careers if stored previously
+        return parsed.filter((item: any) => item.type !== "careers");
+      }
+    }
+  } catch (e) {
+    console.error("Error reading localStorage:", e);
+  }
+  return fallback;
+}
+
+function saveStoredContents(items: ContentPage[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(items));
+  } catch (e) {
+    console.error("Error writing localStorage:", e);
+  }
 }
 
 export default function ContentManagementPage() {
@@ -33,7 +62,6 @@ export default function ContentManagementPage() {
     { type: "terms", label: "Điều khoản sử dụng", icon: FileText, color: "purple" },
     { type: "privacy", label: "Chính sách bảo mật", icon: Shield, color: "emerald" },
     { type: "contact", label: "Liên hệ với chúng tôi", icon: Mail, color: "amber" },
-    { type: "careers", label: "Tuyển dụng", icon: Briefcase, color: "red" },
   ];
 
   useEffect(() => {
@@ -51,7 +79,7 @@ export default function ContentManagementPage() {
           title: "Giới thiệu VIET CITY WEAR",
           content: `VIET CITY WEAR là thương hiệu thời trang văn hóa độc đáo, kết hợp áo thun lưu niệm với công nghệ NFC để mang đến trải nghiệm khám phá di sản Việt Nam.
 
-**Sứ mệnh:** Mặc thành phố - Mang câu chuyện về nhà
+**Sứ mệnh:** Mặc thành phố – Chạm câu chuyện
 
 **Sản phẩm:**
 - Áo thun văn hóa theo từng thành phố
@@ -152,46 +180,37 @@ Thứ 7 - Chủ nhật: 9:00 - 17:00
 Chúng tôi luôn sẵn sàng hỗ trợ và lắng nghe ý kiến của bạn!`,
           updatedAt: new Date().toISOString(),
         },
-        {
-          id: "5",
-          type: "careers",
-          title: "Tuyển dụng tại VIET CITY WEAR",
-          content: `**Tham gia đội ngũ VIET CITY WEAR!**
-
-Chúng tôi đang tìm kiếm những người đam mê văn hóa Việt Nam và muốn góp phần quảng bá di sản qua thời trang.
-
-**Vị trí đang tuyển:**
-
-**1. Nhân viên Marketing (2 vị trí)**
-- Kinh nghiệm: 1-2 năm
-- Yêu cầu: Am hiểu Social Media, Content Marketing
-- Mức lương: 8-12 triệu VNĐ
-
-**2. Nhân viên Thiết kế Đồ họa (1 vị trí)**
-- Kinh nghiệm: 1-3 năm
-- Yêu cầu: Thành thạo Adobe Creative Suite
-- Mức lương: 10-15 triệu VNĐ
-
-**3. Nhân viên Chăm sóc khách hàng (2 vị trí)**
-- Kinh nghiệm: Không yêu cầu
-- Yêu cầu: Giao tiếp tốt, nhiệt tình
-- Mức lương: 7-10 triệu VNĐ
-
-**Quyền lợi:**
-- Lương tháng 13, thưởng hiệu suất
-- Bảo hiểm đầy đủ theo luật
-- Nghỉ phép 12 ngày/năm
-- Team building, du lịch hàng năm
-- Môi trường trẻ trung, sáng tạo
-
-**Cách thức ứng tuyển:**
-Gửi CV về email: hr@vietcitywear.com
-Tiêu đề: [Vị trí ứng tuyển] - [Họ tên]`,
-          updatedAt: new Date().toISOString(),
-        },
       ];
 
-      setContents(mockContents);
+      let loadedFromDb = false;
+      try {
+        const { data, error } = await supabase.from("website_content").select("*");
+        if (!error && data && data.length > 0) {
+          const dbContents: ContentPage[] = mockContents.map((mc) => {
+            const match = data.find((row) => row.page_name === mc.type);
+            if (match && typeof match.content_body === "object" && match.content_body !== null) {
+              const body = match.content_body as { title?: string; content?: string };
+              return {
+                ...mc,
+                id: match.id || mc.id,
+                title: body.title || mc.title,
+                content: body.content || mc.content,
+                updatedAt: match.updated_at || mc.updatedAt,
+              };
+            }
+            return mc;
+          });
+          setContents(dbContents);
+          saveStoredContents(dbContents);
+          loadedFromDb = true;
+        }
+      } catch {
+        // Supabase table not created yet
+      }
+
+      if (!loadedFromDb) {
+        setContents(getStoredContents(mockContents));
+      }
     } catch (error) {
       console.error("Error loading contents:", error);
     } finally {
@@ -208,16 +227,40 @@ Tiêu đề: [Vị trí ứng tuyển] - [Họ tên]`,
 
     setIsSaving(true);
     try {
-      // TODO: API call to save content
-      setContents(
-        contents.map((c) =>
-          c.id === editingContent.id
-            ? { ...editingContent, updatedAt: new Date().toISOString() }
-            : c
-        )
+      const updated = contents.map((c) =>
+        c.id === editingContent.id
+          ? { ...editingContent, updatedAt: new Date().toISOString() }
+          : c
       );
+      setContents(updated);
+      saveStoredContents(updated);
+
+      let savedToCloud = false;
+      try {
+        const { error } = await supabase
+          .from("website_content")
+          .upsert(
+            {
+              page_name: editingContent.type,
+              content_body: {
+                title: editingContent.title,
+                content: editingContent.content,
+              },
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "page_name" }
+          );
+        if (!error) savedToCloud = true;
+      } catch {
+        // fallback
+      }
+
       setEditingContent(null);
-      alert("Đã lưu nội dung thành công!");
+      if (savedToCloud) {
+        alert("Đã lưu nội dung thành công lên Supabase Cloud!");
+      } else {
+        alert("Đã lưu nội dung thành công vào bộ nhớ hệ thống (F5 không mất)!");
+      }
     } catch (error) {
       console.error("Error saving content:", error);
       alert("Có lỗi xảy ra khi lưu nội dung!");

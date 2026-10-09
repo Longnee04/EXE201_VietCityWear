@@ -125,9 +125,15 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span className="text-[13px] font-medium uppercase tracking-[0.05em]">Tổng tạm tính</span>
               <span className="text-[16px] font-bold">{formatPrice(subtotal)}</span>
             </div>
-            <p className="text-[11px] text-[#777] mb-6">
-              Phí vận chuyển sẽ được tính ở bước thanh toán.
-            </p>
+            {subtotal >= 500000 ? (
+              <p className="text-[11px] text-[#244033] font-semibold mb-6">
+                ✓ Đơn hàng của bạn đủ điều kiện FREESHIP!
+              </p>
+            ) : (
+              <p className="text-[11px] text-[#78716C] mb-6">
+                Mua thêm {formatPrice(500000 - subtotal)} để được <span className="font-semibold text-[#C85A32]">FREESHIP</span> toàn quốc.
+              </p>
+            )}
             <Link
               href="/checkout"
               onClick={onClose}

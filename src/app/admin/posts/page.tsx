@@ -16,6 +16,8 @@ import {
   Loader2,
 } from "lucide-react";
 
+import { supabase } from "@/lib/supabase/client";
+
 interface Post {
   id: string;
   title: string;
@@ -42,6 +44,16 @@ export default function PostsManagementPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
+  // Form states for Add/Edit Modal
+  const [formData, setFormData] = useState({
+    title: "",
+    slug: "",
+    category: "culture" as "culture" | "travel" | "landmark" | "news",
+    content: "",
+    cover_image: "/images/hanoi-banner.jpg",
+    published: true,
+  });
+
   const categories = [
     { value: "all", label: "Tất cả bài viết" },
     { value: "culture", label: "Văn hóa" },
@@ -58,60 +70,46 @@ export default function PostsManagementPage() {
   const loadPosts = async () => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      const mockPosts: Post[] = [
-        {
-          id: "1",
-          title: "Khám phá Hồ Gươm - Trái tim của Hà Nội",
-          slug: "kham-pha-ho-guom-trai-tim-cua-ha-noi",
-          excerpt: "Hồ Gươm không chỉ là biểu tượng của Hà Nội mà còn là nơi lưu giữ nhiều câu chuyện lịch sử văn hóa...",
-          content: "Nội dung đầy đủ bài viết...",
-          category: "landmark",
-          author: "Admin VIET CITY WEAR",
-          featuredImage: "/images/ho-guom.jpg",
-          videoUrl: null,
-          tags: ["Hà Nội", "Hồ Gươm", "Di tích lịch sử"],
-          published: true,
-          publishedAt: new Date().toISOString(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          title: "Văn Miếu Quốc Tử Giám - Ngôi trường xưa nhất Việt Nam",
-          slug: "van-mieu-quoc-tu-giam-ngoi-truong-xua-nhat-viet-nam",
-          excerpt: "Văn Miếu là quần thể di tích lịch sử văn hóa độc đáo, gắn liền với truyền thống hiếu học...",
-          content: "Nội dung đầy đủ bài viết...",
-          category: "culture",
-          author: "Admin VIET CITY WEAR",
-          featuredImage: "/images/van-mieu.jpg",
-          videoUrl: "https://youtube.com/watch?v=example",
-          tags: ["Hà Nội", "Văn Miếu", "Giáo dục"],
-          published: true,
-          publishedAt: new Date().toISOString(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: "3",
-          title: "5 địa điểm du lịch không thể bỏ qua ở Hà Nội",
-          slug: "5-dia-diem-du-lich-khong-the-bo-qua-o-ha-noi",
-          excerpt: "Hà Nội với hơn 1000 năm văn hiến có vô số điểm đến hấp dẫn du khách...",
-          content: "Nội dung đầy đủ bài viết...",
-          category: "travel",
-          author: "Admin VIET CITY WEAR",
-          featuredImage: null,
-          videoUrl: null,
-          tags: ["Hà Nội", "Du lịch", "Gợi ý"],
-          published: false,
-          publishedAt: null,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ];
+      const { data, error } = await supabase
+        .from("blogs")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      setPosts(mockPosts);
-      setFilteredPosts(mockPosts);
+      if (!error && data && data.length > 0) {
+        const mappedPosts: Post[] = data.map((b) => {
+          const rawCat = (b.category || "culture").toLowerCase();
+          const validCat: "culture" | "travel" | "landmark" | "news" =
+            rawCat === "du lịch" || rawCat === "travel"
+              ? "travel"
+              : rawCat === "địa danh" || rawCat === "landmark"
+              ? "landmark"
+              : rawCat === "tin tức" || rawCat === "news"
+              ? "news"
+              : "culture";
+
+          return {
+            id: b.id,
+            title: b.title,
+            slug: b.slug || b.id,
+            excerpt: b.content ? b.content.slice(0, 140) + "..." : "",
+            content: b.content || "",
+            category: validCat,
+            author: "Admin VIET CITY WEAR",
+            featuredImage: b.cover_image || "/images/hanoi-banner.jpg",
+            videoUrl: null,
+            tags: [b.category || "Văn hóa"],
+            published: b.status === "Published",
+            publishedAt: b.published_at || b.created_at,
+            createdAt: b.created_at,
+            updatedAt: b.created_at,
+          };
+        });
+        setPosts(mappedPosts);
+        setFilteredPosts(mappedPosts);
+      } else {
+        setPosts([]);
+        setFilteredPosts([]);
+      }
     } catch (error) {
       console.error("Error loading posts:", error);
     } finally {
@@ -145,8 +143,8 @@ export default function PostsManagementPage() {
     if (!confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return;
 
     try {
-      // TODO: API call to delete post
-      setPosts(posts.filter((p) => p.id !== id));
+      await supabase.from("blogs").delete().eq("id", id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
       alert("Đã xóa bài viết thành công!");
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -155,15 +153,24 @@ export default function PostsManagementPage() {
   };
 
   const handleTogglePublish = async (id: string) => {
+    const post = posts.find((p) => p.id === id);
+    if (!post) return;
+    const nextPublished = !post.published;
+    const nextStatus = nextPublished ? "Published" : "Draft";
+
     try {
-      // TODO: API call to toggle publish status
-      setPosts(
-        posts.map((p) =>
+      await supabase
+        .from("blogs")
+        .update({ status: nextStatus, published_at: nextPublished ? new Date().toISOString() : null })
+        .eq("id", id);
+
+      setPosts((prev) =>
+        prev.map((p) =>
           p.id === id
             ? {
                 ...p,
-                published: !p.published,
-                publishedAt: !p.published ? new Date().toISOString() : null,
+                published: nextPublished,
+                publishedAt: nextPublished ? new Date().toISOString() : null,
               }
             : p
         )
@@ -412,6 +419,14 @@ export default function PostsManagementPage() {
                         <button
                           onClick={() => {
                             setEditingPost(post);
+                            setFormData({
+                              title: post.title,
+                              slug: post.slug,
+                              category: post.category,
+                              content: post.content,
+                              cover_image: post.featuredImage || "/images/hanoi-banner.jpg",
+                              published: post.published,
+                            });
                             setShowAddModal(true);
                           }}
                           className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition"
@@ -436,34 +451,162 @@ export default function PostsManagementPage() {
         </div>
       )}
 
-      {/* Add/Edit Modal Placeholder */}
+      {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold mb-4">
               {editingPost ? "Chỉnh sửa bài viết" : "Thêm bài viết mới"}
             </h2>
-            <p className="text-sm text-neutral-600 mb-4">
-              Form thêm/sửa bài viết sẽ được triển khai ở đây với các trường: Tiêu đề, Slug, Danh
-              mục, Nội dung (Editor), Ảnh đại diện, Video URL, Tags, Trạng thái xuất bản.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-semibold hover:bg-neutral-50"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={() => {
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  const generatedSlug =
+                    formData.slug.trim() ||
+                    formData.title
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]+/g, "-")
+                      .replace(/^-|-$/g, "");
+
+                  if (editingPost) {
+                    await supabase
+                      .from("blogs")
+                      .update({
+                        title: formData.title,
+                        slug: generatedSlug,
+                        category: formData.category,
+                        content: formData.content,
+                        cover_image: formData.cover_image,
+                        status: formData.published ? "Published" : "Draft",
+                      })
+                      .eq("id", editingPost.id);
+                  } else {
+                    await supabase.from("blogs").insert({
+                      title: formData.title,
+                      slug: generatedSlug,
+                      category: formData.category,
+                      content: formData.content,
+                      cover_image: formData.cover_image,
+                      status: formData.published ? "Published" : "Draft",
+                    });
+                  }
                   setShowAddModal(false);
                   loadPosts();
-                }}
-                className="px-4 py-2 bg-black text-white rounded-lg text-sm font-semibold hover:bg-neutral-800"
-              >
-                {editingPost ? "Cập nhật" : "Thêm mới"}
-              </button>
-            </div>
+                  alert(editingPost ? "Đã cập nhật bài viết!" : "Đã thêm bài viết mới!");
+                } catch (err) {
+                  console.error("Error saving blog:", err);
+                  alert("Có lỗi xảy ra khi lưu bài viết!");
+                }
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-bold uppercase text-neutral-700 mb-1">
+                  Tiêu đề bài viết *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Ví dụ: Khám phá Hồ Gươm - Trái tim của Hà Nội"
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-neutral-700 mb-1">
+                    Danh mục
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        category: e.target.value as "culture" | "travel" | "landmark" | "news",
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                  >
+                    <option value="culture">Văn hóa</option>
+                    <option value="travel">Du lịch</option>
+                    <option value="landmark">Địa danh</option>
+                    <option value="news">Tin tức</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-neutral-700 mb-1">
+                    Đường dẫn (Slug)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="Tự động tạo nếu để trống"
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-neutral-700 mb-1">
+                  URL Ảnh đại diện
+                </label>
+                <input
+                  type="text"
+                  value={formData.cover_image}
+                  onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
+                  placeholder="/images/hanoi-banner.jpg"
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-neutral-700 mb-1">
+                  Nội dung bài viết *
+                </label>
+                <textarea
+                  rows={5}
+                  required
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  placeholder="Nhập nội dung bài viết..."
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="pub-check"
+                  checked={formData.published}
+                  onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                  className="rounded border-neutral-300"
+                />
+                <label htmlFor="pub-check" className="text-sm text-neutral-700 font-medium">
+                  Xuất bản ngay (Hiển thị công khai)
+                </label>
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4 border-t border-neutral-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-semibold hover:bg-neutral-50"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-black text-white rounded-lg text-sm font-semibold hover:bg-neutral-800"
+                >
+                  {editingPost ? "Cập nhật" : "Thêm mới"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

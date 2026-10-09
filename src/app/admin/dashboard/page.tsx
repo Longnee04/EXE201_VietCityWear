@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
           { count: userCount },
         ] = await Promise.all([
           supabase.from("products").select("*", { count: "exact", head: true }),
-          supabase.from("product_inventory").select("*", { count: "exact", head: true }),
+          supabase.from("product_variants").select("*", { count: "exact", head: true }),
           supabase.from("users").select("*", { count: "exact", head: true }),
         ]);
 

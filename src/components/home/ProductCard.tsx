@@ -148,19 +148,26 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Product Info */}
       <div className="space-y-1.5">
-        {/* Color dots */}
-        {product.colors.length > 1 && (
-          <div className="flex gap-1.5">
-            {product.colors.map((color) => (
-              <span
-                key={color.name}
-                className="w-3 h-3 rounded-full border border-[#ddd]"
-                style={{ backgroundColor: color.value }}
-                title={color.name}
-              />
-            ))}
-          </div>
-        )}
+        {/* Color dots & City */}
+        <div className="flex items-center justify-between">
+          {product.city && (
+            <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#777]">
+              {product.city}
+            </span>
+          )}
+          {product.colors.length > 1 && (
+            <div className="flex gap-1.5 ml-auto">
+              {product.colors.map((color) => (
+                <span
+                  key={color.name}
+                  className="w-2.5 h-2.5 rounded-full border border-[#ddd]"
+                  style={{ backgroundColor: color.value }}
+                  title={color.name}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Name */}
         <Link href={`/products/${product.slug}`}>

@@ -46,13 +46,15 @@ export interface Database {
           id: string;
           name: string;
           description: string | null;
-          image_url: string | null;
+          cover_image?: string | null;
+          image_url?: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
           description?: string | null;
+          cover_image?: string | null;
           image_url?: string | null;
           created_at?: string;
         };
@@ -60,6 +62,7 @@ export interface Database {
           id?: string;
           name?: string;
           description?: string | null;
+          cover_image?: string | null;
           image_url?: string | null;
         };
         Relationships: [];
@@ -70,10 +73,12 @@ export interface Database {
           city_id: string;
           name: string;
           story: string | null;
-          images: string[];
-          video_url: string | null;
-          travel_timeline: string | null;
-          food_suggestions: string | null;
+          history?: string | null;
+          order_index?: number;
+          images?: string[];
+          video_url?: string | null;
+          travel_timeline?: string | null;
+          food_suggestions?: string | null;
           created_at: string;
         };
         Insert: {
@@ -81,6 +86,8 @@ export interface Database {
           city_id: string;
           name: string;
           story?: string | null;
+          history?: string | null;
+          order_index?: number;
           images?: string[];
           video_url?: string | null;
           travel_timeline?: string | null;
@@ -92,6 +99,8 @@ export interface Database {
           city_id?: string;
           name?: string;
           story?: string | null;
+          history?: string | null;
+          order_index?: number;
           images?: string[];
           video_url?: string | null;
           travel_timeline?: string | null;
@@ -134,6 +143,64 @@ export interface Database {
           description?: string | null;
           size_guide_text?: string | null;
           package_type?: string | null;
+        };
+        Relationships: [];
+      };
+      product_variants: {
+        Row: {
+          id: string;
+          product_id: string;
+          size: string;
+          color: string;
+          price: number;
+          stock_quantity: number;
+          image: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          size: string;
+          color: string;
+          price?: number;
+          stock_quantity?: number;
+          image?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          size?: string;
+          color?: string;
+          price?: number;
+          stock_quantity?: number;
+          image?: string | null;
+        };
+        Relationships: [];
+      };
+      product_accessories: {
+        Row: {
+          id: string;
+          product_id: string;
+          type: string;
+          name: string;
+          quantity: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          type: string;
+          name: string;
+          quantity?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          type?: string;
+          name?: string;
+          quantity?: number;
         };
         Relationships: [];
       };
@@ -237,23 +304,66 @@ export interface Database {
         Row: {
           id: string;
           order_id: string;
-          inventory_id: string;
+          variant_id: string | null;
+          product_id: string | null;
           quantity: number;
-          price_at_purchase: number;
+          unit_price: number;
+          created_at: string;
         };
         Insert: {
           id?: string;
           order_id: string;
-          inventory_id: string;
+          variant_id?: string | null;
+          product_id?: string | null;
           quantity?: number;
-          price_at_purchase: number;
+          unit_price?: number;
+          created_at?: string;
         };
         Update: {
           id?: string;
           order_id?: string;
-          inventory_id?: string;
+          variant_id?: string | null;
+          product_id?: string | null;
           quantity?: number;
-          price_at_purchase?: number;
+          unit_price?: number;
+        };
+        Relationships: [];
+      };
+      blogs: {
+        Row: {
+          id: string;
+          author_id: string | null;
+          title: string;
+          slug: string | null;
+          content: string | null;
+          cover_image: string | null;
+          category: string | null;
+          status: string | null;
+          published_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          author_id?: string | null;
+          title: string;
+          slug?: string | null;
+          content?: string | null;
+          cover_image?: string | null;
+          category?: string | null;
+          status?: string | null;
+          published_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          author_id?: string | null;
+          title?: string;
+          slug?: string | null;
+          content?: string | null;
+          cover_image?: string | null;
+          category?: string | null;
+          status?: string | null;
+          published_at?: string | null;
         };
         Relationships: [];
       };

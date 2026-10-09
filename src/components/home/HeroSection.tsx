@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { BRAND_SLOGAN, HERO_HEADLINE, BRAND_TAGLINE } from "@/data/brand";
 
 export default function HeroSection() {
   return (
@@ -14,27 +16,28 @@ export default function HeroSection() {
           {/* Left Text (6 cols) */}
           <div className="lg:col-span-6 text-center lg:text-left space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/70 text-[10px] sm:text-[11px] font-semibold tracking-[0.25em] uppercase">
-              LOCAL CITIES • REAL STORIES • WEAR IT
+              {BRAND_TAGLINE}
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[38px] xl:text-[44px] font-black tracking-tight text-white uppercase leading-[1.18]">
-              <span className="block text-white">MẶC THÀNH PHỐ</span>
-              <span className="block text-white/85 mt-1 sm:mt-1.5 font-bold">
-                MANG CÂU CHUYỆN VỀ NHÀ
-              </span>
+              {HERO_HEADLINE.vi}
             </h1>
+
+            <p className="text-sm sm:text-base font-bold text-white/90 uppercase tracking-wider">
+              {BRAND_SLOGAN.vi}
+            </p>
 
             <p className="text-xs sm:text-sm lg:text-base text-white/60 max-w-lg mx-auto lg:mx-0 leading-relaxed font-normal">
               Thương hiệu thời trang lưu niệm lấy cảm hứng từ các thành phố và địa điểm du lịch Việt Nam, kết hợp thời trang, văn hóa, du lịch và công nghệ.
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
-              <a
-                href="#features"
+              <Link
+                href="/explore/hanoi"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white text-[#111] text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#eaeaea] transition-all shadow-sm"
               >
                 Khám phá câu chuyện
-              </a>
+              </Link>
               <a
                 href="#t-shirts"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 border border-white/30 text-white text-[11px] font-semibold tracking-[0.15em] uppercase hover:border-white hover:bg-white/10 transition-all"
@@ -44,7 +47,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right: [BLOCK_AO_HAIPHONG] Featured T-Shirt (6 cols) */}
+          {/* Right: Featured T-Shirt (6 cols) */}
           <div className="lg:col-span-6 flex justify-center">
             <div
               id="[BLOCK_AO_HAIPHONG]"
@@ -53,7 +56,7 @@ export default function HeroSection() {
               <div className="relative w-full aspect-[1553/1032] overflow-hidden rounded-xl bg-white">
                 <Image
                   src="/images/ao-thun-hai-phong.png"
-                  alt="Áo thun HẢI PHÒNG - Mặt trước in logo nhỏ, Mặt sau in hình bến cảng, tọa độ"
+                  alt={`Áo thun lưu niệm VIET CITY WEAR — ${BRAND_SLOGAN.vi}`}
                   fill
                   sizes="(max-width: 768px) 100vw, 750px"
                   className="object-contain p-2"
@@ -64,10 +67,10 @@ export default function HeroSection() {
               {/* Sub-bar explaining the shirt */}
               <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-white/70 gap-1.5 px-1">
                 <span className="font-semibold text-white uppercase tracking-wider">
-                  Áo thun HẢI PHÒNG
+                  Áo thun VIET CITY WEAR
                 </span>
                 <span className="text-center sm:text-right text-white/50">
-                  Mặt trước: In logo VIET CITY WEAR • Mặt sau: In hình bến cảng & tọa độ
+                  Mặt trước: In logo nhỏ • Mặt sau: In hình di sản & tọa độ
                 </span>
               </div>
             </div>

@@ -5,22 +5,26 @@ export interface NavLink {
 
 export const mainNav: NavLink[] = [
   { label: "HOME", href: "/" },
-  { label: "T-SHIRTS", href: "#t-shirts" },
-  { label: "ABOUT US", href: "#brand-story" },
-  { label: "CONTACT", href: "#contact" },
+  { label: "T-SHIRTS", href: "/#t-shirts" },
+  { label: "KHÁM PHÁ DI SẢN", href: "/explore/hanoi" },
+  { label: "CẨM NANG BLOG", href: "/blog" },
+  { label: "ABOUT US", href: "/about" },
+  { label: "CONTACT", href: "/contact" },
 ];
 
 export const footerNav = {
-  shop: [{ label: "T-Shirts", href: "#t-shirts" }],
+  shop: [
+    { label: "T-Shirts", href: "/#t-shirts" },
+    { label: "NFC & Thẻ di sản", href: "/explore/hanoi" },
+  ],
   about: [
-    { label: "About Us", href: "#brand-story" },
-    { label: "Contact", href: "#contact" },
+    { label: "Giới thiệu thương hiệu", href: "/about" },
+    { label: "Cẩm nang & Blog di sản", href: "/blog" },
+    { label: "Liên hệ", href: "/contact" },
   ],
   support: [
-    { label: "Shipping", href: "#" },
-    { label: "Returns", href: "#" },
-    { label: "Size Guide", href: "#" },
-    { label: "FAQ", href: "#" },
+    { label: "Điều khoản sử dụng", href: "/terms" },
+    { label: "Chính sách bảo mật", href: "/privacy" },
   ],
   social: [
     { label: "Instagram", href: "#" },
