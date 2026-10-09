@@ -15,19 +15,24 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-20 sm:py-28 border-t border-[#eaeaea] bg-white">
+    <section id="contact" className="py-20 sm:py-28 border-t border-[#eaeaea] bg-white">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 text-center">
         <div className="max-w-xl mx-auto">
           <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-[#999] mb-3">
-            Stay Connected
+            Kết nối với chúng tôi
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase mb-4">
-            JOIN THE VIETCITYWEAR COMMUNITY
+            CỘNG ĐỒNG VIET CITY WEAR
           </h2>
-          <p className="text-sm text-[#666] leading-relaxed mb-8">
+          <p className="text-sm text-[#666] leading-relaxed mb-6">
             Đăng ký để nhận thông tin sớm nhất về các đợt phát hành bộ sưu tập mới,
             câu chuyện di sản và ưu đãi độc quyền.
           </p>
+
+          <div className="text-xs text-[#777] mb-8 space-y-1">
+            <p>Hotline hỗ trợ: <strong className="text-[#111]">0912 345 678</strong> • Email: <strong className="text-[#111]">contact@vietcitywear.com</strong></p>
+            <p>Showroom & Điểm chạm: Hoàn Kiếm, Hà Nội, Việt Nam</p>
+          </div>
 
           {!subscribed ? (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
@@ -43,7 +48,7 @@ export default function Newsletter() {
                 type="submit"
                 className="bg-[#111] text-white text-[11px] font-semibold tracking-[0.15em] uppercase px-8 py-3.5 hover:bg-[#333] transition-colors"
               >
-                SUBSCRIBE
+                ĐĂNG KÝ
               </button>
             </form>
           ) : (

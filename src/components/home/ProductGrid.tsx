@@ -20,12 +20,14 @@ const cityFilters = [
 
 const priceFilters = [
   { key: "all" as const, label: "Mọi mức giá" },
-  { key: "under_300" as const, label: "Dưới 300k" },
-  { key: "above_300" as const, label: "Từ 300k" },
+  { key: "under_100" as const, label: "Dưới 100k" },
+  { key: "100_to_200" as const, label: "100k – 200k" },
+  { key: "above_200" as const, label: "Trên 200k" },
 ];
 
 const sortOptions = [
   { key: "default" as const, label: "Sắp xếp mặc định" },
+  { key: "best_seller" as const, label: "Bán chạy nhất" },
   { key: "price_asc" as const, label: "Giá: Thấp → Cao" },
   { key: "price_desc" as const, label: "Giá: Cao → Thấp" },
   { key: "newest" as const, label: "Ưu tiên mẫu mới" },
@@ -34,8 +36,8 @@ const sortOptions = [
 export default function ProductGrid() {
   const [activeCategory, setActiveCategory] = useState<"all" | "new" | "best-seller">("all");
   const [activeCity, setActiveCity] = useState<"all" | "Hà Nội" | "Hải Phòng">("all");
-  const [activePrice, setActivePrice] = useState<"all" | "under_300" | "above_300">("all");
-  const [activeSort, setActiveSort] = useState<"default" | "price_asc" | "price_desc" | "newest">("default");
+  const [activePrice, setActivePrice] = useState<"all" | "under_100" | "100_to_200" | "above_200">("all");
+  const [activeSort, setActiveSort] = useState<"default" | "price_asc" | "price_desc" | "newest" | "best_seller">("default");
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
@@ -71,10 +73,10 @@ export default function ProductGrid() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#888] mb-1">
-              Bộ sưu tập áo thun lưu niệm
+              Bộ sưu tập áo thun & vật phẩm lưu niệm
             </p>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
-              T-SHIRTS & SẢN PHẨM
+              BỘ SƯU TẬP SẢN PHẨM
             </h2>
           </div>
 

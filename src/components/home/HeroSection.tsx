@@ -40,21 +40,21 @@ export default function HeroSection() {
                 href="#t-shirts"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 border border-white/30 text-white text-[11px] font-semibold tracking-[0.15em] uppercase hover:border-white hover:bg-white/10 transition-all"
               >
-                SHOP T-SHIRTS
+                BỘ SƯU TẬP ÁO
               </a>
             </div>
           </div>
 
-          {/* Right: Featured T-Shirt (6 cols) */}
+          {/* Right: Featured Hanoi Heritage Set (6 cols) */}
           <div className="lg:col-span-6 flex justify-center">
             <div
-              id="[BLOCK_AO_HAIPHONG]"
-              className="block-ao-haiphong relative w-full max-w-xl bg-neutral-900/60 p-3 sm:p-4 border border-neutral-800 shadow-xl"
+              id="[BLOCK_HERO_PRODUCT]"
+              className="relative w-full max-w-xl bg-neutral-900/60 p-3 sm:p-4 border border-neutral-800 shadow-xl"
             >
-              <div className="relative w-full aspect-[1553/1032] overflow-hidden bg-white">
+              <div className="relative w-full aspect-[1536/1024] overflow-hidden bg-[#fafafa]">
                 <Image
-                  src="/images/ao-thun-hai-phong.png"
-                  alt={`Áo thun lưu niệm VIET CITY WEAR — ${BRAND_SLOGAN.vi}`}
+                  src="/images/hanoi-heritage-set.png"
+                  alt={`Hanoi Heritage Set — ${BRAND_SLOGAN.vi}`}
                   fill
                   sizes="(max-width: 768px) 100vw, 750px"
                   className="object-contain p-2"
@@ -62,13 +62,13 @@ export default function HeroSection() {
                 />
               </div>
 
-              {/* Sub-bar explaining the shirt */}
+              {/* Sub-bar explaining the set */}
               <div className="mt-3 pt-2.5 border-t border-neutral-800 flex items-center justify-between text-[11px] text-white/70 px-1 font-mono">
                 <span className="font-semibold text-white uppercase tracking-wider text-[10px] sm:text-[11px]">
-                  HẢI PHÒNG CHAPTER 01
+                  HÀ NỘI HERITAGE SET • 21.0285°N
                 </span>
                 <span className="text-[10px] text-white/50 tracking-wider">
-                  HEAVYWEIGHT COTTON 260GSM
+                  ÁO • THẺ QR • MÓC KHÓA • HỘP
                 </span>
               </div>
             </div>

@@ -99,7 +99,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               onClick={() => setQuickAddOpen(true)}
               className="w-full bg-[#111]/90 backdrop-blur-xs text-white text-[11px] font-semibold tracking-[0.12em] uppercase py-3.5 hover:bg-[#111] transition-colors"
             >
-              QUICK ADD
+              THÊM NHANH
             </button>
           ) : (
             <div className="bg-white border-t border-[#eaeaea] p-3">
