@@ -5,7 +5,7 @@ import { MapPin, Sparkles, ArrowRight, Compass } from "lucide-react";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { BRAND_SLOGAN, BRAND_TAGLINE } from "@/data/brand";
+import { BRAND_TAGLINE } from "@/data/brand";
 
 export const metadata: Metadata = {
   title: "Khám Phá Di Sản Các Thành Phố — VIET CITY WEAR",

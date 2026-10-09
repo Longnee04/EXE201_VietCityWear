@@ -6,7 +6,7 @@ const dbPath = path.join(process.cwd(), "data", "sepay_orders.json");
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const resolvedParams = await params;
@@ -21,7 +21,7 @@ export async function GET(
     }
 
     const orders = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
-    const order = orders.find((o: any) => o.orderId === orderId);
+    const order = orders.find((o: { orderId: number }) => o.orderId === orderId);
 
     if (!order) {
       return NextResponse.json({ success: false, error: "Order not found" }, { status: 404 });

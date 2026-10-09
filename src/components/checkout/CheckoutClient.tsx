@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
+
 
 export default function CheckoutClient() {
   const { items, itemCount, clearCart } = useCart();

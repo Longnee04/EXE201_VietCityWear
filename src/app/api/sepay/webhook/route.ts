@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     let orders = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
     let found = false;
     
-    orders = orders.map((o: any) => {
+    orders = orders.map((o: { orderId: number; [key: string]: unknown }) => {
       if (o.orderId === orderId) {
         found = true;
         return { ...o, status: "paid" };

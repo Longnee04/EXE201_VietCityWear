@@ -173,19 +173,19 @@ export default function Header() {
                       ))}
                     </div>
                     <div className="pt-2 text-right">
-                      <a
+                      <Link
                         href="/#t-shirts"
                         onClick={() => setSearchOpen(false)}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-[#111] hover:underline"
                       >
                         <span>Xem tất cả sản phẩm</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ) : (
                   <p className="text-xs text-[#888] py-2">
-                    Không tìm thấy sản phẩm nào khớp với "{searchQuery}".
+                    Không tìm thấy sản phẩm nào khớp với &quot;{searchQuery}&quot;.
                   </p>
                 )}
               </div>

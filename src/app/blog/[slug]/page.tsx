@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, User, ArrowLeft, Shirt, Sparkles, Share2 } from "lucide-react";
+import { Calendar, User, ArrowLeft, Shirt, Sparkles } from "lucide-react";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -189,7 +189,7 @@ export default async function BlogDetailPage({ params }: Props) {
               Câu chuyện di sản khác
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {relatedBlogs.map((rel: any) => (
+              {relatedBlogs.map((rel: { id: string | number; slug?: string; title?: string; cover_image?: string; category?: string; [key: string]: unknown }) => (
                 <Link
                   key={rel.id}
                   href={`/blog/${rel.slug || rel.id}`}

@@ -1,17 +1,16 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { formatPrice } from "@/data/products";
 import { Suspense, useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 
 function SepayContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const { items, clearCart } = useCart();
+  const { clearCart } = useCart();
   
   const orderId = searchParams.get("orderId");
   const amountStr = searchParams.get("amount");

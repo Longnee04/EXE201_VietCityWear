@@ -182,7 +182,7 @@ export default function ProductGrid() {
               {/* Sort dropdown */}
               <select
                 value={activeSort}
-                onChange={(e) => setActiveSort(e.target.value as any)}
+                onChange={(e) => setActiveSort(e.target.value as "default" | "price_asc" | "price_desc" | "newest" | "best_seller")}
                 className="py-1.5 px-2.5 text-[11px] font-medium bg-[#f5f5f5] text-[#333] border border-[#e0e0e0] focus:outline-none cursor-pointer"
               >
                 {sortOptions.map((s) => (
@@ -212,7 +212,7 @@ export default function ProductGrid() {
             </span>
             {searchQuery && (
               <span>
-                Kết quả cho từ khóa: <strong className="text-[#111]">"{searchQuery}"</strong>
+                Kết quả cho từ khóa: <strong className="text-[#111]">&quot;{searchQuery}&quot;</strong>
               </span>
             )}
           </div>

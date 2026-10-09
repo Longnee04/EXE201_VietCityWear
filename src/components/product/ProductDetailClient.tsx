@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { type Product, formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart-context";
-import { ShoppingBag, Check, ShieldCheck, Truck, X, Sparkles, Box, QrCode } from "lucide-react";
+import { ShoppingBag, Check, ShieldCheck, Truck, X, Sparkles, Box } from "lucide-react";
 
 const sizeChart = [
   { size: "S", chest: "100 cm", length: "68 cm", height: "1m50 – 1m60", weight: "45 – 55 kg" },
