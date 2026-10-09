@@ -9,7 +9,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export default function CheckoutClient() {
-  const { items, itemCount, removeFromCart } = useCart();
+  const { items, itemCount, clearCart } = useCart();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -31,50 +31,42 @@ export default function CheckoutClient() {
     
     setIsSubmitting(true);
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Create order object matching the Admin Orders mock format
-    const newOrder = {
-      id: `ord-${Math.floor(1000 + Math.random() * 9000)}`,
-      receiver_name: formData.name,
-      receiver_phone: formData.phone,
-      shipping_address: formData.address,
-      total_amount: total,
-      payment_method: paymentMethod,
-      status: "processing",
-      created_at: new Date().toISOString(),
-      items: items.map((item) => ({
-        product_name: item.name,
-        size: item.size,
-        color: item.color || "Tiêu chuẩn",
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    };
-
-    if (paymentMethod === "SEPAY") {
-      // 1. Save order as pending
-      localStorage.setItem("vcw_pending_order", JSON.stringify(newOrder));
-      
-      // 2. Redirect to SePay QR page
-      router.push(`/checkout/sepay?orderId=${newOrder.id}&amount=${total}`);
-      return;
-    }
-
-    // COD Flow
     try {
-      const existingRaw = localStorage.getItem("vcw_admin_orders");
-      let existingOrders = [];
-      if (existingRaw) {
-        existingOrders = JSON.parse(existingRaw);
+      // 1. Create order in Database
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          receiver_name: formData.name,
+          receiver_phone: formData.phone,
+          shipping_address: formData.address,
+          total_amount: total,
+          payment_method: paymentMethod,
+          items: items.map((item) => ({
+            productId: item.productId,
+            name: item.name,
+            size: item.size,
+            color: item.color || "Tiêu chuẩn",
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to create order");
+
+      if (paymentMethod === "SEPAY") {
+        // 2. Redirect to SePay QR page using real OrderId
+        router.push(`/checkout/sepay?orderId=${data.orderId}&amount=${total}`);
+        return;
       }
-      localStorage.setItem("vcw_admin_orders", JSON.stringify([newOrder, ...existingOrders]));
-      
+
+      // COD Flow
       // Clear cart
-      items.forEach(item => removeFromCart(item.productId, item.size));
-      
+      clearCart();
       setIsSuccess(true);
+      
     } catch (err) {
       console.error("Failed to save order", err);
       alert("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.");

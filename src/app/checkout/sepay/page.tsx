@@ -1,23 +1,68 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { formatPrice } from "@/data/products";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useCart } from "@/lib/cart-context";
 
 function SepayContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { items, clearCart } = useCart();
+  
   const orderId = searchParams.get("orderId");
   const amountStr = searchParams.get("amount");
   const amount = amountStr ? parseInt(amountStr) : 0;
+  
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (!orderId || isSuccess) return;
+
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(`/api/orders/${orderId}/status`);
+        const data = await res.json();
+        if (data.success && data.status === "paid") {
+           // Payment successful, clear cart
+           clearCart();
+           setIsSuccess(true);
+        }
+      } catch (err) {
+        console.error("Failed to check status", err);
+      }
+    };
+
+    const interval = setInterval(checkStatus, 3000); // Check every 3 seconds
+    return () => clearInterval(interval);
+  }, [orderId, clearCart, isSuccess]);
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+        <CheckCircle2 className="w-20 h-20 text-emerald-500 mb-6" />
+        <h1 className="text-2xl font-bold uppercase tracking-widest mb-4">Thanh Toán Thành Công!</h1>
+        <p className="text-gray-600 mb-8 max-w-md">
+          Đơn hàng <strong>{orderId}</strong> của bạn đã được thanh toán thành công và đang được xử lý.
+        </p>
+        <Link 
+          href="/"
+          className="px-8 py-3 bg-black text-white text-sm font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors"
+        >
+          Trở về Trang chủ
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
       <h1 className="text-2xl font-bold uppercase tracking-widest mb-4">Thanh Toán Đơn Hàng</h1>
       <p className="text-gray-600 mb-8 max-w-md">
-        Quý khách vui lòng quét mã QR dưới đây hoặc chuyển khoản theo thông tin để hoàn tất đơn hàng <strong>{orderId}</strong>.
+        Quý khách vui lòng quét mã QR dưới đây hoặc chuyển khoản theo thông tin để hoàn tất đơn hàng <strong>{orderId}</strong>. Hệ thống sẽ tự động cập nhật khi nhận được tiền.
       </p>
 
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8 w-full max-w-md">
@@ -68,12 +113,7 @@ function SepayContent() {
         >
           Trở về Trang chủ
         </Link>
-        <Link 
-          href="/admin/orders"
-          className="px-8 py-3 bg-black text-white text-sm font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors flex items-center gap-2"
-        >
-          Tôi đã thanh toán <ArrowRight className="w-4 h-4" />
-        </Link>
+
       </div>
     </div>
   );

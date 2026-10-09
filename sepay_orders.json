@@ -1,0 +1,42 @@
+[
+  {
+    "orderId": 1791529928689,
+    "receiver_name": "Phạm Tuấn Kiệt",
+    "receiver_phone": "0847037970",
+    "shipping_address": "Thôn 43, Xuân Trường, Ninh Bình ",
+    "total_amount": 598000,
+    "payment_method": "SEPAY",
+    "items": [
+      {
+        "productId": "vcw-hp-001",
+        "name": "Áo thun Hải Phòng Heritage Tee",
+        "size": "L",
+        "color": "White",
+        "quantity": 2,
+        "price": 299000
+      }
+    ],
+    "status": "pending",
+    "createdAt": "2026-10-09T07:12:08.689Z"
+  },
+  {
+    "orderId": 1791530243415,
+    "receiver_name": "ava",
+    "receiver_phone": "02344566",
+    "shipping_address": "af mzfdi",
+    "total_amount": 598000,
+    "payment_method": "SEPAY",
+    "items": [
+      {
+        "productId": "vcw-hp-001",
+        "name": "Áo thun Hải Phòng Heritage Tee",
+        "size": "L",
+        "color": "White",
+        "quantity": 2,
+        "price": 299000
+      }
+    ],
+    "status": "pending",
+    "createdAt": "2026-10-09T07:17:23.415Z"
+  }
+]

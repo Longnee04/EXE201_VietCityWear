@@ -4,12 +4,15 @@
 // =========================================================
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["public", "auth"]
 }
 
 // =========================================================
@@ -30,6 +33,7 @@ model User {
   blogs     Blog[]
 
   @@map("User")
+  @@schema("public")
 }
 
 // =========================================================
@@ -46,6 +50,7 @@ model City {
   products    Product[]
 
   @@map("City")
+  @@schema("public")
 }
 
 // =========================================================
@@ -64,6 +69,7 @@ model Landmark {
   travelTimeline  TravelTimeline[]
 
   @@map("Landmark")
+  @@schema("public")
 }
 
 // =========================================================
@@ -80,6 +86,7 @@ model LandmarkMedia {
   landmark   Landmark  @relation(fields: [LandmarkId], references: [LandmarkId])
 
   @@map("LandmarkMedia")
+  @@schema("public")
 }
 
 // =========================================================
@@ -95,6 +102,7 @@ model TravelTimeline {
   landmark   Landmark  @relation(fields: [LandmarkId], references: [LandmarkId])
 
   @@map("TravelTimeline")
+  @@schema("public")
 }
 
 // =========================================================
@@ -111,6 +119,7 @@ model FoodSpot {
   city        City      @relation(fields: [CityId], references: [CityId])
 
   @@map("FoodSpot")
+  @@schema("public")
 }
 
 // =========================================================
@@ -133,6 +142,7 @@ model Product {
   nfcTags      NFCTag[]
 
   @@map("Product")
+  @@schema("public")
 }
 
 // =========================================================
@@ -151,6 +161,7 @@ model ProductVariant {
   orderItems    OrderItem[]
 
   @@map("ProductVariant")
+  @@schema("public")
 }
 
 // =========================================================
@@ -167,6 +178,7 @@ model ProductAccessory {
   product     Product   @relation(fields: [ProductId], references: [ProductId])
 
   @@map("ProductAccessory")
+  @@schema("public")
 }
 
 // =========================================================
@@ -182,6 +194,7 @@ model NFCTag {
   product   Product   @relation(fields: [ProductId], references: [ProductId])
 
   @@map("NFCTag")
+  @@schema("public")
 }
 
 // =========================================================
@@ -190,17 +203,22 @@ model NFCTag {
 // PaymentMethod: constant (vd: 'COD')
 // =========================================================
 model Order {
-  OrderId       Int       @id @default(autoincrement())
-  UserId        Int
-  TotalAmount   Decimal   @db.Decimal(18, 2)
-  Status        String    @db.VarChar(30)
-  PaymentMethod String    @db.VarChar(30)
-  CreatedAt     DateTime  @default(now())
+  OrderId         Int       @id @default(autoincrement())
+  UserId          Int?
+  ReceiverName    String?   @db.VarChar(100)
+  ReceiverPhone   String?   @db.VarChar(10)
+  ShippingAddress String?   @db.VarChar(255)
+  TotalAmount     Decimal   @db.Decimal(18, 2)
+  Status          String    @db.VarChar(30)
+  PaymentMethod   String    @db.VarChar(30)
+  ItemsJson       String?   @db.Text
+  CreatedAt       DateTime  @default(now())
 
-  user          User        @relation(fields: [UserId], references: [UserId])
-  items         OrderItem[]
+  user            User?       @relation(fields: [UserId], references: [UserId])
+  items           OrderItem[]
 
   @@map("Order")
+  @@schema("public")
 }
 
 // =========================================================
@@ -217,6 +235,7 @@ model OrderItem {
   variant     ProductVariant  @relation(fields: [VariantId], references: [VariantId])
 
   @@map("OrderItem")
+  @@schema("public")
 }
 
 // =========================================================
@@ -236,4 +255,5 @@ model Blog {
   author      User      @relation(fields: [AuthorId], references: [UserId])
 
   @@map("Blog")
+  @@schema("public")
 }
