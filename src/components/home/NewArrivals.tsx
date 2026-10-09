@@ -11,17 +11,17 @@ export default function NewArrivals() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#999] mb-2">
-              Just Dropped
+              Phát hành mới nhất
             </p>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
-              NEW ARRIVALS
+              SẢN PHẨM MỚI NHẤT
             </h2>
           </div>
           <a
             href="#t-shirts"
             className="hidden sm:inline-block text-[12px] font-medium tracking-[0.1em] uppercase text-[#555] hover:text-[#111] transition-colors border-b border-[#555] hover:border-[#111] pb-0.5"
           >
-            View All
+            Xem tất cả
           </a>
         </div>
 
@@ -47,7 +47,7 @@ export default function NewArrivals() {
             href="#t-shirts"
             className="inline-block text-[12px] font-medium tracking-[0.1em] uppercase text-[#555] hover:text-[#111] transition-colors border-b border-[#555] hover:border-[#111] pb-0.5"
           >
-            View All T-Shirts
+            Xem tất cả sản phẩm
           </a>
         </div>
       </div>

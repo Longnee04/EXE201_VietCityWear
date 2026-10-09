@@ -19,7 +19,7 @@ const cityCollections: CityItem[] = [
     name: "HÀ NỘI",
     region: "Miền Bắc",
     status: "active",
-    badgeText: "BỘ SƯU TẬP MVP • ĐANG MỞ BÁN",
+    badgeText: "CHÍNH THỨC PHÁT HÀNH",
     description: "Thủ đô ngàn năm văn hiến. Trọn vẹn với 5 địa danh di sản, bộ thẻ Hanoi Story Cards và móc khóa gỗ NFC.",
     landmarksCount: 5,
     href: "/#t-shirts",
@@ -30,7 +30,7 @@ const cityCollections: CityItem[] = [
     name: "HẢI PHÒNG",
     region: "Miền Bắc",
     status: "second",
-    badgeText: "BỘ SƯU TẬP THỨ HAI",
+    badgeText: "HẢI PHÒNG CHAPTER",
     description: "Thành phố cảng hoa phượng đỏ. Ghi dấu tọa độ 20.8449°N, 106.6881°E và tinh thần phóng khoáng miền duyên hải.",
     landmarksCount: 3,
     href: "/products/ao-thun-hai-phong-heritage-tee",
@@ -79,7 +79,7 @@ export default function CityCollections() {
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 bg-[#111] rounded-full inline-block" />
               <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#777]">
-                Lộ trình mở rộng di sản đô thị
+                Hành trình các thành phố
               </p>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
@@ -164,7 +164,7 @@ export default function CityCollections() {
                   </Link>
                 ) : (
                   <span className="text-[11px] font-medium text-[#999] tracking-wider uppercase">
-                    Đang thiết kế họa tiết & thẻ di sản...
+                    Sắp phát hành • Coming Soon
                   </span>
                 )}
               </div>

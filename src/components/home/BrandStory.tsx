@@ -7,7 +7,7 @@ export default function BrandStory() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* Real project image presentation */}
-          <div className="relative aspect-[4/3] bg-[#fafafa] rounded-lg border border-[#eaeaea] overflow-hidden">
+          <div className="relative aspect-[4/3] bg-[#fafafa] rounded-sm border border-[#eaeaea] overflow-hidden">
             <Image
               src="/images/hanoi-story-cards.png"
               alt="HANOI STORY CARDS - VIET CITY WEAR"

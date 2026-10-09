@@ -185,25 +185,32 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
           </div>
 
-          {/* Standard Inclusions Preview */}
+          {/* Product Inclusions Preview */}
           <div className="mb-6 p-3.5 bg-[#fafafa] border border-[#eaeaea]">
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#111] mb-2 flex items-center gap-1.5">
               <Box className="w-3.5 h-3.5" />
-              <span>Bộ sản phẩm bao gồm:</span>
+              <span>Quy cách đóng gói & Bộ sản phẩm:</span>
             </p>
             <ul className="text-xs text-[#555] space-y-1.5">
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                <span>01 Áo thun văn hóa Streetwear cao cấp</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                <span>Bộ thẻ địa danh & di sản độc quyền</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                <span>01 Móc khóa gỗ khắc Laser tích hợp chip NFC</span>
-              </li>
+              {product.includes && product.includes.length > 0 ? (
+                product.includes.map((item, idx) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
+                    <span>01 Sản phẩm chính hãng VIET CITY WEAR</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
+                    <span>Thẻ bảo hành & Hướng dẫn trải nghiệm số</span>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 

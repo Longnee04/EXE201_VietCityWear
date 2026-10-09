@@ -16,34 +16,31 @@ export default function CampaignSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {/* Card 1: [BLOCK_MOC_KHOA_NFC] */}
-          <div className="bg-[#fafafa] rounded-xl p-6 sm:p-8 border border-[#eaeaea] flex flex-col justify-between">
+          <div className="bg-[#fafafa] rounded-sm p-6 sm:p-8 border border-[#eaeaea] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] font-semibold tracking-[0.15em] uppercase bg-[#111] text-white px-3 py-1">
                   MÓC KHÓA NFC
                 </span>
-                <span className="text-[11px] text-[#777]">Kèm gói Tiêu chuẩn & Đặc biệt</span>
+                <span className="text-[11px] text-[#777] font-mono">CHIP NTAG213</span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#111] uppercase mb-2">
-                Móc khóa gỗ NFC (HANOI)
+                Móc khóa gỗ NFC di sản
               </h3>
 
-              {/* Caption from requirements */}
-              <div className="p-3 bg-white rounded-md border border-[#eaeaea] mb-5">
-                <p className="text-xs sm:text-sm font-semibold text-[#111]">
-                  Khách chạm điện thoại vào móc khóa → mở trang web của VIET CITY WEAR
-                </p>
-              </div>
+              <p className="text-xs sm:text-sm text-[#555] leading-relaxed mb-5">
+                Chạm nhẹ điện thoại vào móc khóa để mở ngay trang trải nghiệm di sản số, bản đồ ẩm thực và lịch trình khám phá văn hóa đô thị.
+              </p>
 
               {/* Image [BLOCK_MOC_KHOA_NFC] */}
               <div
                 id="[BLOCK_MOC_KHOA_NFC]"
-                className="block-moc-khoa-nfc relative w-full aspect-square max-h-[340px] mx-auto rounded-lg overflow-hidden bg-white border border-[#eaeaea]"
+                className="block-moc-khoa-nfc relative w-full aspect-square max-h-[340px] mx-auto rounded-none overflow-hidden bg-white border border-[#eaeaea]"
               >
                 <Image
                   src="/images/moc-khoa-nfc-hanoi.png"
-                  alt="Móc khóa gỗ NFC (HANOI) - Khách chạm điện thoại vào móc khóa mở trang web của VIET CITY WEAR"
+                  alt="Móc khóa gỗ NFC (HANOI) — VIET CITY WEAR"
                   fill
                   sizes="(max-width: 768px) 100vw, 500px"
                   className="object-contain p-4"
@@ -53,7 +50,7 @@ export default function CampaignSection() {
 
             <div className="mt-5 border-t border-[#eaeaea] pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <p className="text-xs text-[#666]">
-                Mở ra câu chuyện về địa danh, hình ảnh, video và cẩm nang du lịch song ngữ Việt - Anh.
+                Mở câu chuyện địa danh, audio thuyết minh và cẩm nang du lịch song ngữ Việt – Anh.
               </p>
               <Link
                 href="/explore/hanoi"
@@ -65,36 +62,31 @@ export default function CampaignSection() {
           </div>
 
           {/* Card 2: [BLOCK_THE_DIA_DANH] */}
-          <div className="bg-[#fafafa] rounded-xl p-6 sm:p-8 border border-[#eaeaea] flex flex-col justify-between">
+          <div className="bg-[#fafafa] rounded-sm p-6 sm:p-8 border border-[#eaeaea] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] font-semibold tracking-[0.15em] uppercase bg-[#111] text-white px-3 py-1">
                   THẺ ĐỊA DANH
                 </span>
-                <span className="text-[11px] text-[#777]">Sưu tập văn hóa</span>
+                <span className="text-[11px] text-[#777] font-mono">STORY CARDS</span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#111] uppercase mb-2">
-                Bộ HANOI STORY CARDS
+                Bộ Hanoi Story Cards
               </h3>
 
-              <div className="p-3 bg-white rounded-md border border-[#eaeaea] mb-5">
-                <p className="text-xs sm:text-sm text-[#555]">
-                  Hộp màu xanh và các thẻ địa danh in hình – giới thiệu các địa điểm xuất hiện trên áo (kèm mã QR).
-                </p>
-                <p className="text-[11px] text-[#888] mt-1">
-                  * Bộ HANOI STORY CARDS (10 thẻ) là sản phẩm sưu tập riêng; gói áo chỉ kèm 3 hoặc 5 thẻ.
-                </p>
-              </div>
+              <p className="text-xs sm:text-sm text-[#555] leading-relaxed mb-5">
+                Các thẻ địa danh in hình mỹ thuật giới thiệu từng địa điểm văn hóa xuất hiện trên áo, tích hợp mã QR tương tác nhanh.
+              </p>
 
               {/* Image [BLOCK_THE_DIA_DANH] */}
               <div
                 id="[BLOCK_THE_DIA_DANH]"
-                className="block-the-dia-danh relative w-full aspect-[1312/1199] max-h-[340px] mx-auto rounded-lg overflow-hidden bg-white border border-[#eaeaea]"
+                className="block-the-dia-danh relative w-full aspect-[1312/1199] max-h-[340px] mx-auto rounded-none overflow-hidden bg-white border border-[#eaeaea]"
               >
                 <Image
                   src="/images/hanoi-story-cards.png"
-                  alt="Bộ HANOI STORY CARDS - Hộp màu xanh và các thẻ địa danh in hình"
+                  alt="Bộ HANOI STORY CARDS — VIET CITY WEAR"
                   fill
                   sizes="(max-width: 768px) 100vw, 500px"
                   className="object-contain p-2"
@@ -104,13 +96,13 @@ export default function CampaignSection() {
 
             <div className="mt-5 border-t border-[#eaeaea] pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <p className="text-xs text-[#666]">
-                10 thẻ địa danh tuyển chọn, tích hợp mã QR xem video & nghe audio thuyết minh.
+                Khám phá trọn vẹn hình ảnh, câu chuyện lịch sử và gợi ý quán ăn nổi tiếng quanh địa danh.
               </p>
               <Link
                 href="/explore/hanoi"
                 className="inline-flex items-center justify-center px-4 py-2.5 border border-[#111] text-[#111] text-[11px] font-bold uppercase tracking-wider hover:bg-[#111] hover:text-white transition-colors flex-shrink-0"
               >
-                Quét thử QR →
+                Khám phá di sản →
               </Link>
             </div>
           </div>

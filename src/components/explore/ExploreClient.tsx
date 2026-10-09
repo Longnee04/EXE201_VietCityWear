@@ -343,6 +343,40 @@ export default function ExploreClient() {
           </div>
         </div>
 
+        {/* Interactive Heritage Map Section */}
+        <section className="mt-14 pt-12 border-t border-[#eaeaea]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#111] text-white text-[10px] font-bold tracking-widest uppercase mb-2">
+                <MapPin className="w-3.5 h-3.5" />
+                {lang === "vi" ? "BẢN ĐỒ DI SẢN SỐ" : "INTERACTIVE HERITAGE MAP"}
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-[#111] uppercase tracking-tight">
+                {lang === "vi"
+                  ? "Tọa độ 5 địa danh & điểm đến văn hóa Hà Nội"
+                  : "Coordinates of 5 Hanoi Heritage Landmarks"}
+              </h3>
+            </div>
+            <span className="text-[11px] font-mono text-[#777]">
+              HÀ NỘI — 21.0285°N, 105.8542°E
+            </span>
+          </div>
+
+          <div className="relative w-full aspect-[16/9] max-h-[440px] border border-[#eaeaea] overflow-hidden bg-[#fafafa]">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14896.793616641558!2d105.84310574999999!3d21.028779699999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab9bd3861111%3A0x2a92e10697e88775!2zSOG7kyBIb8OgbiBLaeG6v20!5e0!3m2!1svi!2svn!4v1710000000000!5m2!1svi!2svn"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Bản đồ di sản Hà Nội"
+              className="w-full h-full min-h-[350px]"
+            />
+          </div>
+        </section>
+
         {/* 1-Day Travel Itinerary Timeline Section */}
         <section className="mt-14 pt-12 border-t border-[#eaeaea]">
           <div className="max-w-3xl mb-8">

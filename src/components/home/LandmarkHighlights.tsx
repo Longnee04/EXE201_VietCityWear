@@ -172,7 +172,7 @@ export default function LandmarkHighlights() {
                   className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#111] text-white text-[11px] font-bold tracking-wider uppercase hover:bg-[#333] transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Khám phá trọn vẹn qua NFC</span>
+                  <span>Khám phá di sản số</span>
                 </Link>
                 <a
                   href="/#t-shirts"

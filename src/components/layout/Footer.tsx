@@ -103,7 +103,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-16 pt-8 border-t border-[#eaeaea] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[11px] text-[#999] tracking-wide">
-            © 2025 VIETCITYWEAR. All rights reserved.
+            © 2026 VIETCITYWEAR. All rights reserved.
           </p>
           <p className="text-[10px] text-[#999] tracking-widest uppercase">
             {BRAND_TAGLINE}
