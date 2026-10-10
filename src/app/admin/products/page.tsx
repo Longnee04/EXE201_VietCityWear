@@ -32,35 +32,90 @@ interface Product {
 const mockDefaultProducts: Product[] = [
   {
     id: "p1",
-    name: "Áo Thun Hà Nội Phố — Signature Tee",
-    base_price: 299000,
-    package_type: "Tiêu chuẩn (Áo + 5 Thẻ + Móc khóa NFC)",
-    front_image: "/images/products/tee-hanoi-front.jpg",
-    back_image: "/images/products/tee-hanoi-back.jpg",
-    description: "Chất liệu 100% Cotton 2 chiều định lượng 250gsm thoáng mát, form Oversize.",
-    size_guide_text: "M: 50-65kg | L: 65-75kg | XL: 75-85kg",
+    name: "Hanoi Heritage Set — Hoan Kiem Lake Edition",
+    base_price: 219000,
+    package_type: "Set đầy đủ (Full Box)",
+    front_image: "/images/hanoi-heritage-set.png",
+    back_image: "/images/hanoi-heritage-set.png",
+    description: "Trọn bộ trải nghiệm Hà Nội: 01 Áo thun Hanoi Heritage Tee, 01 Thẻ di sản bo góc, 01 Móc khóa gỗ QR Keychain và Hộp quà Branded Carton Box.",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
   },
   {
     id: "p2",
-    name: "Áo Thun Cố Đô Huế — Heritage Tee",
-    base_price: 299000,
-    package_type: "Tiêu chuẩn (Áo + 5 Thẻ + Móc khóa NFC)",
-    front_image: "/images/products/tee-hue-front.jpg",
-    back_image: "/images/products/tee-hue-back.jpg",
-    description: "Họa tiết Ngọ Môn và hoa văn triều Nguyễn tinh xảo in lụa cao cấp.",
-    size_guide_text: "M: 50-65kg | L: 65-75kg | XL: 75-85kg",
+    name: "Hanoi Heritage Tee — Hoan Kiem Lake Edition",
+    base_price: 179000,
+    package_type: "Áo thun di sản",
+    front_image: "/images/ao-thun-ha-noi.png",
+    back_image: "/images/ao-thun-ha-noi.png",
+    description: "Áo thun lưu niệm di sản Hà Nội — Mặt trước in logo VIET CITY WEAR, mặt sau in hình Hồ Hoàn Kiếm, Tháp Rùa, xích lô truyền thống. Chất liệu 100% cotton thoáng mát.",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
   },
   {
     id: "p3",
-    name: "Áo Thun Phố Hội Đèn Lồng — Golden Ancient Tee",
-    base_price: 349000,
-    package_type: "Phiên bản đặc biệt (Áo cao cấp + 5 Thẻ + NFC + Hộp đẹp)",
-    front_image: "/images/products/tee-hoian-front.jpg",
-    back_image: "/images/products/tee-hoian-back.jpg",
-    description: "Hộp quà tặng cao cấp, kèm móc khóa NFC chạm mở bản đồ ẩm thực Hội An.",
-    size_guide_text: "M: 50-65kg | L: 65-75kg | XL: 75-85kg",
+    name: "Hanoi QR Keychain",
+    base_price: 29000,
+    package_type: "Móc khóa gỗ QR/NFC",
+    front_image: "/images/moc-khoa-qr-hanoi.png",
+    back_image: "/images/moc-khoa-qr-hanoi.png",
+    description: "Móc khóa gỗ tròn 2 mặt: một bên khắc logo VIET CITY WEAR, một bên khắc mã QR/NFC kết nối website di sản số.",
+    size_guide_text: "Freesize (Đường kính 4.5cm)",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "p4",
+    name: "Hanoi Heritage Card — Hoan Kiem Lake Edition",
+    base_price: 39000,
+    package_type: "Thẻ địa danh sưu tập",
+    front_image: "/images/the-dia-danh-hanoi.png",
+    back_image: "/images/the-dia-danh-hanoi.png",
+    description: "Thẻ mỹ thuật sưu tập bo góc cao cấp, in hình và câu chuyện lịch sử Hồ Gươm, tích hợp mã QR khám phá audio thuyết minh.",
+    size_guide_text: "Kích thước: 8.5 x 12 cm",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "p5",
+    name: "Hanoi Story Cards — Hộp 10 Thẻ Sưu Tập",
+    base_price: 129000,
+    package_type: "Hộp quà sưu tập",
+    front_image: "/images/hanoi-story-cards.png",
+    back_image: "/images/hanoi-story-cards.png",
+    description: "Hộp cứng cao cấp gồm 10 thẻ địa danh Hà Nội: Hồ Gươm, Văn Miếu, Lăng Bác, Nhà Thờ Lớn, Phố Cổ... kèm túi canvas bảo vệ.",
+    size_guide_text: "Hộp 10 thẻ + Túi canvas",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "p6",
+    name: "Hanoi Heritage Tee — Văn Miếu Quốc Tử Giám Edition",
+    base_price: 179000,
+    package_type: "Áo thun di sản",
+    front_image: "/images/landmarks/van-mieu.jpg",
+    back_image: "/images/ao-thun-ha-noi.png",
+    description: "Áo thun di sản Văn Miếu — Họa tiết Khuê Văn Các và 82 bia tiến sĩ nghìn năm hiếu học.",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "p7",
+    name: "Hanoi Heritage Tee — 36 Phố Phường Edition",
+    base_price: 179000,
+    package_type: "Áo thun di sản",
+    front_image: "/images/landmarks/pho-co.jpg",
+    back_image: "/images/ao-thun-ha-noi.png",
+    description: "Áo thun di sản Phố Cổ — Lấy cảm hứng từ nét rêu phong mái ngói ngõ nhỏ 36 phố phường kinh kỳ Thăng Long.",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "p8",
+    name: "Hải Phòng Heritage Tee (Coming Soon)",
+    base_price: 179000,
+    package_type: "Áo thun di sản",
+    front_image: "/images/ao-thun-hai-phong-coming-soon.png",
+    back_image: "/images/ao-thun-hai-phong.png",
+    description: "Bộ sưu tập Thành phố Cảng hoa phượng đỏ — Sắp phát hành trong đợt tiếp theo.",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
   },
 ];
@@ -105,12 +160,12 @@ export default function AdminProductsPage() {
   // Form State
   const [formData, setFormData] = useState({
     name: "",
-    base_price: 299000,
-    package_type: "Tiêu chuẩn (Áo + 5 Thẻ + Móc khóa NFC)",
-    front_image: "/images/products/tee-hanoi-front.jpg",
-    back_image: "/images/products/tee-hanoi-back.jpg",
+    base_price: 179000,
+    package_type: "Áo thun di sản",
+    front_image: "/images/ao-thun-ha-noi.png",
+    back_image: "/images/ao-thun-ha-noi.png",
     description: "",
-    size_guide_text: "M: 50-65kg | L: 65-75kg | XL: 75-85kg",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
   });
 
   const [refreshIndex, setRefreshIndex] = useState(0);
@@ -156,12 +211,12 @@ export default function AdminProductsPage() {
     setCurrentId(null);
     setFormData({
       name: "",
-      base_price: 299000,
-      package_type: "Tiêu chuẩn (Áo + 5 Thẻ + Móc khóa NFC)",
-      front_image: "/images/products/tee-hanoi-front.jpg",
-      back_image: "/images/products/tee-hanoi-back.jpg",
+      base_price: 179000,
+      package_type: "Áo thun di sản",
+      front_image: "/images/ao-thun-ha-noi.png",
+      back_image: "/images/ao-thun-ha-noi.png",
       description: "",
-      size_guide_text: "M: 50-65kg | L: 65-75kg | XL: 75-85kg",
+      size_guide_text: "M: 50-65kg | L: 65-75kg",
     });
     setIsModalOpen(true);
   };
@@ -409,7 +464,7 @@ export default function AdminProductsPage() {
               <tr className="bg-neutral-50 border-b border-[#E5E5E5] text-[11px] font-bold uppercase tracking-wider text-neutral-600">
                 <th className="py-3 px-4">Ảnh</th>
                 <th className="py-3 px-4">Tên sản phẩm</th>
-                <th className="py-3 px-4">Gói combo</th>
+                <th className="py-3 px-4">Phân loại</th>
                 <th className="py-3 px-4">Giá cơ bản</th>
                 <th className="py-3 px-4">Hướng dẫn size</th>
                 <th className="py-3 px-4 text-right">Thao tác</th>
@@ -545,24 +600,20 @@ export default function AdminProductsPage() {
 
                 <div>
                   <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                    Gói combo đính kèm
+                    Phân loại sản phẩm
                   </label>
                   <select
-                    value={formData.package_type}
+                    value={formData.package_type || "Áo thun di sản"}
                     onChange={(e) =>
                       setFormData({ ...formData, package_type: e.target.value })
                     }
                     className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black bg-white"
                   >
-                    <option value="Cơ bản (Áo + 3 Thẻ địa danh)">
-                      Cơ bản (249.000đ - Áo + 3 Thẻ)
-                    </option>
-                    <option value="Tiêu chuẩn (Áo + 5 Thẻ + Móc khóa NFC)">
-                      Tiêu chuẩn (299.000đ - Áo + 5 Thẻ + NFC)
-                    </option>
-                    <option value="Phiên bản đặc biệt (Áo cao cấp + 5 Thẻ + NFC + Hộp đẹp)">
-                      Đặc biệt (349.000đ - Áo tốt + 5 Thẻ + NFC + Hộp đẹp)
-                    </option>
+                    <option value="Áo thun di sản">Áo thun di sản</option>
+                    <option value="Set đầy đủ (Full Box)">Set đầy đủ (Full Box)</option>
+                    <option value="Móc khóa gỗ QR/NFC">Móc khóa gỗ QR/NFC</option>
+                    <option value="Thẻ địa danh sưu tập">Thẻ địa danh sưu tập</option>
+                    <option value="Hộp quà sưu tập">Hộp quà sưu tập</option>
                   </select>
                 </div>
               </div>

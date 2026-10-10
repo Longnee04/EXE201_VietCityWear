@@ -55,11 +55,23 @@ export function mapDbProductToUi(
 
   const generatedSlug = slugify(dbProd.name) || dbProd.id;
 
+  const isSet = dbProd.name.toLowerCase().includes("set");
+  const isComingSoon = dbProd.name.toLowerCase().includes("coming soon");
+  const isAccessory =
+    dbProd.name.toLowerCase().includes("keychain") ||
+    dbProd.name.toLowerCase().includes("móc khóa") ||
+    dbProd.name.toLowerCase().includes("card") ||
+    dbProd.name.toLowerCase().includes("thẻ");
+
+  const badge = isComingSoon ? "COMING SOON" : isSet ? "BEST SELLER" : undefined;
+  const category = isSet ? "best-seller" : "new";
+  const defaultSizes = isAccessory ? ["One Size"] : ["M", "L"];
+
   return {
     id: dbProd.id,
     name: dbProd.name,
     slug: generatedSlug,
-    price: Number(dbProd.base_price) || 299000,
+    price: Number(dbProd.base_price) || 179000,
     images: images,
     colors:
       uniqueColors.length > 0
@@ -74,17 +86,17 @@ export function mapDbProductToUi(
               : "#111111",
           }))
         : [{ name: "Tiêu chuẩn", value: "#111111" }],
-    sizes: uniqueSizes.length > 0 ? uniqueSizes : ["S", "M", "L", "XL"],
-    badge: "NEW",
-    category: "new",
-    city: cityName as "Hà Nội" | "Hải Phòng" | undefined,
+    sizes: uniqueSizes.length > 0 ? uniqueSizes : defaultSizes,
+    badge: badge,
+    category: category,
+    city: (cityName || "Hà Nội") as "Hà Nội" | "Hải Phòng",
     description:
       dbProd.description ||
-      "Sản phẩm áo thun văn hóa di sản độc bản từ VIET CITY WEAR.",
+      "Sản phẩm văn hóa di sản độc bản từ VIET CITY WEAR.",
     inStock: inStock,
     includes: dbProd.package_type
       ? [dbProd.package_type]
-      : ["01 × Áo thun di sản", "01 × Thẻ địa danh AR", "01 × Móc khóa NFC"],
+      : ["01 × Sản phẩm chính hãng VIET CITY WEAR"],
   };
 }
 

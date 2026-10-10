@@ -76,6 +76,72 @@ export const products: Product[] = [
     ],
   },
   {
+    id: "vcw-hn-002",
+    name: "Hanoi Heritage Tee — Văn Miếu Quốc Tử Giám Edition",
+    slug: "hanoi-heritage-tee-van-mieu",
+    price: 179000,
+    compareAtPrice: 199000,
+    images: ["/images/landmarks/van-mieu.jpg", "/images/ao-thun-ha-noi.png"],
+    colors: [
+      { name: "White", value: "#F7F4EE" },
+      { name: "Black", value: "#111111" },
+    ],
+    sizes: ["M", "L"],
+    category: "new",
+    city: "Hà Nội",
+    description:
+      "Áo thun di sản Văn Miếu — Quốc Tử Giám. Họa tiết Khuê Văn Các và 82 bia tiến sĩ nghìn năm hiếu học. Chất liệu 100% cotton thoáng mát, form Regular.",
+    inStock: true,
+    includes: [
+      "01 × Áo thun Hanoi Heritage Tee Unisex",
+      "Thẻ thông tin sản phẩm và hướng dẫn bảo quản",
+    ],
+  },
+  {
+    id: "vcw-hn-003",
+    name: "Hanoi Heritage Tee — 36 Phố Phường Edition",
+    slug: "hanoi-heritage-tee-pho-co",
+    price: 179000,
+    compareAtPrice: 199000,
+    images: ["/images/landmarks/pho-co.jpg", "/images/ao-thun-ha-noi.png"],
+    colors: [
+      { name: "White", value: "#F7F4EE" },
+      { name: "Black", value: "#111111" },
+    ],
+    sizes: ["M", "L"],
+    category: "new",
+    city: "Hà Nội",
+    description:
+      "Áo thun di sản 36 Phố Phường. Khắc họa vẻ đẹp cổ kính rêu phong của các con phố nghề Thăng Long xưa. Chất liệu 100% cotton 250gsm thoáng mát.",
+    inStock: true,
+    includes: [
+      "01 × Áo thun Hanoi Heritage Tee Unisex",
+      "Thẻ thông tin sản phẩm và hướng dẫn bảo quản",
+    ],
+  },
+  {
+    id: "vcw-hn-004",
+    name: "Hanoi Heritage Tee — Nhà Thờ Lớn Edition",
+    slug: "hanoi-heritage-tee-nha-tho-lon",
+    price: 179000,
+    compareAtPrice: 199000,
+    images: ["/images/landmarks/nha-tho-lon.jpg", "/images/ao-thun-ha-noi.png"],
+    colors: [
+      { name: "White", value: "#F7F4EE" },
+      { name: "Black", value: "#111111" },
+    ],
+    sizes: ["M", "L"],
+    category: "new",
+    city: "Hà Nội",
+    description:
+      "Áo thun di sản Nhà Thờ Lớn Hà Nội. Tái hiện kiến trúc Gothic cổ kính rêu phong và góc nhìn văn hóa phố Nhà Chung.",
+    inStock: true,
+    includes: [
+      "01 × Áo thun Hanoi Heritage Tee Unisex",
+      "Thẻ thông tin sản phẩm và hướng dẫn bảo quản",
+    ],
+  },
+  {
     id: "vcw-card-001",
     name: "Hanoi Heritage Card — Hoan Kiem Lake Edition",
     slug: "hanoi-heritage-card-hoan-kiem-lake",
