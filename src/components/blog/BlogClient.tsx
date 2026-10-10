@@ -9,57 +9,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { supabase } from "@/lib/supabase/client";
 import { BRAND_SLOGAN, BRAND_TAGLINE } from "@/data/brand";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string | null;
-  content: string | null;
-  cover_image: string | null;
-  category: string | null;
-  status: string | null;
-  published_at: string | null;
-  created_at: string;
-}
-
-const fallbackBlogs: BlogPost[] = [
-  {
-    id: "b1",
-    title: "Hồ Gươm & Tháp Rùa – Trái tim nghìn năm văn hiến",
-    slug: "ho-guom-thap-rua-trai-tim-nghin-nam-van-hien",
-    content:
-      "Hồ Gươm không chỉ là biểu tượng bất tử của thủ đô Hà Nội, mà còn là nơi lưu giữ huyền tích vua Lê Lợi trả gươm báu cho Rùa Thần sau ngày khải hoàn. Dạo bước quanh hồ buổi sớm mai để ngắm tháp Rùa cổ kính nép mình dưới hàng liễu rủ là trải nghiệm văn hóa không thể nào quên.",
-    cover_image: "/images/hanoi-banner.jpg",
-    category: "culture",
-    status: "Published",
-    published_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "b2",
-    title: "Cố Đô Huế – Dấu ấn vàng son của triều đại phong kiến cuối cùng",
-    slug: "co-do-hue-dau-an-vang-son",
-    content:
-      "Nằm bên bờ sông Hương thơ mộng, Kinh thành Huế mang đậm dấu ấn cung đình triều Nguyễn với hệ thống lăng tẩm, hoàng thành uy nghiêm và nhã nhạc cung đình – di sản văn hóa phi vật thể của nhân loại.",
-    cover_image: "/images/hue-banner.jpg",
-    category: "landmark",
-    status: "Published",
-    published_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "b3",
-    title: "Phố Cổ Hội An – Ánh đèn lồng soi bóng dòng sông Hoài",
-    slug: "pho-co-hoi-an-anh-den-long-song-hoai",
-    content:
-      "Đô thị cổ Hội An từng là thương cảng quốc tế sầm uất bậc nhất Đông Nam Á từ thế kỷ 16-17. Nơi đây giao thoa tinh hoa kiến trúc Việt – Hoa – Nhật Bản, tạo nên một nét hoài niệm quyến rũ không nơi nào có được.",
-    cover_image: "/images/hoian-banner.jpg",
-    category: "travel",
-    status: "Published",
-    published_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-  },
-];
+import { BlogPost, fallbackBlogs } from "@/data/blogs";
 
 export default function BlogClient() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);

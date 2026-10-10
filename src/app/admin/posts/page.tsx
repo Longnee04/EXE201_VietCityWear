@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase/client";
+import Link from "next/link";
+import { slugify } from "@/data/blogs";
 
 interface Post {
   id: string;
@@ -406,13 +408,15 @@ export default function PostsManagementPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => alert("Xem bài viết: " + post.title)}
-                          className="p-2 text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-lg transition"
-                          title="Xem bài viết"
+                        <Link
+                          href={`/blog/${post.slug || post.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-lg transition inline-flex items-center"
+                          title="Xem bài viết trên web"
                         >
                           <Eye className="w-4 h-4" />
-                        </button>
+                        </Link>
                         <button
                           onClick={() => {
                             setEditingPost(post);
@@ -460,11 +464,9 @@ export default function PostsManagementPage() {
                 e.preventDefault();
                 try {
                   const generatedSlug =
-                    formData.slug.trim() ||
-                    formData.title
-                      .toLowerCase()
-                      .replace(/[^a-z0-9]+/g, "-")
-                      .replace(/^-|-$/g, "");
+                    formData.slug.trim()
+                      ? slugify(formData.slug.trim())
+                      : slugify(formData.title);
 
                   if (editingPost) {
                     await supabase

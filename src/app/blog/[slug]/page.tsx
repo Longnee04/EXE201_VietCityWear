@@ -8,18 +8,39 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { supabase } from "@/lib/supabase/client";
 import { BRAND_SLOGAN, HERO_HEADLINE } from "@/data/brand";
+import { fallbackBlogs, BlogPost } from "@/data/blogs";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function fetchBlog(slug: string): Promise<BlogPost | null> {
+  try {
+    const isUUID = UUID_REGEX.test(slug);
+    let query = supabase.from("blogs").select("*");
+    if (isUUID) {
+      query = query.or(`slug.eq.${slug},id.eq.${slug}`);
+    } else {
+      query = query.eq("slug", slug);
+    }
+    const { data, error } = await query.maybeSingle();
+    if (!error && data) {
+      return data as BlogPost;
+    }
+  } catch (err) {
+    console.error("Error fetching blog from DB:", err);
+  }
+
+  // Fallback to static blogs if not found in DB
+  const fallback = fallbackBlogs.find((b) => b.slug === slug || b.id === slug);
+  return fallback || null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { data: blog } = await supabase
-    .from("blogs")
-    .select("title, content")
-    .or(`slug.eq.${slug},id.eq.${slug}`)
-    .single();
+  const blog = await fetchBlog(slug);
 
   if (!blog) {
     return {
@@ -35,23 +56,42 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogDetailPage({ params }: Props) {
   const { slug } = await params;
-
-  const { data: blog } = await supabase
-    .from("blogs")
-    .select("*")
-    .or(`slug.eq.${slug},id.eq.${slug}`)
-    .single();
+  const blog = await fetchBlog(slug);
 
   if (!blog) {
     notFound();
   }
 
   // Fetch 2 other related articles
-  const { data: relatedBlogs } = await supabase
-    .from("blogs")
-    .select("id, title, slug, cover_image, category, created_at")
-    .neq("id", blog.id)
-    .limit(2);
+  let relatedBlogs: Array<{
+    id: string;
+    title: string;
+    slug: string | null;
+    cover_image: string | null;
+    category: string | null;
+    created_at?: string;
+  }> = [];
+
+  try {
+    const { data } = await supabase
+      .from("blogs")
+      .select("id, title, slug, cover_image, category, created_at")
+      .eq("status", "Published")
+      .neq("id", blog.id)
+      .limit(2);
+
+    if (data && data.length > 0) {
+      relatedBlogs = data;
+    }
+  } catch {
+    // ignore
+  }
+
+  if (relatedBlogs.length === 0) {
+    relatedBlogs = fallbackBlogs
+      .filter((b) => b.id !== blog.id && b.slug !== blog.slug)
+      .slice(0, 2);
+  }
 
   const paragraphs = (blog.content || "")
     .split("\n\n")
