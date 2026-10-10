@@ -251,9 +251,9 @@ export default function ExploreClient() {
             </div>
 
             {/* Story */}
-            <div className="space-y-3 text-xs sm:text-sm text-[#444] leading-relaxed border-t border-[#eaeaea] pt-4">
+            <div className="space-y-2 text-xs sm:text-sm text-[#444] leading-relaxed border-t border-[#eaeaea] pt-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#111]">
-                {lang === "vi" ? "Câu chuyện văn hóa" : "The Heritage Story"}
+                {lang === "vi" ? "Câu chuyện di sản" : "Heritage Story"}
               </h3>
               <p>
                 {lang === "vi"
@@ -262,17 +262,18 @@ export default function ExploreClient() {
               </p>
             </div>
 
-            {/* Historical background */}
-            <div className="space-y-3 text-xs sm:text-sm text-[#555] leading-relaxed bg-[#fafafa] p-4 rounded-md border border-[#eaeaea]">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#111]">
-                {lang === "vi" ? "Giá trị lịch sử & Kiến trúc" : "History & Architecture"}
-              </h3>
-              <p>
+            {/* Historical background - Collapsible */}
+            <details className="text-xs text-[#555] bg-[#fafafa] p-3.5 rounded-md border border-[#eaeaea] cursor-pointer group">
+              <summary className="font-bold uppercase tracking-wider text-[#111] select-none flex items-center justify-between">
+                <span>{lang === "vi" ? "Kiến trúc & Lịch sử chi tiết" : "Architecture & History Details"}</span>
+                <span className="text-[#888] font-mono text-[10px] group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p className="mt-2 leading-relaxed pt-2 border-t border-[#eee]">
                 {lang === "vi"
                   ? activeLandmark.history_vi
                   : activeLandmark.history_en}
               </p>
-            </div>
+            </details>
 
             {/* Food recommendations */}
             <div className="space-y-3 pt-2">
@@ -410,8 +411,8 @@ export default function ExploreClient() {
                 </h4>
                 <p className="text-xs text-[#555] mt-1 leading-relaxed">
                   {lang === "vi"
-                    ? "Chứng kiến nghi lễ thượng cờ trang nghiêm lúc 06:00 tại Quảng trường Ba Đình, sau đó thưởng thức bánh cuốn nóng thơm lừng tại Đội Cấn."
-                    : "Witness the solemn 6:00 AM flag raising ceremony at Ba Dinh Square, followed by hot steamed rice rolls on Doi Can."}
+                    ? "Dự lễ thượng cờ 06:00 tại Quảng trường Ba Đình, ăn sáng bánh cuốn nóng Đội Cấn."
+                    : "Flag raising ceremony at 06:00 at Ba Dinh Square, followed by hot steamed rice rolls on Doi Can."}
                 </p>
               </div>
             </div>
@@ -430,8 +431,8 @@ export default function ExploreClient() {
                 </h4>
                 <p className="text-xs text-[#555] mt-1 leading-relaxed">
                   {lang === "vi"
-                    ? "Dạo bước qua Khuê Văn Các và 82 bia tiến sĩ nghìn năm hiếu học. Bữa trưa ăn bún chả nướng than hoa thơm nức phố Nguyễn Khuyến."
-                    : "Explore Khue Van Pavilion and 82 UNESCO stone stele. Enjoy charcoal-grilled bun cha on Nguyen Khuyen street."}
+                    ? "Chiêm ngưỡng Khuê Văn Các và 82 bia tiến sĩ; ăn trưa bún chả gia truyền Nguyễn Khuyến."
+                    : "Visit Khue Van Pavilion and 82 stone stele; enjoy Bun Cha lunch on Nguyen Khuyen."}
                 </p>
               </div>
             </div>
@@ -450,8 +451,8 @@ export default function ExploreClient() {
                 </h4>
                 <p className="text-xs text-[#555] mt-1 leading-relaxed">
                   {lang === "vi"
-                    ? "Khám phá phố nghề Hàng Bạc, Hàng Mã, Hàng Buồm và thưởng thức phở bò tái lăn nước dùng trong thanh ngọt xương tại 49 Bát Đàn."
-                    : "Walk ancient craft streets and savor slow-simmered beef pho at legendary 49 Bat Dan."}
+                    ? "Khám phá các phố nghề thủ công cổ và thưởng thức phở bò gia truyền 49 Bát Đàn."
+                    : "Walk ancient craft streets and enjoy beef pho at 49 Bat Dan."}
                 </p>
               </div>
             </div>
@@ -470,8 +471,8 @@ export default function ExploreClient() {
                 </h4>
                 <p className="text-xs text-[#555] mt-1 leading-relaxed">
                   {lang === "vi"
-                    ? "Chiêm ngưỡng kiến trúc Gothic cổ kính rêu phong và trải nghiệm văn hóa trà chanh nem nướng vỉa hè phố Nhà Chung."
-                    : "Admire revival Gothic architecture and experience quintessential pavement lemon tea culture."}
+                    ? "Ngắm kiến trúc Gothic cổ kính và trải nghiệm trà chanh vỉa hè phố Nhà Chung."
+                    : "Admire Gothic architecture and relax with street lemon tea on Nha Chung."}
                 </p>
               </div>
             </div>
@@ -490,8 +491,8 @@ export default function ExploreClient() {
                 </h4>
                 <p className="text-xs text-[#555] mt-1 leading-relaxed">
                   {lang === "vi"
-                    ? "Dạo quanh hồ ngắm Tháp Rùa và cầu Thê Húc son đỏ rực rỡ trong đêm, nhâm nhi kem que cốm Tràng Tiền và ly cà phê trứng ngắm hồ từ ban công tầng 2 phố Đinh Tiên Hoàng."
-                    : "Stroll the illuminated lake, visit scarlet The Huc bridge, enjoy Trang Tien ice cream and rich egg coffee overlooking the water."}
+                    ? "Dạo quanh hồ ngắm Tháp Rùa lên đèn; thưởng thức kem Tràng Tiền và cà phê trứng phố Đinh."
+                    : "Evening walk around illuminated Hoan Kiem Lake, enjoy Trang Tien ice cream and egg coffee."}
                 </p>
               </div>
             </div>

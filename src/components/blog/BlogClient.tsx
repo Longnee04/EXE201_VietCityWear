@@ -77,8 +77,8 @@ export default function BlogClient() {
             <h1 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight text-[#111] max-w-3xl mx-auto">
               Cẩm Nang Di Sản & Câu Chuyện Thành Phố
             </h1>
-            <p className="mt-3 text-sm sm:text-base text-[#666] max-w-xl mx-auto">
-              {BRAND_SLOGAN.vi}. Khám phá những câu chuyện văn hóa, dấu ấn lịch sử ẩn sau từng họa tiết áo thun lưu niệm của VIET CITY WEAR.
+            <p className="mt-3 text-sm text-[#666] max-w-md mx-auto">
+              Khám phá câu chuyện di sản và văn hóa đằng sau từng thiết kế áo thun.
             </p>
 
             {/* Search Bar */}

@@ -28,14 +28,9 @@ export default function BrandStory() {
             <p className="text-sm font-bold text-[#111] uppercase tracking-wider">
               {BRAND_SLOGAN.vi}
             </p>
-            <div className="space-y-3.5 text-xs sm:text-sm leading-relaxed text-[#555] max-w-lg">
-              <p>
-                Thương hiệu thời trang lưu niệm lấy cảm hứng từ các thành phố và địa điểm du lịch Việt Nam, kết hợp thời trang, văn hóa, du lịch và công nghệ.
-              </p>
-              <p>
-                Mỗi áo đi kèm thẻ địa danh giới thiệu các địa điểm xuất hiện trên áo và móc khóa gỗ NFC thông minh, giúp du khách chạm điện thoại vào móc khóa để mở trang web khám phá câu chuyện và cẩm nang du lịch.
-              </p>
-            </div>
+            <p className="text-xs sm:text-sm leading-relaxed text-[#555] max-w-lg">
+              VIET CITY WEAR kể câu chuyện văn hóa các vùng đất qua góc nhìn thời trang streetwear tối giản, kết hợp thẻ thông minh NFC để mở ra trải nghiệm di sản sống động.
+            </p>
             <div className="pt-2">
               <a
                 href="#t-shirts"

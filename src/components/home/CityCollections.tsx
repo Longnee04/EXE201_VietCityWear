@@ -24,7 +24,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Bắc",
     status: "active",
     badgeText: "CHÍNH THỨC PHÁT HÀNH",
-    description: "Thủ đô ngàn năm văn hiến. Trọn vẹn với 5 địa danh di sản, bộ thẻ Hanoi Story Cards và móc khóa gỗ NFC.",
+    description: "5 địa danh di sản, bộ thẻ văn hóa và móc khóa gỗ NFC.",
     landmarksCount: 5,
     href: "/#t-shirts",
     exploreHref: "/explore/hanoi",
@@ -35,7 +35,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Bắc",
     status: "second",
     badgeText: "HẢI PHÒNG CHAPTER",
-    description: "Thành phố cảng hoa phượng đỏ. Ghi dấu tọa độ 20.8449°N, 106.6881°E và tinh thần phóng khoáng miền duyên hải.",
+    description: "Thành phố cảng hoa phượng đỏ, đậm tinh thần phóng khoáng miền biển.",
     landmarksCount: 3,
     href: "/products/ao-thun-hai-phong-heritage-tee",
   },
@@ -45,7 +45,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Trung",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Cố đô vàng son bên dòng Hương Giang, lăng tẩm uy nghiêm và nét trầm mặc thi vị của miền di sản cung đình.",
+    description: "Cố đô vàng son trầm mặc bên dòng Hương Giang.",
   },
   {
     id: "hoian",
@@ -53,7 +53,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Trung",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Thương cảng cổ thế kỷ 16 với những mái ngói rêu phong, ánh đèn lồng rực rỡ và nhịp sống êm đềm bên sông Hoài.",
+    description: "Phố cổ rêu phong và ánh đèn lồng bên sông Hoài.",
   },
   {
     id: "danang",
@@ -61,7 +61,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Trung",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Thành phố đáng sống với những cây cầu biểu tượng, đỉnh Bà Nà hùng vĩ và bãi biển xanh cát trắng hiện đại.",
+    description: "Thành phố biển hiện đại và những cây cầu biểu tượng.",
   },
   {
     id: "saigon",
@@ -69,7 +69,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Nam",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Nhịp đập năng động, giao thoa kiến trúc Sài Gòn xưa và tinh thần chuyển mình trẻ trung của đô thị phương Nam.",
+    description: "Nhịp sống trẻ trung giao thoa kiến trúc Sài Gòn xưa.",
   },
 ];
 
@@ -139,9 +139,6 @@ export default function CityCollections() {
               BỘ SƯU TẬP THÀNH PHỐ
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#666] max-w-md">
-            Khởi đầu tại Hà Nội và Hải Phòng, VIET CITY WEAR tiếp tục hành trình lưu giữ câu chuyện và văn hóa của từng mảnh đất Việt Nam.
-          </p>
         </div>
 
         {/* Cities Grid */}

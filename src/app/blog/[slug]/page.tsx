@@ -198,7 +198,7 @@ export default async function BlogDetailPage({ params }: Props) {
                 {HERO_HEADLINE.vi}
               </h3>
               <p className="text-xs text-neutral-300 max-w-md">
-                Mỗi áo thun đi kèm 5 thẻ di sản và móc khóa NFC thông minh. Chạm điện thoại để mở bản đồ ẩm thực và lịch trình di chuyển.
+                Áo thun di sản tích hợp thẻ thông minh NFC & QR khám phá văn hóa các thành phố.
               </p>
             </div>
             <Link

@@ -84,10 +84,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               {viewSide === "front" ? "GÓC NHÌN: MẶT TRƯỚC" : "GÓC NHÌN: MẶT SAU"}
             </div>
           </div>
-
-          <p className="text-[11px] text-[#777] italic">
-            * Mặt trước in tên thành phố và thương hiệu tối giản; mặt sau in hình minh họa địa danh di sản sắc nét.
-          </p>
         </div>
 
         {/* Right: Product Info */}
@@ -225,18 +221,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           </button>
 
           {/* Trust Badges */}
-          <div className="border-t border-[#eaeaea] pt-5 flex flex-col gap-3">
-            <div className="flex items-center gap-2.5 text-xs text-[#555]">
-              <Sparkles className="w-4 h-4 text-[#111] flex-shrink-0" />
-              <span>Chạm NFC hoặc quét QR mở trang câu chuyện di sản song ngữ Việt - Anh.</span>
+          <div className="border-t border-[#eaeaea] pt-5 flex flex-col gap-2.5">
+            <div className="flex items-center gap-2 text-xs text-[#666]">
+              <Sparkles className="w-3.5 h-3.5 text-[#111] flex-shrink-0" />
+              <span>Tích hợp thẻ NFC & mã QR di sản số</span>
             </div>
-            <div className="flex items-center gap-2.5 text-xs text-[#555]">
-              <Truck className="w-4 h-4 text-[#111] flex-shrink-0" />
-              <span>Thanh toán COD khi nhận hàng. Freeship cho đơn từ 500.000₫.</span>
+            <div className="flex items-center gap-2 text-xs text-[#666]">
+              <Truck className="w-3.5 h-3.5 text-[#111] flex-shrink-0" />
+              <span>Thanh toán COD toàn quốc • Freeship từ 500.000₫</span>
             </div>
-            <div className="flex items-center gap-2.5 text-xs text-[#555]">
-              <ShieldCheck className="w-4 h-4 text-[#111] flex-shrink-0" />
-              <span>Đổi trả trong 7 ngày nếu lỗi từ nhà sản xuất.</span>
+            <div className="flex items-center gap-2 text-xs text-[#666]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#111] flex-shrink-0" />
+              <span>Đổi trả trong 7 ngày</span>
             </div>
           </div>
 

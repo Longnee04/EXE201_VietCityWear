@@ -48,10 +48,10 @@ export default function CampaignSection() {
               </div>
             </div>
 
-            <div className="mt-5 border-t border-[#eaeaea] pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <p className="text-xs text-[#666]">
-                Mở câu chuyện địa danh, audio thuyết minh và cẩm nang du lịch song ngữ Việt – Anh.
-              </p>
+            <div className="mt-5 border-t border-[#eaeaea] pt-4 flex items-center justify-between">
+              <span className="text-[11px] text-[#888] font-mono uppercase tracking-wider">
+                CHẠM ĐIỆN THOẠI ĐỂ MỞ
+              </span>
               <Link
                 href="/explore/hanoi"
                 className="inline-flex items-center justify-center px-4 py-2.5 bg-[#111] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#333] transition-colors flex-shrink-0"
@@ -94,10 +94,10 @@ export default function CampaignSection() {
               </div>
             </div>
 
-            <div className="mt-5 border-t border-[#eaeaea] pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <p className="text-xs text-[#666]">
-                Khám phá trọn vẹn hình ảnh, câu chuyện lịch sử và gợi ý quán ăn nổi tiếng quanh địa danh.
-              </p>
+            <div className="mt-5 border-t border-[#eaeaea] pt-4 flex items-center justify-between">
+              <span className="text-[11px] text-[#888] font-mono uppercase tracking-wider">
+                10 THẺ DI SẢN MỸ THUẬT
+              </span>
               <Link
                 href="/explore/hanoi"
                 className="inline-flex items-center justify-center px-4 py-2.5 border border-[#111] text-[#111] text-[11px] font-bold uppercase tracking-wider hover:bg-[#111] hover:text-white transition-colors flex-shrink-0"

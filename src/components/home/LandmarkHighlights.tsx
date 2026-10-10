@@ -89,16 +89,13 @@ export default function LandmarkHighlights() {
             <div className="flex items-center gap-2 mb-2">
               <Compass className="w-4 h-4 text-[#111]" />
               <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#777]">
-                Trải nghiệm du lịch & Văn hóa
+                Trải nghiệm di sản số
               </p>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
-              ĐỊA DANH & CẨM NANG HÀ NỘI
+              5 ĐỊA DANH DI SẢN HÀ NỘI
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#666] max-w-md">
-            Mỗi chiếc áo kết nối một câu chuyện di sản. Dưới đây là 5 địa danh trên áo Hà Nội và những gợi ý ẩm thực không thể bỏ lỡ.
-          </p>
         </div>
 
         {/* Part 1: 5 Landmarks Explorer */}
@@ -149,7 +146,7 @@ export default function LandmarkHighlights() {
                 </p>
               </div>
 
-              <p className="text-xs sm:text-sm text-[#444] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#444] leading-relaxed line-clamp-3">
                 {currentLandmark.story_vi}
               </p>
 
@@ -273,20 +270,15 @@ export default function LandmarkHighlights() {
           </div>
 
           {/* CTA Footer banner */}
-          <div className="mt-8 p-4 sm:p-5 bg-white border border-[#eaeaea] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-[#111]">
-                Cần thêm gợi ý du lịch và timeline di chuyển?
-              </p>
-              <p className="text-xs text-[#666] mt-0.5">
-                Chạm NFC trên móc khóa hoặc quét QR trên thẻ để mở bản đồ số và thuyết minh audio song ngữ.
-              </p>
-            </div>
+          <div className="mt-8 pt-6 border-t border-[#eaeaea] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span className="text-xs text-[#777]">
+              Xem bản đồ số, lịch trình và cẩm nang chi tiết tại trang Khám phá.
+            </span>
             <Link
               href="/explore/hanoi"
-              className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#111] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#333] transition-colors flex-shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#333] transition-colors flex-shrink-0"
             >
-              <span>Xem trang trải nghiệm Hà Nội</span>
+              <span>Xem cẩm nang đầy đủ</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

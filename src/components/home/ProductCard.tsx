@@ -131,7 +131,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     : "bg-[#e5e5e5] text-[#999] cursor-not-allowed"
                 )}
               >
-                ADD TO CART
+                THÊM VÀO GIỎ
               </button>
             </div>
           )}

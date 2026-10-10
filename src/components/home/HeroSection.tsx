@@ -26,7 +26,7 @@ export default function HeroSection() {
             </p>
 
             <p className="text-xs sm:text-sm lg:text-base text-white/60 max-w-lg mx-auto lg:mx-0 leading-relaxed font-normal">
-              Thương hiệu thời trang lưu niệm lấy cảm hứng từ các thành phố và địa điểm du lịch Việt Nam, kết hợp thời trang, văn hóa, du lịch và công nghệ.
+              Áo thun di sản tích hợp thẻ thông minh NFC & QR khám phá văn hóa các thành phố Việt Nam.
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
