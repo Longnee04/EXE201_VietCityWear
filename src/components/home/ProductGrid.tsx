@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { filterProducts, products } from "@/data/products";
+import { useState, useMemo, useEffect } from "react";
+import { filterProducts, products as defaultProducts, type Product } from "@/data/products";
+import { fetchLiveProducts } from "@/lib/products-service";
 import ProductCard from "./ProductCard";
 import { cn } from "@/lib/utils";
 import { Search, SlidersHorizontal, RotateCcw } from "lucide-react";
@@ -10,12 +11,6 @@ const categoryFilters = [
   { key: "all" as const, label: "Tất cả" },
   { key: "new" as const, label: "Mới nhất" },
   { key: "best-seller" as const, label: "Bán chạy" },
-];
-
-const cityFilters = [
-  { key: "all" as const, label: "Tất cả TP" },
-  { key: "Hà Nội" as const, label: "Hà Nội" },
-  { key: "Hải Phòng" as const, label: "Hải Phòng" },
 ];
 
 const priceFilters = [
@@ -35,21 +30,43 @@ const sortOptions = [
 
 export default function ProductGrid() {
   const [activeCategory, setActiveCategory] = useState<"all" | "new" | "best-seller">("all");
-  const [activeCity, setActiveCity] = useState<"all" | "Hà Nội" | "Hải Phòng">("all");
+  const [activeCity, setActiveCity] = useState<string>("all");
   const [activePrice, setActivePrice] = useState<"all" | "under_100" | "100_to_200" | "above_200">("all");
   const [activeSort, setActiveSort] = useState<"default" | "price_asc" | "price_desc" | "newest" | "best_seller">("default");
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [allProducts, setAllProducts] = useState<Product[]>(defaultProducts);
+
+  // Tải danh sách sản phẩm động từ Supabase (móc nối trực tiếp từ Admin)
+  useEffect(() => {
+    fetchLiveProducts().then((data) => {
+      if (data && data.length > 0) {
+        setAllProducts(data);
+      }
+    });
+  }, []);
+
+  // Danh sách các thành phố thực tế có sản phẩm
+  const availableCities = useMemo(() => {
+    const set = new Set<string>();
+    allProducts.forEach((p) => {
+      if (p.city) set.add(p.city);
+    });
+    return ["all", ...Array.from(set)];
+  }, [allProducts]);
 
   const filteredProducts = useMemo(() => {
-    return filterProducts({
-      category: activeCategory,
-      city: activeCity,
-      priceRange: activePrice,
-      sort: activeSort,
-      searchQuery: searchQuery,
-    });
-  }, [activeCategory, activeCity, activePrice, activeSort, searchQuery]);
+    return filterProducts(
+      {
+        category: activeCategory,
+        city: activeCity === "all" ? undefined : activeCity,
+        priceRange: activePrice,
+        sort: activeSort,
+        searchQuery: searchQuery,
+      },
+      allProducts
+    );
+  }, [activeCategory, activeCity, activePrice, activeSort, searchQuery, allProducts]);
 
   const hasActiveFilters =
     activeCategory !== "all" ||
@@ -57,6 +74,7 @@ export default function ProductGrid() {
     activePrice !== "all" ||
     activeSort !== "default" ||
     searchQuery.trim() !== "";
+
 
   const handleResetFilters = () => {
     setActiveCategory("all");
@@ -143,18 +161,18 @@ export default function ProductGrid() {
               <span className="text-[11px] font-semibold tracking-wider text-[#999] uppercase mr-1">
                 Thành phố:
               </span>
-              {cityFilters.map((c) => (
+              {availableCities.map((cityName) => (
                 <button
-                  key={c.key}
-                  onClick={() => setActiveCity(c.key)}
+                  key={cityName}
+                  onClick={() => setActiveCity(cityName)}
                   className={cn(
                     "px-3 py-1.5 text-[11px] font-medium tracking-[0.05em] uppercase transition-colors",
-                    activeCity === c.key
+                    activeCity === cityName
                       ? "bg-[#111] text-white"
                       : "bg-[#f5f5f5] text-[#666] hover:bg-[#eee] hover:text-[#111]"
                   )}
                 >
-                  {c.label}
+                  {cityName === "all" ? "Tất cả TP" : cityName}
                 </button>
               ))}
             </div>
@@ -182,7 +200,7 @@ export default function ProductGrid() {
               {/* Sort dropdown */}
               <select
                 value={activeSort}
-                onChange={(e) => setActiveSort(e.target.value as any)}
+                onChange={(e) => setActiveSort(e.target.value as "default" | "price_asc" | "price_desc" | "newest" | "best_seller")}
                 className="py-1.5 px-2.5 text-[11px] font-medium bg-[#f5f5f5] text-[#333] border border-[#e0e0e0] focus:outline-none cursor-pointer"
               >
                 {sortOptions.map((s) => (
@@ -208,11 +226,11 @@ export default function ProductGrid() {
           {/* Result counter indicator */}
           <div className="flex items-center justify-between text-[11px] text-[#777] pt-1">
             <span>
-              Hiển thị <strong className="text-[#111]">{filteredProducts.length}</strong> / {products.length} sản phẩm
+              Hiển thị <strong className="text-[#111]">{filteredProducts.length}</strong> / {allProducts.length} sản phẩm
             </span>
             {searchQuery && (
               <span>
-                Kết quả cho từ khóa: <strong className="text-[#111]">"{searchQuery}"</strong>
+                Kết quả cho từ khóa: <strong className="text-[#111]">&quot;{searchQuery}&quot;</strong>
               </span>
             )}
           </div>

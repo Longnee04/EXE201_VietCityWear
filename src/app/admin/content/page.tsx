@@ -9,7 +9,6 @@ import {
   Info,
   Shield,
   Mail,
-  Briefcase,
   CheckCircle2,
   Loader2,
 } from "lucide-react";
@@ -33,7 +32,7 @@ function getStoredContents(fallback: ContentPage[]): ContentPage[] {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         // filter out careers if stored previously
-        return parsed.filter((item: any) => item.type !== "careers");
+        return parsed.filter((item: { type: string; [key: string]: unknown }) => item.type !== "careers");
       }
     }
   } catch (e) {
@@ -64,11 +63,9 @@ export default function ContentManagementPage() {
     { type: "contact", label: "Liên hệ với chúng tôi", icon: Mail, color: "amber" },
   ];
 
-  useEffect(() => {
-    loadContents();
-  }, []);
 
-  const loadContents = async () => {
+
+  async function loadContents() {
     setIsLoading(true);
     try {
       // TODO: Replace with actual API call
@@ -216,8 +213,11 @@ Chúng tôi luôn sẵn sàng hỗ trợ và lắng nghe ý kiến của bạn!`
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
+  useEffect(() => {
+    Promise.resolve().then(() => loadContents());
+  }, []);
   const handleEdit = (content: ContentPage) => {
     setEditingContent({ ...content });
   };

@@ -272,6 +272,7 @@ export interface Database {
           total_amount: number;
           payment_method: string;
           status: OrderStatus;
+          note: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -284,6 +285,7 @@ export interface Database {
           total_amount: number;
           payment_method?: string;
           status?: OrderStatus;
+          note?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -296,6 +298,7 @@ export interface Database {
           total_amount?: number;
           payment_method?: string;
           status?: OrderStatus;
+          note?: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -306,6 +309,8 @@ export interface Database {
           order_id: string;
           variant_id: string | null;
           product_id: string | null;
+          size: string | null;
+          color: string | null;
           quantity: number;
           unit_price: number;
           created_at: string;
@@ -315,6 +320,8 @@ export interface Database {
           order_id: string;
           variant_id?: string | null;
           product_id?: string | null;
+          size?: string | null;
+          color?: string | null;
           quantity?: number;
           unit_price?: number;
           created_at?: string;
@@ -324,6 +331,8 @@ export interface Database {
           order_id?: string;
           variant_id?: string | null;
           product_id?: string | null;
+          size?: string | null;
+          color?: string | null;
           quantity?: number;
           unit_price?: number;
         };

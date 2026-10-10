@@ -22,6 +22,7 @@ import {
   Save,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { type User as SupabaseUser } from "@supabase/supabase-js";
 
 function formatAuthError(message: string): string {
   if (message.includes("Invalid login credentials")) {
@@ -47,7 +48,7 @@ export default function LoginPage() {
 
   // Mode: "login" | "register" | "profile"
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<{
     full_name: string;
     phone: string;
@@ -156,7 +157,7 @@ export default function LoginPage() {
         router.refresh();
         setTimeout(() => router.push("/"), 600);
       }
-    } catch (err) {
+    } catch {
       setErrorMessage("Đã có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.");
       setIsLoading(false);
     }
@@ -207,6 +208,7 @@ export default function LoginPage() {
             full_name: regFullName.trim() || "Khách hàng",
             phone: regPhone.trim(),
             role: "user",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any);
         } catch (dbErr) {
           console.warn("Không thể ghi vào public.users, tiếp tục phiên:", dbErr);
@@ -218,7 +220,7 @@ export default function LoginPage() {
         setPassword(regPassword);
         setAuthMode("login");
       }
-    } catch (err) {
+    } catch {
       setErrorMessage("Không thể tạo tài khoản. Vui lòng thử lại sau.");
       setIsLoading(false);
     }
@@ -237,6 +239,7 @@ export default function LoginPage() {
         .update({
           full_name: editFullName.trim(),
           phone: editPhone.trim(),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any)
         .eq("id", currentUser.id);
 
@@ -257,7 +260,7 @@ export default function LoginPage() {
       setSuccessMessage("Cập nhật thông tin tài khoản thành công!");
       setIsLoading(false);
       setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (err) {
+    } catch {
       setErrorMessage("Không thể lưu thông tin. Vui lòng thử lại.");
       setIsLoading(false);
     }

@@ -1,5 +1,9 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, MapPin, Sparkles } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
 interface CityItem {
   id: string;
@@ -13,7 +17,7 @@ interface CityItem {
   exploreHref?: string;
 }
 
-const cityCollections: CityItem[] = [
+const defaultCityCollections: CityItem[] = [
   {
     id: "hanoi",
     name: "HÀ NỘI",
@@ -70,6 +74,55 @@ const cityCollections: CityItem[] = [
 ];
 
 export default function CityCollections() {
+  const [cityList, setCityList] = useState<CityItem[]>(defaultCityCollections);
+
+  useEffect(() => {
+    async function loadDbCities() {
+      try {
+        const [{ data: dbCities }, { data: dbLandmarks }] = await Promise.all([
+          supabase.from("cities").select("*").order("created_at", { ascending: true }),
+          supabase.from("landmarks").select("id, city_id"),
+        ]);
+
+        if (dbCities && dbCities.length > 0) {
+          const mapped: CityItem[] = dbCities.map((c, idx) => {
+            const count = (dbLandmarks || []).filter((lm) => lm.city_id === c.id).length;
+            const normalizedName = c.name.toUpperCase();
+            const existingDefault = defaultCityCollections.find(
+              (dc) => dc.name.toUpperCase() === normalizedName
+            );
+
+            return {
+              id: c.id,
+              name: c.name.toUpperCase(),
+              region: existingDefault?.region || (idx < 2 ? "Miền Bắc" : "Miền Trung"),
+              status: idx === 0 ? "active" : idx === 1 ? "second" : "upcoming",
+              badgeText:
+                idx === 0
+                  ? "CHÍNH THỨC PHÁT HÀNH"
+                  : idx === 1
+                  ? "ĐANG PHÁT HÀNH"
+                  : "SẮP RA MẮT",
+              description:
+                c.description ||
+                existingDefault?.description ||
+                `Hành trình văn hóa và di sản tại ${c.name}.`,
+              landmarksCount: count || existingDefault?.landmarksCount || 3,
+              href: existingDefault?.href || "/#t-shirts",
+              exploreHref: existingDefault?.exploreHref || "/explore/hanoi",
+            };
+          });
+
+          setCityList(mapped);
+        }
+      } catch (err) {
+        console.warn("Lỗi tải thành phố từ Supabase, dùng dữ liệu mặc định:", err);
+      }
+    }
+
+    loadDbCities();
+  }, []);
+
   return (
     <section id="collections" className="py-16 sm:py-24 border-t border-[#eaeaea] bg-white">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
@@ -93,7 +146,7 @@ export default function CityCollections() {
 
         {/* Cities Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cityCollections.map((city) => (
+          {cityList.map((city) => (
             <div
               key={city.id}
               className={`p-6 sm:p-7 border transition-all flex flex-col justify-between ${

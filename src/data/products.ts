@@ -174,14 +174,24 @@ export function getByCategory(cat: "new" | "best-seller" | "all"): Product[] {
 
 export interface ProductFilterOptions {
   category?: "new" | "best-seller" | "all";
-  city?: "all" | "Hà Nội" | "Hải Phòng";
+  city?: string;
   priceRange?: "all" | "under_100" | "100_to_200" | "above_200";
   sort?: "default" | "price_asc" | "price_desc" | "newest" | "best_seller";
   searchQuery?: string;
 }
 
-export function filterProducts(options: ProductFilterOptions = {}): Product[] {
-  let result = [...products];
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+}
+
+export function filterProducts(options: ProductFilterOptions = {}, sourceProducts: Product[] = products): Product[] {
+  let result = [...sourceProducts];
 
   // Category filter
   if (options.category && options.category !== "all") {
@@ -235,3 +245,4 @@ export function filterProducts(options: ProductFilterOptions = {}): Product[] {
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("vi-VN").format(price) + "₫";
 }
+

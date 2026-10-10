@@ -105,9 +105,19 @@ export default function Footer() {
           <p className="text-[11px] text-[#999] tracking-wide">
             © 2026 VIETCITYWEAR. All rights reserved.
           </p>
-          <p className="text-[10px] text-[#999] tracking-widest uppercase">
-            {BRAND_TAGLINE}
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/admin/dashboard"
+              className="text-[11px] text-[#888] hover:text-[#111] transition-colors flex items-center gap-1 font-medium"
+              title="Cổng đăng nhập và quản lý dành cho Quản trị viên"
+            >
+              <span>Kênh Quản Trị</span>
+            </Link>
+            <span className="text-gray-300">•</span>
+            <p className="text-[10px] text-[#999] tracking-widest uppercase">
+              {BRAND_TAGLINE}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

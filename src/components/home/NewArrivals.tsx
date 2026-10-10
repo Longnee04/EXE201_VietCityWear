@@ -1,8 +1,20 @@
-import { getNewArrivals } from "@/data/products";
+"use client";
+
+import { useState, useEffect } from "react";
+import { getNewArrivals, type Product } from "@/data/products";
+import { fetchLiveProducts } from "@/lib/products-service";
 import ProductCard from "./ProductCard";
 
 export default function NewArrivals() {
-  const newProducts = getNewArrivals();
+  const [newProducts, setNewProducts] = useState<Product[]>(getNewArrivals());
+
+  useEffect(() => {
+    fetchLiveProducts().then((data) => {
+      if (data && data.length > 0) {
+        setNewProducts(data.slice(0, 4));
+      }
+    });
+  }, []);
 
   return (
     <section className="py-16 sm:py-24">

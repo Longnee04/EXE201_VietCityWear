@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingBag, Menu, X, User, ArrowRight } from "lucide-react";
+import { Search, ShoppingBag, Menu, X, User, ArrowRight, ShieldCheck } from "lucide-react";
 import { mainNav } from "@/data/navigation";
 import { useCart } from "@/lib/cart-context";
 import { BRAND_SLOGAN } from "@/data/brand";
-import { products, formatPrice } from "@/data/products";
+import { products as defaultProducts, formatPrice, type Product } from "@/data/products";
+import { supabase } from "@/lib/supabase/client";
+import { fetchLiveProducts } from "@/lib/products-service";
+import { cn } from "@/lib/utils";
 import CartDrawer from "./CartDrawer";
 
 export default function Header() {
@@ -15,18 +18,66 @@ export default function Header() {
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [allProducts, setAllProducts] = useState<Product[]>(defaultProducts);
+  const [currentUser, setCurrentUser] = useState<{
+    id: string;
+    email: string;
+    role: string;
+    fullName?: string;
+  } | null>(null);
   const { itemCount } = useCart();
+
+  // Kiểm tra phiên đăng nhập để nhận diện Quản trị viên
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from("users")
+            .select("role, full_name, email")
+            .eq("id", session.user.id)
+            .single();
+
+          setCurrentUser({
+            id: session.user.id,
+            email: session.user.email || "",
+            role: profile?.role || "user",
+            fullName: profile?.full_name || session.user.email?.split("@")[0],
+          });
+        } else {
+          setCurrentUser(null);
+        }
+      } catch {
+        setCurrentUser(null);
+      }
+    }
+
+    checkAuth();
+    fetchLiveProducts().then((data) => {
+      if (data && data.length > 0) setAllProducts(data);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkAuth();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase().trim();
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        (p.city && p.city.toLowerCase().includes(q))
-    ).slice(0, 4);
-  }, [searchQuery]);
+    return allProducts
+      .filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          (p.city && p.city.toLowerCase().includes(q))
+      )
+      .slice(0, 4);
+  }, [searchQuery, allProducts]);
+
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[#eaeaea]">
@@ -91,13 +142,26 @@ export default function Header() {
             >
               <Search className="w-[18px] h-[18px]" />
             </button>
+            {currentUser?.role === "admin" && (
+              <Link
+                href="/admin/dashboard"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#111] text-white hover:bg-neutral-800 transition-colors text-[11px] font-bold uppercase tracking-wider mr-1 shadow-2xs"
+                title="Vào Trang Quản Trị Hệ Thống"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">Quản Trị</span>
+              </Link>
+            )}
             <Link
-              href="/login"
-              className="p-2.5 text-[#555] hover:text-[#111] transition-colors"
+              href={currentUser ? (currentUser.role === "admin" ? "/admin/dashboard" : "/login") : "/login"}
+              className="p-2.5 text-[#555] hover:text-[#111] transition-colors relative"
               aria-label="Tài khoản / Đăng nhập"
-              title="Đăng nhập tài khoản"
+              title={currentUser ? `Tài khoản: ${currentUser.email} (${currentUser.role})` : "Đăng nhập tài khoản"}
             >
-              <User className="w-[18px] h-[18px]" />
+              <User className={cn("w-[18px] h-[18px]", currentUser && "text-black stroke-[2.5]")} />
+              {currentUser && (
+                <span className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-emerald-500 border border-white" />
+              )}
             </Link>
             <button
               onClick={() => setCartOpen(true)}
@@ -173,19 +237,19 @@ export default function Header() {
                       ))}
                     </div>
                     <div className="pt-2 text-right">
-                      <a
+                      <Link
                         href="/#t-shirts"
                         onClick={() => setSearchOpen(false)}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-[#111] hover:underline"
                       >
                         <span>Xem tất cả sản phẩm</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ) : (
                   <p className="text-xs text-[#888] py-2">
-                    Không tìm thấy sản phẩm nào khớp với "{searchQuery}".
+                    Không tìm thấy sản phẩm nào khớp với &quot;{searchQuery}&quot;.
                   </p>
                 )}
               </div>
@@ -295,12 +359,25 @@ export default function Header() {
                   {link.label}
                 </a>
               ))}
+              {currentUser?.role === "admin" && (
+                <Link
+                  href="/admin/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between bg-amber-50 px-2 rounded-xs my-1"
+                >
+                  <span className="flex items-center gap-2 text-amber-800">
+                    <ShieldCheck className="w-4 h-4 text-amber-600" />
+                    TRANG QUẢN TRỊ ADMIN
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-amber-600" />
+                </Link>
+              )}
               <Link
-                href="/login"
+                href={currentUser ? (currentUser.role === "admin" ? "/admin/dashboard" : "/login") : "/login"}
                 onClick={() => setMobileOpen(false)}
                 className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between"
               >
-                <span>ĐĂNG NHẬP / TÀI KHOẢN</span>
+                <span>{currentUser ? `TÀI KHOẢN (${currentUser.role.toUpperCase()})` : "ĐĂNG NHẬP / TÀI KHOẢN"}</span>
                 <User className="w-4 h-4" />
               </Link>
             </nav>

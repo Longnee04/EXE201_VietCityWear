@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { products, formatPrice } from "@/data/products";
+import { fetchProductBySlug } from "@/lib/products-service";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -18,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await fetchProductBySlug(slug);
 
   if (!product) {
     return {
@@ -61,7 +62,7 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await fetchProductBySlug(slug);
 
   if (!product) {
     notFound();
