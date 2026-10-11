@@ -376,25 +376,42 @@ export default function ExploreClient() {
               </div>
               <h3 className="text-xl sm:text-2xl font-black text-[#111] uppercase tracking-tight">
                 {lang === "vi"
-                  ? "Tọa độ 5 địa danh & điểm đến văn hóa Hà Nội"
-                  : "Coordinates of 5 Hanoi Heritage Landmarks"}
+                  ? `Tọa độ các địa danh & điểm đến văn hóa ${guide.city_name_vi}`
+                  : `Coordinates of Heritage Landmarks in ${guide.city_name_en}`}
               </h3>
             </div>
-            <span className="text-[11px] font-mono text-[#777]">
-              HÀ NỘI — 21.0285°N, 105.8542°E
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-mono text-[#777] bg-white px-2.5 py-1 border border-[#eaeaea] rounded-xs">
+                {guide.coordinates || "21.0285°N, 105.8542°E"}
+              </span>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  activeLandmark.name_vi + " " + guide.city_name_vi
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1 bg-[#111] hover:bg-neutral-800 text-white text-[11px] font-bold uppercase tracking-wider rounded-xs transition-colors"
+                title="Chỉ đường trên Google Maps"
+              >
+                <span>Chỉ đường: {activeLandmark.name_vi}</span>
+                <span className="text-xs">↗</span>
+              </a>
+            </div>
           </div>
 
           <div className="relative w-full aspect-[16/9] max-h-[440px] border border-[#eaeaea] overflow-hidden bg-[#fafafa]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14896.793616641558!2d105.84310574999999!3d21.028779699999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab9bd3861111%3A0x2a92e10697e88775!2zSOG7kyBIb8OgbiBLaeG6v20!5e0!3m2!1svi!2svn!4v1710000000000!5m2!1svi!2svn"
+              src={
+                guide.map_embed_url ||
+                "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14896.793616641558!2d105.84310574999999!3d21.028779699999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab9bd3861111%3A0x2a92e10697e88775!2zSOG7kyBIb8OgbiBLaeG6v20!5e0!3m2!1svi!2svn!4v1710000000000!5m2!1svi!2svn"
+              }
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={false}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Bản đồ di sản Hà Nội"
+              title={`Bản đồ di sản ${guide.city_name_vi}`}
               className="w-full h-full min-h-[350px]"
             />
           </div>

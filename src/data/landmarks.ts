@@ -37,6 +37,8 @@ export interface CityGuide {
   description_vi: string;
   description_en: string;
   cover_image: string;
+  map_embed_url?: string;
+  coordinates?: string;
   landmarks: Landmark[];
 }
 
@@ -48,6 +50,8 @@ export const HANOI_GUIDE: CityGuide = {
   description_vi: "Thủ đô của những con phố rêu phong, của tiếng chuông nhà thờ hòa cùng tiếng rao sớm và hương hoa sữa nồng nàn. Hãy cùng chạm vào từng câu chuyện di sản được khắc họa trên chiếc áo bạn đang mặc.",
   description_en: "The capital of moss-covered streets, where church bells blend with early morning vendors and the scent of milk flowers. Tap into each heritage story woven into the shirt you wear.",
   cover_image: "/images/hanoi-banner.jpg",
+  map_embed_url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14896.793616641558!2d105.84310574999999!3d21.028779699999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab9bd3861111%3A0x2a92e10697e88775!2zSOG7kyBIb8OgbiBLaeG6v20!5e0!3m2!1svi!2svn!4v1710000000000!5m2!1svi!2svn",
+  coordinates: "HÀ NỘI — 21.0285°N, 105.8542°E",
   landmarks: [
     {
       id: "lm-01",

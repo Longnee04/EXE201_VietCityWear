@@ -23,12 +23,33 @@ export async function fetchLiveCityGuide(cityName = "Hà Nội"): Promise<CityGu
       .eq("city_id", dbCity.id)
       .order("order_index", { ascending: true });
 
+    // Phân tích dữ liệu bản đồ số từ dbCity (nếu admin có cấu hình)
+    let mapEmbedUrl = HANOI_GUIDE.map_embed_url;
+    let coordinates = HANOI_GUIDE.coordinates;
+
+    if (dbCity.image_url) {
+      try {
+        const parsed = JSON.parse(dbCity.image_url);
+        if (parsed.map_url) mapEmbedUrl = parsed.map_url;
+        if (parsed.coordinates) coordinates = parsed.coordinates;
+      } catch {
+        if (
+          dbCity.image_url.startsWith("http") &&
+          (dbCity.image_url.includes("google.com/maps") || dbCity.image_url.includes("embed"))
+        ) {
+          mapEmbedUrl = dbCity.image_url;
+        }
+      }
+    }
+
     if (lmError || !dbLandmarks || dbLandmarks.length === 0) {
       return {
         ...HANOI_GUIDE,
         city_name_vi: dbCity.name,
         description_vi: dbCity.description || HANOI_GUIDE.description_vi,
-        cover_image: dbCity.cover_image || dbCity.image_url || HANOI_GUIDE.cover_image,
+        cover_image: dbCity.cover_image || "/images/hanoi-banner.jpg",
+        map_embed_url: mapEmbedUrl,
+        coordinates: coordinates,
       };
     }
 
@@ -89,7 +110,9 @@ export async function fetchLiveCityGuide(cityName = "Hà Nội"): Promise<CityGu
       slogan_en: HANOI_GUIDE.slogan_en,
       description_vi: dbCity.description || HANOI_GUIDE.description_vi,
       description_en: HANOI_GUIDE.description_en,
-      cover_image: dbCity.cover_image || dbCity.image_url || HANOI_GUIDE.cover_image,
+      cover_image: dbCity.cover_image || "/images/hanoi-banner.jpg",
+      map_embed_url: mapEmbedUrl,
+      coordinates: coordinates,
       landmarks: mappedLandmarks,
     };
   } catch (err) {
