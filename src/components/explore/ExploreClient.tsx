@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { HANOI_GUIDE, type Landmark } from "@/data/landmarks";
+import { HANOI_GUIDE, type Landmark, type CityGuide } from "@/data/landmarks";
+import { fetchLiveCityGuide } from "@/lib/landmarks-service";
 import { BRAND_SLOGAN, BRAND_TAGLINE } from "@/data/brand";
 import {
   Volume2,
@@ -20,13 +21,34 @@ import {
 
 export default function ExploreClient() {
   const [lang, setLang] = useState<"vi" | "en">("vi");
+  const [guide, setGuide] = useState<CityGuide>(HANOI_GUIDE);
   const [activeLandmark, setActiveLandmark] = useState<Landmark>(
     HANOI_GUIDE.landmarks[0]
   );
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const guide = HANOI_GUIDE;
+  useEffect(() => {
+    let ignore = false;
+    async function loadGuide() {
+      const liveGuide = await fetchLiveCityGuide("Hà Nội");
+      if (!ignore && liveGuide) {
+        setGuide(liveGuide);
+        if (liveGuide.landmarks.length > 0) {
+          setActiveLandmark((prev) => {
+            const matched = liveGuide.landmarks.find(
+              (lm) => lm.id === prev.id || lm.name_vi === prev.name_vi
+            );
+            return matched || liveGuide.landmarks[0];
+          });
+        }
+      }
+    }
+    loadGuide();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const handleShare = () => {
     if (navigator.clipboard) {

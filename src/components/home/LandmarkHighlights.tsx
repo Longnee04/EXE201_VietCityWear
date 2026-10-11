@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin, Clock, Utensils, Compass, Sparkles } from "lucide-react";
-import { HANOI_GUIDE } from "@/data/landmarks";
+import { HANOI_GUIDE, type Landmark } from "@/data/landmarks";
+import { fetchLiveCityGuide } from "@/lib/landmarks-service";
 
 type FoodCategory = "all" | "main" | "coffee" | "snack";
 
@@ -69,10 +70,25 @@ const curatedFoods: CuratedFoodItem[] = [
 ];
 
 export default function LandmarkHighlights() {
+  const [landmarks, setLandmarks] = useState<Landmark[]>(HANOI_GUIDE.landmarks);
   const [selectedLandmarkIdx, setSelectedLandmarkIdx] = useState(0);
   const [foodCategory, setFoodCategory] = useState<FoodCategory>("all");
 
-  const currentLandmark = HANOI_GUIDE.landmarks[selectedLandmarkIdx];
+  useEffect(() => {
+    let ignore = false;
+    async function loadLandmarks() {
+      const guide = await fetchLiveCityGuide("Hà Nội");
+      if (!ignore && guide && guide.landmarks.length > 0) {
+        setLandmarks(guide.landmarks);
+      }
+    }
+    loadLandmarks();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const currentLandmark = landmarks[selectedLandmarkIdx] || landmarks[0] || HANOI_GUIDE.landmarks[0];
 
   const filteredFoods = curatedFoods.filter((f) => {
     if (foodCategory === "all") return true;
@@ -102,7 +118,7 @@ export default function LandmarkHighlights() {
         <div className="bg-white border border-[#eaeaea] rounded-sm p-6 sm:p-8 mb-12">
           {/* Landmark tab selector */}
           <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 border-b border-[#f0f0f0]">
-            {HANOI_GUIDE.landmarks.map((landmark, idx) => (
+            {landmarks.map((landmark, idx) => (
               <button
                 key={landmark.id}
                 onClick={() => setSelectedLandmarkIdx(idx)}

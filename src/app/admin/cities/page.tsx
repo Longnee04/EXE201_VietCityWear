@@ -20,8 +20,10 @@ interface Landmark {
   id: string;
   name: string;
   story: string | null;
+  history?: string | null;
   travel_timeline: string | null;
   food_suggestions: string | null;
+  images?: string[];
 }
 
 interface City {
@@ -41,17 +43,48 @@ const mockDefaultCities: City[] = [
     landmarks: [
       {
         id: "lm-1",
-        name: "Hồ Gươm & Tháp Rùa",
+        name: "Hồ Gươm – Tháp Rùa",
         story: "Trái tim của thủ đô gắn liền truyền thuyết vua Lê Lợi trả gươm báu.",
-        travel_timeline: "Khám phá từ 6:00 sáng hoặc đi dạo phố đi bộ cuối tuần.",
-        food_suggestions: "Kem Tràng Tiền, Cà phê trứng Giảng",
+        history: "Tháp Rùa xây dựng vào cuối thế kỷ 19, nằm trên gò đất nổi giữa hồ Hoàn Kiếm, hòa quyện kiến trúc bản địa và Gothic.",
+        travel_timeline: "Sáng sớm (5:30 - 7:00) hoặc phố đi bộ tối cuối tuần",
+        food_suggestions: "Kem Tràng Tiền, Cà phê Đinh, Nộm bò khô Bờ Hồ",
+        images: ["/images/landmarks/ho-guom.jpg"],
       },
       {
         id: "lm-2",
-        name: "Văn Miếu Quốc Tử Giám",
-        story: "Trường đại học đầu tiên của Việt Nam, biểu tượng truyền thống hiếu học.",
-        travel_timeline: "Nên đi buổi sáng từ 8:00 - 11:30 để chụp ảnh đẹp.",
+        name: "Văn Miếu – Quốc Tử Giám",
+        story: "Trường đại học đầu tiên của Việt Nam, biểu tượng truyền thống hiếu học nghìn năm văn hiến.",
+        history: "Xây dựng năm 1070 dưới thời vua Lý Thánh Tông, bảo tồn 82 bia Tiến sĩ vinh danh hiền tài.",
+        travel_timeline: "Sáng 8:00 - 11:30 hoặc chiều 14:00 - 16:30",
         food_suggestions: "Bún chả Sinh Từ, Phở Bát Đàn",
+        images: ["/images/landmarks/van-mieu.jpg"],
+      },
+      {
+        id: "lm-3",
+        name: "Lăng Chủ tịch Hồ Chí Minh",
+        story: "Nơi yên nghỉ vĩnh hằng của vị lãnh tụ kính yêu của dân tộc Việt Nam.",
+        history: "Khởi công năm 1973 và khánh thành năm 1975, kiến trúc lấy cảm hứng từ lăng Lenin kết hợp hoa sen truyền thống.",
+        travel_timeline: "Sáng 7:30 - 10:30 (Thứ 3, 4, 5, 7, CN)",
+        food_suggestions: "Bánh cuốn Thanh Trì, Bún chả Đội Cấn",
+        images: ["/images/landmarks/lang-bac.jpg"],
+      },
+      {
+        id: "lm-4",
+        name: "Nhà Thờ Lớn Hà Nội",
+        story: "Giao thoa kiến trúc Gothic trung cổ châu Âu giữa lòng phố cổ phương Đông trầm mặc.",
+        history: "Khánh thành vào dịp Giáng sinh năm 1887, mô phỏng theo mẫu Nhà thờ Đức Bà Paris.",
+        travel_timeline: "Chiều tối 15:00 - 21:00",
+        food_suggestions: "Trà chanh Nhà Thờ, Nem chua nướng Ấu Triệu",
+        images: ["/images/landmarks/nha-tho-lon.jpg"],
+      },
+      {
+        id: "lm-5",
+        name: "Phố Cổ Hà Nội – 36 Phố Phường",
+        story: "Mạng lưới phố nghề truyền thống lưu giữ nhịp sống kinh kỳ rộn rã qua hàng thế kỷ.",
+        history: "Hình thành từ thời Lý - Trần, mỗi con phố mang tên mặt hàng thủ công buôn bán đặc trưng.",
+        travel_timeline: "Cả ngày, đặc biệt náo nhiệt từ 17:00 - 23:00",
+        food_suggestions: "Phở Bát Đàn, Bún chả Hàng Quạt, Chả cá Lã Vọng",
+        images: ["/images/landmarks/pho-co.jpg"],
       },
     ],
   },
@@ -103,16 +136,20 @@ export default function AdminCitiesPage() {
   const [isLandmarkModalOpen, setIsLandmarkModalOpen] = useState(false);
   const [lmName, setLmName] = useState("");
   const [lmStory, setLmStory] = useState("");
+  const [lmHistory, setLmHistory] = useState("");
   const [lmTimeline, setLmTimeline] = useState("");
   const [lmFood, setLmFood] = useState("");
+  const [lmImage, setLmImage] = useState("");
 
   // Modal Edit Landmark
   const [isEditLandmarkModalOpen, setIsEditLandmarkModalOpen] = useState(false);
   const [editingLandmark, setEditingLandmark] = useState<Landmark | null>(null);
   const [editLmName, setEditLmName] = useState("");
   const [editLmStory, setEditLmStory] = useState("");
+  const [editLmHistory, setEditLmHistory] = useState("");
   const [editLmTimeline, setEditLmTimeline] = useState("");
   const [editLmFood, setEditLmFood] = useState("");
+  const [editLmImage, setEditLmImage] = useState("");
 
   useEffect(() => {
     let ignore = false;
@@ -143,8 +180,14 @@ export default function AdminCitiesPage() {
                 id: lm.id,
                 name: lm.name,
                 story: lm.story,
-                travel_timeline: lm.history || lm.travel_timeline || "Tham quan tự do",
+                history: lm.history,
+                travel_timeline: lm.travel_timeline || "Tham quan tự do",
                 food_suggestions: lm.food_suggestions || "Đặc sản địa phương",
+                images: Array.isArray(lm.images)
+                  ? lm.images
+                  : lm.images
+                  ? [lm.images]
+                  : ["/images/landmarks/ho-guom.jpg"],
               })),
           }));
           setCities(enriched);
@@ -298,16 +341,18 @@ export default function AdminCitiesPage() {
     if (!selectedCity || !lmName.trim()) return;
 
     let newLmId = `lm-${Date.now()}`;
+    const landmarkImg = lmImage.trim() || "/images/landmarks/ho-guom.jpg";
     try {
       const { data, error } = await supabase
         .from("landmarks")
         .insert({
           city_id: selectedCity.id,
           name: lmName.trim(),
-          story: lmStory,
-          history: lmTimeline || lmStory,
-          travel_timeline: lmTimeline,
-          food_suggestions: lmFood,
+          story: lmStory.trim(),
+          history: lmHistory.trim() || lmStory.trim(),
+          travel_timeline: lmTimeline.trim(),
+          food_suggestions: lmFood.trim(),
+          images: [landmarkImg],
           order_index: (selectedCity.landmarks?.length || 0) + 1,
         })
         .select()
@@ -322,9 +367,11 @@ export default function AdminCitiesPage() {
     const newLm: Landmark = {
       id: newLmId,
       name: lmName.trim(),
-      story: lmStory,
-      travel_timeline: lmTimeline || "Tham quan tự do",
-      food_suggestions: lmFood || "Đặc sản địa phương",
+      story: lmStory.trim(),
+      history: lmHistory.trim() || lmStory.trim(),
+      travel_timeline: lmTimeline.trim() || "Tham quan tự do",
+      food_suggestions: lmFood.trim() || "Đặc sản địa phương",
+      images: [landmarkImg],
     };
 
     setCities((prev) => {
@@ -344,8 +391,10 @@ export default function AdminCitiesPage() {
     setIsLandmarkModalOpen(false);
     setLmName("");
     setLmStory("");
+    setLmHistory("");
     setLmTimeline("");
     setLmFood("");
+    setLmImage("");
     setMessage({ type: "success", text: `Đã thêm địa danh "${newLm.name}"!` });
   };
 
@@ -354,8 +403,10 @@ export default function AdminCitiesPage() {
     setEditingLandmark(lm);
     setEditLmName(lm.name);
     setEditLmStory(lm.story || "");
+    setEditLmHistory(lm.history || "");
     setEditLmTimeline(lm.travel_timeline || "");
     setEditLmFood(lm.food_suggestions || "");
+    setEditLmImage((lm.images && lm.images[0]) || "");
     setIsEditLandmarkModalOpen(true);
   };
 
@@ -363,15 +414,18 @@ export default function AdminCitiesPage() {
     e.preventDefault();
     if (!selectedCity || !editingLandmark || !editLmName.trim()) return;
 
+    const landmarkImg = editLmImage.trim() || (editingLandmark.images && editingLandmark.images[0]) || "/images/landmarks/ho-guom.jpg";
+
     try {
       await supabase
         .from("landmarks")
         .update({
           name: editLmName.trim(),
-          story: editLmStory,
-          history: editLmTimeline || editLmStory,
-          travel_timeline: editLmTimeline,
-          food_suggestions: editLmFood,
+          story: editLmStory.trim(),
+          history: editLmHistory.trim() || editLmStory.trim(),
+          travel_timeline: editLmTimeline.trim(),
+          food_suggestions: editLmFood.trim(),
+          images: [landmarkImg],
         })
         .eq("id", editingLandmark.id);
     } catch {
@@ -381,9 +435,11 @@ export default function AdminCitiesPage() {
     const updatedLm: Landmark = {
       ...editingLandmark,
       name: editLmName.trim(),
-      story: editLmStory,
-      travel_timeline: editLmTimeline,
-      food_suggestions: editLmFood,
+      story: editLmStory.trim(),
+      history: editLmHistory.trim() || editLmStory.trim(),
+      travel_timeline: editLmTimeline.trim(),
+      food_suggestions: editLmFood.trim(),
+      images: [landmarkImg],
     };
 
     setCities((prev) => {
@@ -592,17 +648,35 @@ export default function AdminCitiesPage() {
               selectedCity.landmarks?.map((lm) => (
                 <div
                   key={lm.id}
-                  className="bg-white border border-[#E5E5E5] rounded-xl p-5 shadow-xs hover:border-black/30 transition text-xs space-y-2.5"
+                  className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 shadow-xs hover:border-black/30 transition text-xs space-y-3"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-neutral-100 text-neutral-800">
-                        <Compass className="w-4 h-4" />
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      {lm.images && lm.images.length > 0 ? (
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0 bg-neutral-100 border border-neutral-200">
+                          <img
+                            src={lm.images[0]}
+                            alt={lm.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="p-2 rounded-lg bg-neutral-100 text-neutral-800 flex-shrink-0">
+                          <Compass className="w-4 h-4" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-extrabold text-sm text-neutral-900">{lm.name}</h3>
+                        <p className="text-neutral-600 leading-relaxed mt-1 line-clamp-2">{lm.story}</p>
+                        {lm.history && (
+                          <p className="text-neutral-500 text-[11px] mt-1 line-clamp-1 italic">
+                            Kiến trúc & Lịch sử: {lm.history}
+                          </p>
+                        )}
                       </div>
-                      <h3 className="font-extrabold text-sm text-neutral-900">{lm.name}</h3>
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       <button
                         onClick={() => handleOpenEditLandmark(lm)}
                         className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition"
@@ -619,8 +693,6 @@ export default function AdminCitiesPage() {
                       </button>
                     </div>
                   </div>
-
-                  <p className="text-neutral-600 leading-relaxed">{lm.story}</p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-neutral-100 text-[11px]">
                     <div className="flex items-center gap-1.5 text-neutral-500">
@@ -799,13 +871,39 @@ export default function AdminCitiesPage() {
 
               <div>
                 <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                  Câu chuyện lịch sử / văn hóa
+                  Đường dẫn ảnh đại diện (URL hoặc /images/landmarks/...)
+                </label>
+                <input
+                  type="text"
+                  value={lmImage}
+                  onChange={(e) => setLmImage(e.target.value)}
+                  placeholder="Ví dụ: /images/landmarks/ho-guom.jpg hoặc https://..."
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                  Câu chuyện di sản / tóm tắt
                 </label>
                 <textarea
                   rows={2}
                   value={lmStory}
                   onChange={(e) => setLmStory(e.target.value)}
                   placeholder="Ý nghĩa văn hóa, truyền thuyết hoặc nguồn gốc..."
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                  Kiến trúc & Dấu ấn lịch sử (Hiển thị chi tiết ở trang Khám phá)
+                </label>
+                <textarea
+                  rows={2}
+                  value={lmHistory}
+                  onChange={(e) => setLmHistory(e.target.value)}
+                  placeholder="Năm xây dựng, phong cách kiến trúc đặc trưng..."
                   className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
                 />
               </div>
@@ -891,12 +989,37 @@ export default function AdminCitiesPage() {
 
               <div>
                 <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                  Câu chuyện lịch sử / văn hóa
+                  Đường dẫn ảnh đại diện (URL hoặc /images/landmarks/...)
+                </label>
+                <input
+                  type="text"
+                  value={editLmImage}
+                  onChange={(e) => setEditLmImage(e.target.value)}
+                  placeholder="Ví dụ: /images/landmarks/ho-guom.jpg hoặc https://..."
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                  Câu chuyện di sản / tóm tắt
                 </label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={editLmStory}
                   onChange={(e) => setEditLmStory(e.target.value)}
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                  Kiến trúc & Dấu ấn lịch sử (Hiển thị chi tiết ở trang Khám phá)
+                </label>
+                <textarea
+                  rows={2}
+                  value={editLmHistory}
+                  onChange={(e) => setEditLmHistory(e.target.value)}
                   className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
                 />
               </div>
