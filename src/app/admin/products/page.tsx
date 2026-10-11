@@ -36,7 +36,7 @@ const mockDefaultProducts: Product[] = [
     base_price: 219000,
     package_type: "Set đầy đủ (Full Box)",
     front_image: "/images/hanoi-heritage-set.png",
-    back_image: "/images/hanoi-heritage-set.png",
+    back_image: "/images/ao-thun-ha-noi.png",
     description: "Trọn bộ trải nghiệm Hà Nội: 01 Áo thun Hanoi Heritage Tee, 01 Thẻ di sản bo góc, 01 Móc khóa gỗ QR Keychain và Hộp quà Branded Carton Box.",
     size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
@@ -46,8 +46,8 @@ const mockDefaultProducts: Product[] = [
     name: "Hanoi Heritage Tee — Hoan Kiem Lake Edition",
     base_price: 179000,
     package_type: "Áo thun di sản",
-    front_image: "/images/ao-thun-ha-noi.png",
-    back_image: "/images/ao-thun-ha-noi.png",
+    front_image: "/images/products/ao-thun-ha-noi-front.png",
+    back_image: "/images/products/ao-thun-ha-noi-back.png",
     description: "Áo thun lưu niệm di sản Hà Nội — Mặt trước in logo VIET CITY WEAR, mặt sau in hình Hồ Hoàn Kiếm, Tháp Rùa, xích lô truyền thống. Chất liệu 100% cotton thoáng mát.",
     size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
@@ -59,7 +59,7 @@ const mockDefaultProducts: Product[] = [
     package_type: "Móc khóa gỗ QR/NFC",
     front_image: "/images/moc-khoa-qr-hanoi.png",
     back_image: "/images/moc-khoa-qr-hanoi.png",
-    description: "Móc khóa gỗ tròn 2 mặt: một bên khắc logo VIET CITY WEAR, một bên khắc mã QR/NFC kết nối website di sản số.",
+    description: "Móc khóa gỗ tròn 2 mặt: một bên khắc logo VIET CITY WEAR, một bên khắc mã QR kết nối website di sản số.",
     size_guide_text: "Freesize (Đường kính 4.5cm)",
     created_at: new Date().toISOString(),
   },
@@ -91,7 +91,7 @@ const mockDefaultProducts: Product[] = [
     base_price: 179000,
     package_type: "Áo thun di sản",
     front_image: "/images/landmarks/van-mieu.jpg",
-    back_image: "/images/ao-thun-ha-noi.png",
+    back_image: "/images/products/ao-thun-ha-noi-back.png",
     description: "Áo thun di sản Văn Miếu — Họa tiết Khuê Văn Các và 82 bia tiến sĩ nghìn năm hiếu học.",
     size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
@@ -102,19 +102,30 @@ const mockDefaultProducts: Product[] = [
     base_price: 179000,
     package_type: "Áo thun di sản",
     front_image: "/images/landmarks/pho-co.jpg",
-    back_image: "/images/ao-thun-ha-noi.png",
+    back_image: "/images/products/ao-thun-ha-noi-back.png",
     description: "Áo thun di sản Phố Cổ — Lấy cảm hứng từ nét rêu phong mái ngói ngõ nhỏ 36 phố phường kinh kỳ Thăng Long.",
     size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
   },
   {
     id: "p8",
-    name: "Hải Phòng Heritage Tee (Coming Soon)",
+    name: "Hanoi Heritage Tee — Nhà Thờ Lớn Edition",
     base_price: 179000,
     package_type: "Áo thun di sản",
-    front_image: "/images/ao-thun-hai-phong-coming-soon.png",
-    back_image: "/images/ao-thun-hai-phong.png",
-    description: "Bộ sưu tập Thành phố Cảng hoa phượng đỏ — Sắp phát hành trong đợt tiếp theo.",
+    front_image: "/images/landmarks/nha-tho-lon.jpg",
+    back_image: "/images/products/ao-thun-ha-noi-back.png",
+    description: "Áo thun di sản Nhà Thờ Lớn Hà Nội. Tái hiện kiến trúc Gothic cổ kính rêu phong và góc nhìn văn hóa phố Nhà Chung.",
+    size_guide_text: "M: 50-65kg | L: 65-75kg",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "p9",
+    name: "Hải Phòng Heritage Tee",
+    base_price: 179000,
+    package_type: "Áo thun di sản",
+    front_image: "/images/products/ao-thun-hai-phong-front.png",
+    back_image: "/images/products/ao-thun-hai-phong-back.png",
+    description: "Bộ sưu tập Thành phố Cảng hoa phượng đỏ — Mặt trước in logo VIET CITY WEAR, mặt sau in hình Nhà hát lớn, Cầu Bính và hoa phượng đỏ rực.",
     size_guide_text: "M: 50-65kg | L: 65-75kg",
     created_at: new Date().toISOString(),
   },
@@ -629,7 +640,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, front_image: e.target.value })
                     }
-                    placeholder="/images/products/tee-hanoi-front.jpg"
+                    placeholder="/images/products/ao-thun-ha-noi-front.png"
                     className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
                   />
                 </div>
@@ -644,7 +655,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, back_image: e.target.value })
                     }
-                    placeholder="/images/products/tee-hanoi-back.jpg"
+                    placeholder="/images/products/ao-thun-ha-noi-back.png"
                     className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
                   />
                 </div>

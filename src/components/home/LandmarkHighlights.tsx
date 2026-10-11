@@ -125,7 +125,7 @@ export default function LandmarkHighlights() {
                 src={currentLandmark.image}
                 alt={currentLandmark.name_vi}
                 fill
-                className="object-contain p-4"
+                className="object-cover"
               />
               <div className="absolute top-3 left-3 bg-[#111] text-white text-[9px] font-bold px-2.5 py-1 tracking-widest uppercase">
                 THẺ ĐỊA DANH #0{currentLandmark.order}

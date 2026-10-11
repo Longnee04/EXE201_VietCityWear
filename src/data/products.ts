@@ -30,7 +30,8 @@ export const products: Product[] = [
     compareAtPrice: 247000,
     images: [
       "/images/hanoi-heritage-set.png",
-      "/images/ao-thun-ha-noi.png",
+      "/images/products/ao-thun-ha-noi-front.png",
+      "/images/products/ao-thun-ha-noi-back.png",
       "/images/the-dia-danh-hanoi.png",
       "/images/moc-khoa-qr-hanoi.png",
     ],
@@ -58,7 +59,11 @@ export const products: Product[] = [
     slug: "hanoi-heritage-tee-hoan-kiem-lake",
     price: 179000,
     compareAtPrice: 199000,
-    images: ["/images/ao-thun-ha-noi.png"],
+    images: [
+      "/images/products/ao-thun-ha-noi-front.png",
+      "/images/products/ao-thun-ha-noi-back.png",
+      "/images/ao-thun-ha-noi.png",
+    ],
     colors: [
       { name: "White", value: "#F7F4EE" },
       { name: "Black", value: "#111111" },
@@ -81,7 +86,11 @@ export const products: Product[] = [
     slug: "hanoi-heritage-tee-van-mieu",
     price: 179000,
     compareAtPrice: 199000,
-    images: ["/images/landmarks/van-mieu.jpg", "/images/ao-thun-ha-noi.png"],
+    images: [
+      "/images/landmarks/van-mieu.jpg",
+      "/images/products/ao-thun-ha-noi-back.png",
+      "/images/products/ao-thun-ha-noi-front.png",
+    ],
     colors: [
       { name: "White", value: "#F7F4EE" },
       { name: "Black", value: "#111111" },
@@ -103,7 +112,11 @@ export const products: Product[] = [
     slug: "hanoi-heritage-tee-pho-co",
     price: 179000,
     compareAtPrice: 199000,
-    images: ["/images/landmarks/pho-co.jpg", "/images/ao-thun-ha-noi.png"],
+    images: [
+      "/images/landmarks/pho-co.jpg",
+      "/images/products/ao-thun-ha-noi-back.png",
+      "/images/products/ao-thun-ha-noi-front.png",
+    ],
     colors: [
       { name: "White", value: "#F7F4EE" },
       { name: "Black", value: "#111111" },
@@ -125,7 +138,11 @@ export const products: Product[] = [
     slug: "hanoi-heritage-tee-nha-tho-lon",
     price: 179000,
     compareAtPrice: 199000,
-    images: ["/images/landmarks/nha-tho-lon.jpg", "/images/ao-thun-ha-noi.png"],
+    images: [
+      "/images/landmarks/nha-tho-lon.jpg",
+      "/images/products/ao-thun-ha-noi-back.png",
+      "/images/products/ao-thun-ha-noi-front.png",
+    ],
     colors: [
       { name: "White", value: "#F7F4EE" },
       { name: "Black", value: "#111111" },
@@ -170,11 +187,11 @@ export const products: Product[] = [
     category: "all",
     city: "Hà Nội",
     description:
-      "Móc khóa gỗ tròn khắc 2 mặt tinh xảo: Mặt trước khắc logo thương hiệu VIET CITY WEAR, mặt sau khắc mã QR / NFC kết nối trực tiếp với website du lịch số khi chạm hoặc quét điện thoại.",
+      "Móc khóa gỗ tròn khắc 2 mặt tinh xảo: Mặt trước khắc logo thương hiệu VIET CITY WEAR, mặt sau khắc mã QR kết nối trực tiếp với website du lịch số khi quét điện thoại.",
     inStock: true,
     includes: [
       "01 × Móc khóa gỗ tự nhiên khoen kim loại",
-      "Mã QR / NFC định danh duy nhất",
+      "Mã QR định danh duy nhất",
     ],
   },
   {
@@ -204,6 +221,8 @@ export const products: Product[] = [
     slug: "ao-thun-hai-phong-heritage-tee",
     price: 179000,
     images: [
+      "/images/products/ao-thun-hai-phong-front.png",
+      "/images/products/ao-thun-hai-phong-back.png",
       "/images/ao-thun-hai-phong-coming-soon.png",
       "/images/ao-thun-hai-phong.png",
     ],
@@ -215,7 +234,7 @@ export const products: Product[] = [
     category: "new",
     city: "Hải Phòng",
     description:
-      "Bộ sưu tập Thành phố cảng hoa phượng đỏ — Mặt trước in Hải Phòng - VIỆT NAM, mặt sau in hình Nhà hát lớn, Cầu Bính và hoa phượng đỏ rực. (Đang trong giai đoạn hoàn thiện chuẩn bị phát hành).",
+      "Bộ sưu tập Thành phố cảng hoa phượng đỏ — Mặt trước in logo VIET CITY WEAR, mặt sau in hình Nhà hát lớn, Cầu Bính và hoa phượng đỏ rực.",
     inStock: true,
     includes: [
       "01 × Áo thun Hải Phòng Heritage Tee",

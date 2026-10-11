@@ -47,7 +47,7 @@ export const HANOI_GUIDE: CityGuide = {
   slogan_en: "A thousand years of heritage – Soul of Thang Long",
   description_vi: "Thủ đô của những con phố rêu phong, của tiếng chuông nhà thờ hòa cùng tiếng rao sớm và hương hoa sữa nồng nàn. Hãy cùng chạm vào từng câu chuyện di sản được khắc họa trên chiếc áo bạn đang mặc.",
   description_en: "The capital of moss-covered streets, where church bells blend with early morning vendors and the scent of milk flowers. Tap into each heritage story woven into the shirt you wear.",
-  cover_image: "/images/hanoi-story-cards.png",
+  cover_image: "/images/hanoi-banner.jpg",
   landmarks: [
     {
       id: "lm-01",

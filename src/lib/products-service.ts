@@ -50,7 +50,7 @@ export function mapDbProductToUi(
   ].filter((img): img is string => Boolean(img && img.trim().length > 0));
 
   if (images.length === 0) {
-    images.push("/images/products/tee-hanoi-front.jpg");
+    images.push("/images/products/ao-thun-ha-noi-front.png");
   }
 
   const generatedSlug = slugify(dbProd.name) || dbProd.id;

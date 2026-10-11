@@ -20,7 +20,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [viewSide, setViewSide] = useState<"front" | "back">("front");
+
+  const currentImage = product.images[selectedImageIndex] || product.images[0];
   
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -34,7 +37,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       price: product.price,
       size: selectedSize,
       color: selectedColor,
-      image: product.images[0],
+      image: currentImage || product.images[0],
     });
   };
 
@@ -47,7 +50,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {/* Front / Back Toggle Tabs */}
           <div className="flex items-center gap-2 border-b border-[#eaeaea] pb-2">
             <button
-              onClick={() => setViewSide("front")}
+              onClick={() => {
+                setViewSide("front");
+                setSelectedImageIndex(0);
+              }}
               className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                 viewSide === "front"
                   ? "bg-[#111] text-white"
@@ -57,7 +63,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               Mặt trước
             </button>
             <button
-              onClick={() => setViewSide("back")}
+              onClick={() => {
+                setViewSide("back");
+                setSelectedImageIndex(product.images.length > 1 ? 1 : 0);
+              }}
               className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                 viewSide === "back"
                   ? "bg-[#111] text-white"
@@ -74,7 +83,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {/* Main Visual */}
           <div className="relative w-full aspect-[4/5] bg-[#F7F4EE] rounded-sm overflow-hidden border border-[#eaeaea]">
             <Image
-              src={product.images[0]}
+              src={currentImage}
               alt={`${product.name} - ${viewSide === "front" ? "Mặt trước" : "Mặt sau"}`}
               fill
               className="object-contain p-4"
@@ -84,6 +93,34 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               {viewSide === "front" ? "GÓC NHÌN: MẶT TRƯỚC" : "GÓC NHÌN: MẶT SAU"}
             </div>
           </div>
+
+          {/* Thumbnails list if multiple images exist */}
+          {product.images.length > 1 && (
+            <div className="flex items-center gap-2.5 overflow-x-auto pb-1 pt-1">
+              {product.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setSelectedImageIndex(idx);
+                    if (idx === 0) setViewSide("front");
+                    else if (idx === 1) setViewSide("back");
+                  }}
+                  className={`relative w-16 h-16 rounded-xs overflow-hidden border-2 transition-all flex-shrink-0 bg-[#F7F4EE] ${
+                    selectedImageIndex === idx
+                      ? "border-[#111] ring-1 ring-[#111]"
+                      : "border-[#eaeaea] opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`Chi tiết ${idx + 1}`}
+                    fill
+                    className="object-contain p-1"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: Product Info */}

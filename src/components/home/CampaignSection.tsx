@@ -39,8 +39,8 @@ export default function CampaignSection() {
                 className="block-moc-khoa-nfc relative w-full aspect-square max-h-[340px] mx-auto rounded-none overflow-hidden bg-white border border-[#eaeaea]"
               >
                 <Image
-                  src="/images/moc-khoa-nfc-hanoi.png"
-                  alt="Móc khóa gỗ NFC (HANOI) — VIET CITY WEAR"
+                  src="/images/moc-khoa-qr-hanoi.png"
+                  alt="Móc khóa gỗ QR (HANOI) — VIET CITY WEAR"
                   fill
                   sizes="(max-width: 768px) 100vw, 500px"
                   className="object-contain p-4"

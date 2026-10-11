@@ -53,11 +53,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.images && product.images[0] ? (
             <div className="relative w-full h-full p-2">
               <Image
-                src={product.images[0]}
+                src={isHovered && product.images[1] ? product.images[1] : product.images[0]}
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-contain"
+                className="object-contain transition-opacity duration-300"
               />
             </div>
           ) : (

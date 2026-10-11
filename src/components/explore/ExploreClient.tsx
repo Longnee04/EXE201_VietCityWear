@@ -148,7 +148,7 @@ export default function ExploreClient() {
                 src={activeLandmark.image}
                 alt={lang === "vi" ? activeLandmark.name_vi : activeLandmark.name_en}
                 fill
-                className="object-contain p-4"
+                className="object-cover"
                 priority
               />
               <div className="absolute top-3 left-3 bg-[#111] text-white text-[10px] font-bold px-2.5 py-1 uppercase rounded-xs">

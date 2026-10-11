@@ -83,8 +83,8 @@ CREATE TABLE IF NOT EXISTS public.products (
     description TEXT,
     size_guide_text TEXT DEFAULT 'M: 50-65kg | L: 65-75kg | XL: 75-85kg',
     package_type VARCHAR(100) DEFAULT 'Tiêu chuẩn (Áo + 5 Thẻ + Móc khóa NFC)',
-    front_image VARCHAR(500) DEFAULT '/images/products/tee-hanoi-front.jpg',
-    back_image VARCHAR(500) DEFAULT '/images/products/tee-hanoi-back.jpg',
+    front_image VARCHAR(500) DEFAULT '/images/products/ao-thun-ha-noi-front.png',
+    back_image VARCHAR(500) DEFAULT '/images/products/ao-thun-ha-noi-back.png',
     is_active BOOLEAN NOT NULL DEFAULT true,
     status VARCHAR(30) NOT NULL DEFAULT 'Active',
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
@@ -454,8 +454,8 @@ BEGIN
       hn_id,
       'Áo Thun Hà Nội Phố — Signature Tee',
       299000,
-      '/images/products/tee-hanoi-front.jpg',
-      '/images/products/tee-hanoi-back.jpg',
+      '/images/products/ao-thun-ha-noi-front.png',
+      '/images/products/ao-thun-ha-noi-back.png',
       'Lấy cảm hứng từ mái ngói rêu phong 36 phố phường và Tháp Rùa Hồ Gươm cổ kính. Chất liệu 100% cotton 2 chiều 250gsm thoáng mát.',
       'M: 50-65kg | L: 65-75kg | XL: 75-85kg',
       'Tiêu chuẩn (Áo + 5 Thẻ di sản + Móc khóa NFC)'
@@ -481,8 +481,8 @@ BEGIN
       hue_id,
       'Áo Thun Cố Đô Huế — Royal Heritage Tee',
       329000,
-      '/images/products/tee-hanoi-front.jpg',
-      '/images/products/tee-hanoi-back.jpg',
+      '/images/products/ao-thun-ha-noi-front.png',
+      '/images/products/ao-thun-ha-noi-back.png',
       'Họa tiết hoa văn triều Nguyễn kết hợp phong cách streetwear hiện đại, gợi nhắc nét trầm mặc dòng sông Hương.',
       'M: 50-65kg | L: 65-75kg | XL: 75-85kg',
       'Cao cấp (Áo + Thẻ di sản Huế + Móc khóa NFC gỗ)'
@@ -502,8 +502,8 @@ BEGIN
       ha_id,
       'Áo Thun Phố Cổ Hội An — Lantern Glow Tee',
       319000,
-      '/images/products/tee-hanoi-front.jpg',
-      '/images/products/tee-hanoi-back.jpg',
+      '/images/products/ao-thun-ha-noi-front.png',
+      '/images/products/ao-thun-ha-noi-back.png',
       'Tái hiện sắc vàng cổ kính và ánh sáng huyền ảo của lồng đèn phố Hội bên dòng sông Hoài êm ả.',
       'M: 50-65kg | L: 65-75kg | XL: 75-85kg',
       'Tiêu chuẩn (Áo + 5 Thẻ di sản Hội An + Móc khóa NFC)'
