@@ -6,7 +6,7 @@ import { formatPrice } from "@/data/products";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, UserCheck, ShieldCheck } from "lucide-react";
+import { ArrowLeft, CheckCircle2, UserCheck, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { type User as SupabaseUser } from "@supabase/supabase-js";
 
@@ -125,20 +125,40 @@ export default function CheckoutClient() {
           Cảm ơn bạn đã đồng hành cùng VIET CITY WEAR. Đơn hàng sẽ được đóng gói chỉn chu trong Hộp quà di sản và giao đến địa chỉ của bạn sớm nhất.
         </p>
 
+        {/* Guest Recommendation Box */}
+        {!currentUser && (
+          <div className="p-4 bg-amber-50/80 border border-amber-200/90 rounded-sm mb-6 text-xs text-stone-800 text-left">
+            <p className="font-bold text-amber-950 mb-1 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <span>Khuyến nghị: Tạo tài khoản để tra cứu & theo dõi đơn hàng</span>
+            </p>
+            <p className="text-stone-600 mb-3 leading-relaxed">
+              Bạn vừa đặt hàng với số điện thoại <strong>{formData.phone}</strong>. Hãy đăng ký tài khoản thành viên bằng số điện thoại này để đăng nhập và tra cứu tiến độ xử lý đơn hàng bất kỳ lúc nào!
+            </p>
+            <Link
+              href={`/login?tab=register&phone=${encodeURIComponent(formData.phone)}&name=${encodeURIComponent(formData.name)}`}
+              className="inline-flex items-center justify-center w-full py-2.5 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors rounded-xs gap-1.5"
+            >
+              <span>Đăng ký tài khoản để theo dõi đơn hàng</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
           {currentUser ? (
             <Link
               href="/login?tab=orders"
               className="px-6 py-3 bg-[#111] text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors rounded-sm"
             >
-              Xem đơn hàng của tôi
+              Tra cứu đơn hàng của tôi
             </Link>
           ) : (
             <Link
-              href={`/login?tab=tracking&phone=${encodeURIComponent(formData.phone)}`}
-              className="px-6 py-3 bg-[#111] text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors rounded-sm"
+              href="/"
+              className="px-6 py-3 border border-[#111] text-[#111] text-xs font-bold uppercase tracking-widest hover:bg-[#fafafa] transition-colors rounded-sm"
             >
-              Tra cứu đơn hàng
+              Trở về Trang chủ
             </Link>
           )}
           <Link 
@@ -185,13 +205,24 @@ export default function CheckoutClient() {
               </span>
             </div>
           ) : (
-            <div className="mb-6 p-3.5 bg-amber-50/70 border border-amber-200 text-xs text-amber-900 rounded-sm flex items-center justify-between">
-              <span>
-                Bạn đang đặt hàng với tư cách <strong>Khách vãng lai (Guest)</strong>. Mua nhanh không cần đăng nhập!
-              </span>
-              <Link href="/login" className="text-[11px] font-bold uppercase underline hover:text-black ml-2">
-                Đăng nhập
-              </Link>
+            <div className="mb-6 p-4 bg-amber-50/80 border border-amber-200/80 rounded-sm text-xs text-stone-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <p className="font-bold text-amber-950 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                    <span>Khuyến nghị dành cho bạn</span>
+                  </p>
+                  <p className="text-stone-600 leading-relaxed">
+                    Bạn đang đặt hàng với tư cách <strong>Khách (Guest)</strong>. Tạo tài khoản thành viên để tra cứu lịch sử đơn hàng và nhận ưu đãi độc quyền.
+                  </p>
+                </div>
+                <Link
+                  href="/login?tab=register"
+                  className="px-3.5 py-2 bg-black text-white text-[11px] font-bold uppercase tracking-wider rounded-xs hover:bg-stone-800 whitespace-nowrap text-center flex-shrink-0"
+                >
+                  Tạo tài khoản ngay
+                </Link>
+              </div>
             </div>
           )}
 
