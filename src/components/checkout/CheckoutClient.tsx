@@ -181,10 +181,10 @@ export default function CheckoutClient() {
 
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#eaeaea]">
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
-          Xác Nhận & Thanh Toán COD
+          Xác Nhận & Thanh Toán Đơn Hàng
         </h1>
         <span className="text-xs text-[#888] font-medium hidden sm:inline">
-          Duy nhất hình thức nhận hàng trả tiền (Ship COD)
+          Hỗ trợ thanh toán Ship COD và Chuyển khoản tự động SePay QR
         </span>
       </div>
 
@@ -273,18 +273,63 @@ export default function CheckoutClient() {
 
               <div className="pt-4 border-t border-gray-300">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-[#111] mb-3">
-                  Phương Thức Thanh Toán (Theo Đặc Tả)
+                  Phương Thức Thanh Toán
                 </h3>
-                <div className="p-4 border-2 border-black bg-white rounded-sm shadow-xs flex items-start gap-3">
-                  <div className="w-4 h-4 rounded-full border-4 border-black bg-white mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span className="text-xs font-bold text-black uppercase tracking-wider block">
-                      Thanh toán khi nhận hàng (Ship COD)
-                    </span>
-                    <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
-                      Kiểm tra hàng trước khi thanh toán. Trọn bộ gồm áo thun, hộp quà di sản, 05 thẻ bưu thiếp và móc khóa chạm chip NFC.
-                    </p>
-                  </div>
+                <div className="space-y-3">
+                  {/* COD */}
+                  <label
+                    onClick={() => setPaymentMethod("COD")}
+                    className={`p-4 border-2 rounded-sm shadow-xs flex items-start gap-3 cursor-pointer transition-all ${
+                      paymentMethod === "COD"
+                        ? "border-black bg-white"
+                        : "border-stone-200 bg-stone-50/50 hover:border-stone-400"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={paymentMethod === "COD"}
+                      onChange={() => setPaymentMethod("COD")}
+                      className="w-4 h-4 text-black focus:ring-black cursor-pointer mt-0.5 accent-black"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-black uppercase tracking-wider block">
+                        Thanh toán khi nhận hàng (Ship COD)
+                      </span>
+                      <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
+                        Kiểm tra hàng trước khi thanh toán. Trọn bộ gồm áo thun, hộp quà di sản, 05 thẻ bưu thiếp và móc khóa chạm chip NFC.
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* SePay QR */}
+                  <label
+                    onClick={() => setPaymentMethod("SEPAY")}
+                    className={`p-4 border-2 rounded-sm shadow-xs flex items-start gap-3 cursor-pointer transition-all ${
+                      paymentMethod === "SEPAY"
+                        ? "border-black bg-white"
+                        : "border-stone-200 bg-stone-50/50 hover:border-stone-400"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={paymentMethod === "SEPAY"}
+                      onChange={() => setPaymentMethod("SEPAY")}
+                      className="w-4 h-4 text-black focus:ring-black cursor-pointer mt-0.5 accent-black"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-black uppercase tracking-wider flex items-center gap-2">
+                        <span>Chuyển khoản trực tuyến (SePay QR)</span>
+                        <span className="px-2 py-0.5 text-[9px] font-bold uppercase bg-blue-100 text-blue-800 rounded">
+                          Tự động 24/7
+                        </span>
+                      </span>
+                      <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
+                        Quét mã VietQR bằng ứng dụng ngân hàng bất kỳ. Hệ thống tự động xác nhận thanh toán tức thì trong 3 giây.
+                      </p>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -293,7 +338,11 @@ export default function CheckoutClient() {
                 disabled={items.length === 0 || isSubmitting}
                 className="w-full h-[52px] mt-6 bg-black text-white flex items-center justify-center gap-2 text-xs font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-neutral-800 transition-colors disabled:bg-[#eaeaea] disabled:text-[#999] disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Đang tạo đơn hàng..." : `Xác nhận đặt hàng COD (${formatPrice(total)})`}
+                {isSubmitting
+                  ? "Đang tạo đơn hàng..."
+                  : paymentMethod === "COD"
+                  ? `Xác nhận đặt hàng COD (${formatPrice(total)})`
+                  : `Tiến hành quét mã QR SePay (${formatPrice(total)})`}
               </button>
             </form>
           </div>

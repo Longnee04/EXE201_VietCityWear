@@ -947,7 +947,7 @@ function LoginContent() {
                               </div>
                               <div className="text-right">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block">
-                                  Thanh toán khi nhận hàng (COD)
+                                  {ord.payment_method === "SEPAY" ? "Chuyển khoản SePay QR" : "Thanh toán khi nhận (COD)"}
                                 </span>
                                 <span className="text-sm font-extrabold text-black">
                                   {formatPrice(ord.total_amount)}

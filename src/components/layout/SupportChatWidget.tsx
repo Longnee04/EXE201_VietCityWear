@@ -86,8 +86,8 @@ export default function SupportChatWidget() {
       const lower = userText.toLowerCase();
       if (lower.includes("size") || lower.includes("cỡ")) {
         reply = "Form áo Viet City Wear là dáng Oversized thoải mái (Cotton 100% 250GSM). M (50-65kg), L (65-75kg), XL (75-85kg). Bạn cho mình xin chiều cao và cân nặng để tư vấn chuẩn nhất nhé!";
-      } else if (lower.includes("đơn") || lower.includes("ship") || lower.includes("cod")) {
-        reply = "Đơn hàng áp dụng duy nhất hình thức Ship COD - kiểm tra hàng trước khi thanh toán. Bạn có thể đăng nhập tài khoản để tra cứu chi tiết hành trình vận chuyển bất kỳ lúc nào ạ.";
+      } else if (lower.includes("đơn") || lower.includes("ship") || lower.includes("cod") || lower.includes("sepay")) {
+        reply = "Đơn hàng hỗ trợ cả 2 hình thức: Thanh toán khi nhận hàng (Ship COD) và Chuyển khoản ngân hàng tự động qua mã SePay QR. Bạn có thể đăng nhập tài khoản để tra cứu chi tiết hành trình vận chuyển bất kỳ lúc nào ạ.";
       } else if (lower.includes("nfc") || lower.includes("quà")) {
         reply = "Mỗi chiếc áo đều đi kèm hộp quà Branded Box, 05 bưu thiếp địa danh và 01 móc khóa chip NFC chạm điện thoại mở trang di sản văn hóa số.";
       }

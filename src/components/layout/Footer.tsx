@@ -91,7 +91,7 @@ export default function Footer() {
                 </li>
               ))}
               <li className="pt-2 text-[12px] border-t border-[#f0f0f0]">
-                Thanh toán: <span className="font-semibold text-[#111]">Duy nhất COD</span>
+                Thanh toán: <span className="font-semibold text-[#111]">COD & Chuyển khoản QR</span>
               </li>
               <li className="text-[12px]">
                 Vận chuyển: <span className="font-semibold text-[#111]">Freeship từ 500K</span>
