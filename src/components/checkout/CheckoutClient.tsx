@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/data/products";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
-
+import { ArrowLeft, CheckCircle2, UserCheck, ShieldCheck } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
+import { type User as SupabaseUser } from "@supabase/supabase-js";
 
 export default function CheckoutClient() {
   const { items, itemCount, clearCart } = useCart();
   const router = useRouter();
 
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -21,6 +23,32 @@ export default function CheckoutClient() {
   const [paymentMethod, setPaymentMethod] = useState<"COD" | "SEPAY">("COD");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadUserSession() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setCurrentUser(session.user);
+          const { data: profile } = await supabase
+            .from("users")
+            .select("full_name, phone")
+            .eq("id", session.user.id)
+            .maybeSingle();
+
+          setFormData((prev) => ({
+            name: profile?.full_name || session.user.user_metadata?.full_name || prev.name,
+            phone: profile?.phone || session.user.user_metadata?.phone || prev.phone,
+            address: prev.address,
+          }));
+        }
+      } catch (err) {
+        console.error("Lỗi lấy thông tin phiên người dùng:", err);
+      }
+    }
+    loadUserSession();
+  }, []);
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingFee = subtotal > 500000 ? 0 : 30000;
@@ -38,6 +66,7 @@ export default function CheckoutClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          user_id: currentUser?.id || null,
           receiver_name: formData.name,
           receiver_phone: formData.phone,
           shipping_address: formData.address,
@@ -57,14 +86,15 @@ export default function CheckoutClient() {
       const data = await response.json();
       if (!data.success) throw new Error(data.error || "Failed to create order");
 
+      setCreatedOrderId(data.orderId || null);
+
       if (paymentMethod === "SEPAY") {
-        // 2. Redirect to SePay QR page using real OrderId
+        // Redirect to SePay QR page using real OrderId
         router.push(`/checkout/sepay?orderId=${data.orderId}&amount=${total}`);
         return;
       }
 
       // COD Flow
-      // Clear cart
       clearCart();
       setIsSuccess(true);
       
@@ -78,118 +108,161 @@ export default function CheckoutClient() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <CheckCircle2 className="w-20 h-20 text-emerald-500 mb-6" />
-        <h1 className="text-2xl font-bold uppercase tracking-widest mb-4">Đặt Hàng Thành Công!</h1>
-        <p className="text-gray-600 mb-8 max-w-md">
-          Cảm ơn bạn đã mua sắm tại VIET CITY WEAR. Đơn hàng của bạn đang được xử lý và sẽ được giao trong thời gian sớm nhất.
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center max-w-lg mx-auto">
+        <CheckCircle2 className="w-16 h-16 text-emerald-600 mb-5" />
+        <span className="px-3 py-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold uppercase tracking-wider rounded-full mb-3">
+          Thanh toán khi nhận hàng (Ship COD)
+        </span>
+        <h1 className="text-2xl font-extrabold uppercase tracking-wide text-[#111] mb-2">
+          Đặt Hàng Thành Công!
+        </h1>
+        {createdOrderId && (
+          <p className="text-xs text-[#555] font-mono bg-[#f5f5f5] px-3 py-1.5 rounded border border-[#eaeaea] mb-4">
+            Mã đơn hàng: <strong className="text-black">{createdOrderId.slice(0, 18)}</strong>
+          </p>
+        )}
+        <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+          Cảm ơn bạn đã đồng hành cùng VIET CITY WEAR. Đơn hàng sẽ được đóng gói chỉn chu trong Hộp quà di sản và giao đến địa chỉ của bạn sớm nhất.
         </p>
-        <Link 
-          href="/"
-          className="px-8 py-3 bg-black text-white text-sm font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors"
-        >
-          Trở về Trang chủ
-        </Link>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+          {currentUser ? (
+            <Link
+              href="/login?tab=orders"
+              className="px-6 py-3 bg-[#111] text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors rounded-sm"
+            >
+              Xem đơn hàng của tôi
+            </Link>
+          ) : (
+            <Link
+              href={`/login?tab=tracking&phone=${encodeURIComponent(formData.phone)}`}
+              className="px-6 py-3 bg-[#111] text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors rounded-sm"
+            >
+              Tra cứu đơn hàng
+            </Link>
+          )}
+          <Link 
+            href="/products"
+            className="px-6 py-3 border border-[#111] text-[#111] text-xs font-bold uppercase tracking-widest hover:bg-[#fafafa] transition-colors rounded-sm"
+          >
+            Tiếp tục mua sắm
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-10 lg:py-16">
-      <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-black mb-8 transition-colors">
+      <Link href="/products" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-black mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
-        Tiếp tục mua sắm
+        <span>Quay lại Cửa hàng</span>
       </Link>
 
-      <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase mb-10">
-        Thanh Toán
-      </h1>
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#eaeaea]">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
+          Xác Nhận & Thanh Toán COD
+        </h1>
+        <span className="text-xs text-[#888] font-medium hidden sm:inline">
+          Duy nhất hình thức nhận hàng trả tiền (Ship COD)
+        </span>
+      </div>
 
       <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
         {/* Checkout Form */}
         <div className="flex-1">
-          <div className="bg-[#F7F4EE] p-6 sm:p-8 rounded-sm">
-            <h2 className="text-lg font-bold uppercase tracking-widest mb-6">Thông Tin Giao Hàng</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          {/* User Context Banner */}
+          {currentUser ? (
+            <div className="mb-6 p-3.5 bg-stone-100 border border-stone-200 rounded-sm text-xs flex items-center justify-between text-stone-800">
+              <div className="flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>
+                  Đang đặt hàng với tài khoản: <strong>{currentUser.email}</strong>
+                </span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                Tự động lưu đơn
+              </span>
+            </div>
+          ) : (
+            <div className="mb-6 p-3.5 bg-amber-50/70 border border-amber-200 text-xs text-amber-900 rounded-sm flex items-center justify-between">
+              <span>
+                Bạn đang đặt hàng với tư cách <strong>Khách vãng lai (Guest)</strong>. Mua nhanh không cần đăng nhập!
+              </span>
+              <Link href="/login" className="text-[11px] font-bold uppercase underline hover:text-black ml-2">
+                Đăng nhập
+              </Link>
+            </div>
+          )}
+
+          <div className="bg-[#F7F4EE] p-6 sm:p-8 rounded-sm border border-[#eaeaea]">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-[#111] mb-6">Thông Tin Giao Hàng</h2>
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Họ và tên</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                  Họ và tên người nhận *
+                </label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
-                  placeholder="Nhập họ và tên người nhận"
+                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
+                  placeholder="Ví dụ: Nguyễn Văn A"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Số điện thoại</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                  Số điện thoại nhận hàng *
+                </label>
                 <input
                   type="tel"
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
-                  placeholder="Nhập số điện thoại"
+                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
+                  placeholder="Ví dụ: 0912 345 678"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Địa chỉ giao hàng</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                  Địa chỉ giao hàng chi tiết *
+                </label>
                 <textarea
                   required
                   rows={3}
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors resize-none"
-                  placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"
+                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors resize-none"
+                  placeholder="Số nhà, ngõ/đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố"
                 />
               </div>
 
               <div className="pt-4 border-t border-gray-300">
-                <h3 className="text-sm font-bold uppercase tracking-widest mb-4">Phương Thức Thanh Toán</h3>
-                <div className="flex flex-col gap-3">
-                  <label className="flex items-start gap-3 p-4 border border-[#1A2E24] bg-white rounded-sm cursor-pointer shadow-xs">
-                    <input 
-                      type="radio" 
-                      name="payment"
-                      checked={true}
-                      readOnly
-                      className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">Thanh toán khi nhận hàng (COD)</span>
-                      <p className="text-xs text-[#57534E] mt-1">
-                        Kiểm tra hàng trước khi thanh toán.
-                      </p>
-                    </div>
-                  </label>
-                  
-                  <label className={`flex items-start gap-3 p-4 border rounded-sm cursor-pointer transition-colors ${paymentMethod === 'SEPAY' ? 'border-[#1A2E24] bg-gray-50' : 'border-gray-300 bg-white hover:border-[#1A2E24]'}`}>
-                    <input 
-                      type="radio" 
-                      name="payment"
-                      checked={paymentMethod === 'SEPAY'} 
-                      onChange={() => setPaymentMethod('SEPAY')}
-                      className="w-4 h-4 text-[#1A2E24] focus:ring-[#1A2E24] cursor-pointer mt-0.5" 
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium flex items-center gap-2">
-                        Thanh toán chuyển khoản (SePay)
-                      </span>
-                      <span className="text-xs text-gray-500 mt-1">Quét mã QR để chuyển khoản</span>
-                    </div>
-                  </label>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[#111] mb-3">
+                  Phương Thức Thanh Toán (Theo Đặc Tả)
+                </h3>
+                <div className="p-4 border-2 border-black bg-white rounded-sm shadow-xs flex items-start gap-3">
+                  <div className="w-4 h-4 rounded-full border-4 border-black bg-white mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="text-xs font-bold text-black uppercase tracking-wider block">
+                      Thanh toán khi nhận hàng (Ship COD)
+                    </span>
+                    <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
+                      Kiểm tra hàng trước khi thanh toán. Trọn bộ gồm áo thun, hộp quà di sản, 05 thẻ bưu thiếp và móc khóa chạm chip NFC.
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <button
                 type="submit"
                 disabled={items.length === 0 || isSubmitting}
-                className="w-full h-[54px] mt-6 bg-black text-white flex items-center justify-center gap-2 text-[13px] font-bold tracking-[0.1em] uppercase rounded-sm hover:bg-gray-800 transition-colors disabled:bg-[#eaeaea] disabled:text-[#999] disabled:cursor-not-allowed"
+                className="w-full h-[52px] mt-6 bg-black text-white flex items-center justify-center gap-2 text-xs font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-neutral-800 transition-colors disabled:bg-[#eaeaea] disabled:text-[#999] disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt hàng"}
+                {isSubmitting ? "Đang tạo đơn hàng..." : `Xác nhận đặt hàng COD (${formatPrice(total)})`}
               </button>
             </form>
           </div>

@@ -235,12 +235,20 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               ) : (
                 <>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                    <span>01 Sản phẩm chính hãng VIET CITY WEAR</span>
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
+                    <span>01 × Áo thun di sản chính hãng (Cotton 100% 250GSM)</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full" />
-                    <span>Thẻ bảo hành & Hướng dẫn trải nghiệm số</span>
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
+                    <span>05 × Thẻ bưu thiếp địa danh văn hóa kèm câu chuyện di sản</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
+                    <span>01 × Móc khóa gắn chip NFC kết nối trang trải nghiệm số</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
+                    <span>01 × Hộp quà đóng gói cao cấp Branded Box</span>
                   </li>
                 </>
               )}

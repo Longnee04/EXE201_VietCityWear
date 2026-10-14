@@ -9,22 +9,28 @@ const dbPath = path.join(dataDir, "sepay_orders.json");
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { receiver_name, receiver_phone, shipping_address, total_amount, payment_method, items, note } = body;
+    const { receiver_name, receiver_phone, shipping_address, total_amount, payment_method, items, note, user_id } = body;
 
     // 1. Lưu trực tiếp vào bảng orders trên Supabase (kết nối trực tiếp với Admin Dashboard & Admin Orders)
     let supabaseOrderId: string | null = null;
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const orderPayload: any = {
+        receiver_name: receiver_name || "Khách Hàng",
+        receiver_phone: receiver_phone || "",
+        shipping_address: shipping_address || "",
+        total_amount: Number(total_amount) || 0,
+        payment_method: payment_method || "COD",
+        status: "processing",
+        note: note || "",
+      };
+      if (user_id) {
+        orderPayload.user_id = user_id;
+      }
+
       const { data: dbOrder, error: orderErr } = await supabase
         .from("orders")
-        .insert({
-          receiver_name: receiver_name || "Khách Hàng",
-          receiver_phone: receiver_phone || "",
-          shipping_address: shipping_address || "",
-          total_amount: Number(total_amount) || 0,
-          payment_method: payment_method || "COD",
-          status: "processing",
-          note: note || "",
-        })
+        .insert(orderPayload)
         .select()
         .single();
 
