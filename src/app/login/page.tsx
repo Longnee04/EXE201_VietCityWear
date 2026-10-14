@@ -26,6 +26,14 @@ import {
   MapPin,
   RefreshCw,
   Sparkles,
+  Gift,
+  KeyRound,
+  Plus,
+  Trash2,
+  Check,
+  Calendar,
+  CreditCard,
+  Crown,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { type User as SupabaseUser } from "@supabase/supabase-js";
@@ -71,16 +79,26 @@ interface UserOrder {
   items?: OrderItemDetail[];
 }
 
+interface SavedAddress {
+  id: string;
+  fullName: string;
+  phone: string;
+  address: string;
+  isDefault: boolean;
+}
+
+type TabType = "orders" | "address" | "profile" | "membership" | "password";
+
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // URL Params: ?tab=orders | ?tab=register&phone=0912...&name=...
+  // URL Params
   const queryTab = searchParams.get("tab");
   const queryPhone = searchParams.get("phone") || "";
   const queryName = searchParams.get("name") || "";
 
-  // Auth Modes when logged out: ONLY "login" | "register"
+  // Auth Modes when logged out: "login" | "register"
   const [authMode, setAuthMode] = useState<"login" | "register">(
     queryTab === "register" ? "register" : "login"
   );
@@ -92,17 +110,28 @@ function LoginContent() {
     phone: string;
     email: string;
     role: string;
+    birthday?: string;
+    gender?: string;
   } | null>(null);
 
-  // Dashboard Tabs when logged in: "profile" | "orders"
-  const [userDashboardTab, setUserDashboardTab] = useState<"profile" | "orders">(
+  // 2-Column Dashboard Tab for authenticated user (matches Levents screenshot)
+  const [activeTab, setActiveTab] = useState<TabType>(
     queryTab === "orders" ? "orders" : "profile"
   );
 
-  // Orders list for logged in user
+  // Orders list
   const [userOrders, setUserOrders] = useState<UserOrder[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState<"all" | "processing" | "completed" | "canceled">("all");
+
+  // Address book state
+  const [addresses, setAddresses] = useState<SavedAddress[]>([]);
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [newAddrName, setNewAddrName] = useState("");
+  const [newAddrPhone, setNewAddrPhone] = useState("");
+  const [newAddrDetail, setNewAddrDetail] = useState("");
+  const [newAddrIsDefault, setNewAddrIsDefault] = useState(false);
 
   // Login inputs
   const [email, setEmail] = useState("");
@@ -116,16 +145,21 @@ function LoginContent() {
   const [regPassword, setRegPassword] = useState("");
 
   // Edit Profile inputs
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editFullName, setEditFullName] = useState("");
   const [editPhone, setEditPhone] = useState("");
+  const [editBirthday, setEditBirthday] = useState("");
+  const [editGender, setEditGender] = useState("Nam");
+
+  // Change Password inputs
+  const [newPass, setNewPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
 
   // Status & Feedback
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Fetch orders for logged in user
+  // Helper: Fetch orders
   const loadOrdersForUser = async (userId: string, phone?: string): Promise<UserOrder[]> => {
     try {
       let query = supabase.from("orders").select("*").order("created_at", { ascending: false });
@@ -201,13 +235,38 @@ function LoginContent() {
             phone: profile?.phone || session.user.user_metadata?.phone || "",
             email: session.user.email || "",
             role: profile?.role || session.user.user_metadata?.role || "user",
+            birthday: session.user.user_metadata?.birthday || "2000-01-01",
+            gender: session.user.user_metadata?.gender || "Nam",
           };
 
           setUserProfile(resolvedProfile);
           setEditFullName(resolvedProfile.full_name);
           setEditPhone(resolvedProfile.phone);
+          setEditBirthday(resolvedProfile.birthday);
+          setEditGender(resolvedProfile.gender);
 
-          // Fetch orders for this user
+          // Initialize saved addresses
+          const savedAddrKey = `vcw_addr_${session.user.id}`;
+          const localAddrs = localStorage.getItem(savedAddrKey);
+          if (localAddrs) {
+            try {
+              setAddresses(JSON.parse(localAddrs));
+            } catch {}
+          } else if (resolvedProfile.full_name && resolvedProfile.phone) {
+            const initialAddrs: SavedAddress[] = [
+              {
+                id: "addr-1",
+                fullName: resolvedProfile.full_name,
+                phone: resolvedProfile.phone,
+                address: "Hà Nội, Việt Nam",
+                isDefault: true,
+              },
+            ];
+            setAddresses(initialAddrs);
+            localStorage.setItem(savedAddrKey, JSON.stringify(initialAddrs));
+          }
+
+          // Fetch user orders
           setIsLoadingOrders(true);
           const orders = await loadOrdersForUser(session.user.id, resolvedProfile.phone);
           setUserOrders(orders);
@@ -220,18 +279,24 @@ function LoginContent() {
     loadUserSession();
   }, []);
 
-  // Filter orders by search query
-  const filteredUserOrders = useMemo(() => {
-    if (!orderSearchQuery.trim()) return userOrders;
-    const q = orderSearchQuery.toLowerCase().trim();
-    return userOrders.filter(
-      (ord) =>
-        ord.id.toLowerCase().includes(q) ||
-        ord.receiver_name.toLowerCase().includes(q) ||
-        ord.shipping_address.toLowerCase().includes(q) ||
-        (ord.items && ord.items.some((it) => it.product_name.toLowerCase().includes(q)))
-    );
-  }, [userOrders, orderSearchQuery]);
+  // Filtered orders by status & search query
+  const filteredOrders = useMemo(() => {
+    let list = userOrders;
+    if (orderStatusFilter !== "all") {
+      list = list.filter((o) => o.status === orderStatusFilter);
+    }
+    if (orderSearchQuery.trim()) {
+      const q = orderSearchQuery.toLowerCase().trim();
+      list = list.filter(
+        (ord) =>
+          ord.id.toLowerCase().includes(q) ||
+          ord.receiver_name.toLowerCase().includes(q) ||
+          ord.shipping_address.toLowerCase().includes(q) ||
+          (ord.items && ord.items.some((it) => it.product_name.toLowerCase().includes(q)))
+      );
+    }
+    return list;
+  }, [userOrders, orderStatusFilter, orderSearchQuery]);
 
   // Handle Login
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -273,23 +338,26 @@ function LoginContent() {
       const assignedRole = profile?.role || authData.user.user_metadata?.role || "user";
 
       if (assignedRole === "admin") {
-        setSuccessMessage("Đăng nhập Admin thành công! Chuyển hướng...");
+        setSuccessMessage("Đăng nhập Admin thành công! Đang chuyển hướng...");
         router.refresh();
         setTimeout(() => router.push("/admin/dashboard"), 600);
       } else {
-        setSuccessMessage("Đăng nhập thành công! Đang tải tài khoản...");
+        setSuccessMessage("Đăng nhập thành công!");
         setCurrentUser(authData.user);
         const resolvedProfile = {
           full_name: profile?.full_name || authData.user.user_metadata?.full_name || "Khách hàng",
           phone: profile?.phone || authData.user.user_metadata?.phone || "",
           email: authData.user.email || "",
           role: assignedRole,
+          birthday: authData.user.user_metadata?.birthday || "2000-01-01",
+          gender: authData.user.user_metadata?.gender || "Nam",
         };
         setUserProfile(resolvedProfile);
         setEditFullName(resolvedProfile.full_name);
         setEditPhone(resolvedProfile.phone);
+        setEditBirthday(resolvedProfile.birthday);
+        setEditGender(resolvedProfile.gender);
 
-        // Fetch user orders
         setIsLoadingOrders(true);
         const orders = await loadOrdersForUser(userId, resolvedProfile.phone);
         setUserOrders(orders);
@@ -365,7 +433,8 @@ function LoginContent() {
   };
 
   // Handle Update Profile
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!currentUser) return;
     try {
       setIsLoading(true);
@@ -384,18 +453,109 @@ function LoginContent() {
         data: {
           full_name: editFullName.trim(),
           phone: editPhone.trim(),
+          birthday: editBirthday,
+          gender: editGender,
         },
       });
 
       setUserProfile((prev) =>
-        prev ? { ...prev, full_name: editFullName.trim(), phone: editPhone.trim() } : null
+        prev
+          ? {
+              ...prev,
+              full_name: editFullName.trim(),
+              phone: editPhone.trim(),
+              birthday: editBirthday,
+              gender: editGender,
+            }
+          : null
       );
-      setIsEditingProfile(false);
       setSuccessMessage("Cập nhật thông tin tài khoản thành công!");
       setIsLoading(false);
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch {
       setErrorMessage("Không thể lưu thông tin. Vui lòng thử lại.");
+      setIsLoading(false);
+    }
+  };
+
+  // Handle Add Address
+  const handleAddAddress = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentUser || !newAddrName.trim() || !newAddrPhone.trim() || !newAddrDetail.trim()) return;
+
+    const newAddr: SavedAddress = {
+      id: `addr-${Date.now()}`,
+      fullName: newAddrName.trim(),
+      phone: newAddrPhone.trim(),
+      address: newAddrDetail.trim(),
+      isDefault: newAddrIsDefault || addresses.length === 0,
+    };
+
+    let updated = addresses;
+    if (newAddr.isDefault) {
+      updated = updated.map((a) => ({ ...a, isDefault: false }));
+    }
+    updated = [newAddr, ...updated];
+
+    setAddresses(updated);
+    localStorage.setItem(`vcw_addr_${currentUser.id}`, JSON.stringify(updated));
+
+    setNewAddrName("");
+    setNewAddrPhone("");
+    setNewAddrDetail("");
+    setNewAddrIsDefault(false);
+    setIsAddingAddress(false);
+    setSuccessMessage("Đã thêm địa chỉ nhận hàng mới thành công!");
+    setTimeout(() => setSuccessMessage(null), 3000);
+  };
+
+  // Handle Set Default Address
+  const handleSetDefaultAddress = (id: string) => {
+    if (!currentUser) return;
+    const updated = addresses.map((a) => ({
+      ...a,
+      isDefault: a.id === id,
+    }));
+    setAddresses(updated);
+    localStorage.setItem(`vcw_addr_${currentUser.id}`, JSON.stringify(updated));
+  };
+
+  // Handle Delete Address
+  const handleDeleteAddress = (id: string) => {
+    if (!currentUser) return;
+    const updated = addresses.filter((a) => a.id !== id);
+    if (updated.length > 0 && !updated.some((a) => a.isDefault)) {
+      updated[0].isDefault = true;
+    }
+    setAddresses(updated);
+    localStorage.setItem(`vcw_addr_${currentUser.id}`, JSON.stringify(updated));
+  };
+
+  // Handle Change Password
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPass.length < 6) {
+      setErrorMessage("Mật khẩu mới phải có tối thiểu 6 ký tự.");
+      return;
+    }
+    if (newPass !== confirmPass) {
+      setErrorMessage("Mật khẩu xác nhận không khớp.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const { error } = await supabase.auth.updateUser({ password: newPass });
+      if (error) throw error;
+
+      setSuccessMessage("Đổi mật khẩu thành công!");
+      setNewPass("");
+      setConfirmPass("");
+      setIsLoading(false);
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err: any) {
+      setErrorMessage(err.message || "Không thể cập nhật mật khẩu.");
       setIsLoading(false);
     }
   };
@@ -445,17 +605,22 @@ function LoginContent() {
     );
   };
 
+  const totalSpent = userOrders.reduce(
+    (sum, o) => sum + (o.status === "completed" ? Number(o.total_amount) : 0),
+    0
+  );
+
   return (
     <div className="min-h-screen w-full bg-[#FAFAFA] flex flex-col justify-between text-[#111111] antialiased selection:bg-black selection:text-white">
       {/* Top Header */}
-      <header className="w-full border-b border-[#EAEAEA] bg-white/80 backdrop-blur-md sticky top-0 z-40">
+      <header className="w-full border-b border-[#EAEAEA] bg-white sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link
             href="/"
             className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#555] hover:text-black transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Quay lại Trang chủ</span>
+            <span>Trang chủ</span>
           </Link>
 
           <Link href="/" className="flex items-center gap-2.5">
@@ -476,7 +641,7 @@ function LoginContent() {
 
           <Link
             href="/products"
-            className="text-xs font-semibold uppercase tracking-[0.15em] text-[#555] hover:text-black transition-colors hidden sm:block"
+            className="text-xs font-semibold uppercase tracking-[0.15em] text-[#555] hover:text-black transition-colors"
           >
             Cửa hàng
           </Link>
@@ -484,573 +649,997 @@ function LoginContent() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <div
-          className={`w-full transition-all duration-300 ${
-            currentUser && userDashboardTab === "orders" ? "max-w-[700px]" : "max-w-[480px]"
-          }`}
-        >
-          <div className="bg-white border border-[#E5E5E5] rounded-2xl shadow-[0_12px_40px_-16px_rgba(0,0,0,0.08)] p-6 sm:p-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-neutral-800 via-neutral-900 to-black" />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* ============================================================== */}
+        {/* VIEW A: IF USER IS LOGGED IN -> 2-COLUMN E-COMMERCE DASHBOARD  */}
+        {/* ============================================================== */}
+        {currentUser && userProfile ? (
+          <div>
+            {/* Breadcrumb matching Levents (Home / Profile Page) */}
+            <div className="flex items-center gap-2 text-xs text-stone-500 mb-8 font-medium">
+              <Link href="/" className="hover:text-black transition-colors">Home</Link>
+              <span>/</span>
+              <span className="text-black font-semibold">Profile Page</span>
+            </div>
 
-            {/* ============================================================== */}
-            {/* VIEW A: IF USER IS LOGGED IN -> PROFILE OR MY ORDERS           */}
-            {/* ============================================================== */}
-            {currentUser && userProfile ? (
-              <div>
-                {/* Header User info */}
-                <div className="flex items-center justify-between pb-5 border-b border-[#eaeaea] mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[#111] text-white flex items-center justify-center font-bold text-lg">
-                      {userProfile.full_name ? userProfile.full_name.charAt(0).toUpperCase() : "U"}
-                    </div>
-                    <div>
-                      <h1 className="text-base font-bold uppercase tracking-tight text-black">
-                        {userProfile.full_name || "Tài khoản thành viên"}
-                      </h1>
-                      <p className="text-xs text-[#666]">{userProfile.email}</p>
-                    </div>
+            {/* Notification alert if any */}
+            {successMessage && (
+              <div className="mb-6 p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+                <span>{successMessage}</span>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="mb-6 p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            {/* 2-Column Grid */}
+            <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
+              {/* LEFT COLUMN: Sidebar Navigation matching Levents */}
+              <div className="w-full md:w-64 lg:w-72 bg-white p-6 border border-[#eaeaea] rounded-sm shrink-0">
+                {/* User Greeting & Avatar */}
+                <div className="flex items-center gap-3.5 pb-6 border-b border-[#eaeaea]">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-stone-200 bg-[#F7F4EE] flex-shrink-0">
+                    <Image
+                      src="/images/logo-vietcitywear.png"
+                      alt="Viet City Wear"
+                      fill
+                      className="object-contain p-1"
+                      sizes="48px"
+                    />
                   </div>
-
-                  <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-[#f0f0f0] text-[#555] rounded-full">
-                    {userProfile.role === "admin" ? "Quản trị viên" : "Khách hàng"}
-                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-stone-500">Xin chào bạn !</p>
+                    <h2 className="text-sm font-bold text-black truncate uppercase tracking-tight">
+                      {userProfile.full_name || "Thành viên"}
+                    </h2>
+                    <p className="text-[11px] text-stone-500 flex items-center gap-1 mt-0.5">
+                      <span>Cấp độ:</span>
+                      <strong className="text-black font-semibold">
+                        {totalSpent > 1000000 ? "Hội viên Bạc" : "Thành viên"}
+                      </strong>
+                    </p>
+                  </div>
                 </div>
 
-                {/* Dashboard Tabs: Hồ Sơ vs Đơn Hàng Của Tôi */}
-                <div className="flex border-b border-[#eaeaea] mb-6">
+                {/* Sidebar Navigation Links matching Levents screenshot */}
+                <nav className="mt-5 space-y-1 text-xs">
                   <button
-                    onClick={() => setUserDashboardTab("profile")}
-                    className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 flex items-center justify-center gap-2 ${
-                      userDashboardTab === "profile"
-                        ? "border-[#111] text-[#111]"
-                        : "border-transparent text-[#888] hover:text-[#111]"
+                    onClick={() => setActiveTab("orders")}
+                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider transition-colors text-left ${
+                      activeTab === "orders"
+                        ? "bg-black text-white"
+                        : "text-stone-700 hover:bg-stone-50 hover:text-black"
                     }`}
                   >
-                    <User className="w-3.5 h-3.5" />
-                    <span>Thông tin cá nhân</span>
-                  </button>
-                  <button
-                    onClick={() => setUserDashboardTab("orders")}
-                    className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 flex items-center justify-center gap-2 ${
-                      userDashboardTab === "orders"
-                        ? "border-[#111] text-[#111]"
-                        : "border-transparent text-[#888] hover:text-[#111]"
-                    }`}
-                  >
-                    <Package className="w-3.5 h-3.5" />
-                    <span>Tra cứu đơn hàng ({userOrders.length})</span>
-                  </button>
-                </div>
-
-                {successMessage && (
-                  <div className="mb-5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
-                    <span>{successMessage}</span>
-                  </div>
-                )}
-
-                {/* TAB 1: USER PROFILE */}
-                {userDashboardTab === "profile" && (
-                  <div>
-                    {!isEditingProfile ? (
-                      <div className="space-y-3.5 mb-6 bg-[#fafafa] p-4 rounded-xl border border-[#eaeaea]">
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
-                            Họ và tên
-                          </p>
-                          <p className="text-sm font-semibold text-[#111] mt-0.5">
-                            {userProfile.full_name || "Chưa cập nhật"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
-                            Số điện thoại nhận hàng
-                          </p>
-                          <p className="text-sm font-semibold text-[#111] mt-0.5">
-                            {userProfile.phone || "Chưa cập nhật"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
-                            Địa chỉ Email
-                          </p>
-                          <p className="text-sm font-semibold text-[#111] mt-0.5">
-                            {userProfile.email}
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => setIsEditingProfile(true)}
-                          className="mt-2 w-full py-2 border border-[#111] text-[#111] text-xs font-bold uppercase tracking-wider hover:bg-[#111] hover:text-white transition-colors flex items-center justify-center gap-1.5"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                          <span>Chỉnh sửa họ tên / Số điện thoại</span>
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="space-y-4 mb-6 bg-[#fafafa] p-4 rounded-xl border border-[#eaeaea]">
-                        <div>
-                          <label className="text-[10px] font-bold uppercase tracking-wider text-[#888] block mb-1">
-                            Họ và tên
-                          </label>
-                          <input
-                            type="text"
-                            value={editFullName}
-                            onChange={(e) => setEditFullName(e.target.value)}
-                            className="w-full px-3 py-2 text-xs border border-[#ddd] bg-white rounded-md focus:outline-none focus:border-[#111]"
-                            placeholder="Nhập họ và tên mới"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-bold uppercase tracking-wider text-[#888] block mb-1">
-                            Số điện thoại nhận hàng
-                          </label>
-                          <input
-                            type="text"
-                            value={editPhone}
-                            onChange={(e) => setEditPhone(e.target.value)}
-                            className="w-full px-3 py-2 text-xs border border-[#ddd] bg-white rounded-md focus:outline-none focus:border-[#111]"
-                            placeholder="Nhập số điện thoại"
-                          />
-                        </div>
-                        <div className="flex gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={handleUpdateProfile}
-                            disabled={isLoading}
-                            className="flex-1 py-2 bg-[#111] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333] transition-colors flex items-center justify-center gap-1.5"
-                          >
-                            <Save className="w-3.5 h-3.5" />
-                            <span>Lưu thay đổi</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setIsEditingProfile(false)}
-                            className="px-3 py-2 border border-[#ddd] text-xs font-bold uppercase hover:bg-white"
-                          >
-                            Hủy
-                          </button>
-                        </div>
-                      </div>
+                    <div className="flex items-center gap-2.5">
+                      <Package className="w-4 h-4" />
+                      <span>Đơn hàng của tôi</span>
+                    </div>
+                    {userOrders.length > 0 && (
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                          activeTab === "orders" ? "bg-white text-black" : "bg-stone-200 text-stone-700"
+                        }`}
+                      >
+                        {userOrders.length}
+                      </span>
                     )}
+                  </button>
 
-                    {/* Quick actions for Logged in user */}
-                    <div className="space-y-2">
-                      {userProfile.role === "admin" && (
-                        <Link
-                          href="/admin/dashboard"
-                          className="w-full py-2.5 bg-[#111] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#333] rounded-lg transition-colors"
-                        >
-                          <ShieldCheck className="w-4 h-4" />
-                          <span>Vào trang quản trị Admin</span>
-                        </Link>
-                      )}
+                  <button
+                    onClick={() => setActiveTab("address")}
+                    className={`w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider transition-colors text-left ${
+                      activeTab === "address"
+                        ? "bg-black text-white"
+                        : "text-stone-700 hover:bg-stone-50 hover:text-black"
+                    }`}
+                  >
+                    <MapPin className="w-4 h-4" />
+                    <span>Sổ địa chỉ</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("profile")}
+                    className={`w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider transition-colors text-left ${
+                      activeTab === "profile"
+                        ? "bg-black text-white"
+                        : "text-stone-700 hover:bg-stone-50 hover:text-black"
+                    }`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Thông tin của tôi</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("membership")}
+                    className={`w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider transition-colors text-left ${
+                      activeTab === "membership"
+                        ? "bg-black text-white"
+                        : "text-stone-700 hover:bg-stone-50 hover:text-black"
+                    }`}
+                  >
+                    <Crown className="w-4 h-4" />
+                    <span>Membership & Quà tặng</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("password")}
+                    className={`w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider transition-colors text-left ${
+                      activeTab === "password"
+                        ? "bg-black text-white"
+                        : "text-stone-700 hover:bg-stone-50 hover:text-black"
+                    }`}
+                  >
+                    <KeyRound className="w-4 h-4" />
+                    <span>Thay đổi mật khẩu</span>
+                  </button>
+
+                  {userProfile.role === "admin" && (
+                    <Link
+                      href="/admin/dashboard"
+                      className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider text-amber-700 hover:bg-amber-50 transition-colors"
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Trang Quản Trị Admin</span>
+                    </Link>
+                  )}
+
+                  <div className="pt-4 mt-2 border-t border-[#eaeaea]">
+                    <button
+                      onClick={handleLogout}
+                      disabled={isLoading}
+                      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-red-600 hover:bg-red-50 rounded-xs font-semibold uppercase tracking-wider transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
+                </nav>
+              </div>
+
+              {/* RIGHT COLUMN: Content Panel matching Levents tabs */}
+              <div className="flex-1 w-full bg-white p-6 sm:p-8 border border-[#eaeaea] rounded-sm min-h-[500px]">
+                {/* ------------------------------------------------------------- */}
+                {/* TAB 1: ĐƠN HÀNG CỦA TÔI                                      */}
+                {/* ------------------------------------------------------------- */}
+                {activeTab === "orders" && (
+                  <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#eaeaea] mb-6">
+                      <div>
+                        <h2 className="text-base font-bold uppercase tracking-tight text-black">
+                          ĐƠN HÀNG CỦA TÔI
+                        </h2>
+                        <p className="text-xs text-stone-500 mt-0.5">
+                          Quản lý và tra cứu tiến độ vận chuyển đơn hàng COD của bạn
+                        </p>
+                      </div>
                       <Link
                         href="/products"
-                        className="w-full py-2.5 border border-[#111] text-[#111] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#f5f5f5] rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-black hover:underline"
                       >
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Khám phá Cửa hàng mua sắm</span>
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                        <span>Mua sắm thêm</span>
                       </Link>
-                      <button
-                        onClick={handleLogout}
-                        disabled={isLoading}
-                        className="w-full py-2.5 text-red-600 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Đăng xuất tài khoản</span>
-                      </button>
                     </div>
-                  </div>
-                )}
 
-                {/* TAB 2: MY ORDERS (TRA CỨU & QUẢN LÝ ĐƠN HÀNG USER) */}
-                {userDashboardTab === "orders" && (
-                  <div>
-                    {/* Search bar inside Orders */}
+                    {/* Status Horizontal Tabs */}
+                    <div className="flex flex-wrap gap-2 border-b border-[#eaeaea] pb-4 mb-5">
+                      {[
+                        { key: "all", label: "Tất cả" },
+                        { key: "processing", label: "Đang xử lý / Chuẩn bị" },
+                        { key: "completed", label: "Đã giao thành công" },
+                        { key: "canceled", label: "Đã hủy" },
+                      ].map((tab) => (
+                        <button
+                          key={tab.key}
+                          onClick={() => setOrderStatusFilter(tab.key as any)}
+                          className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-sm transition-colors ${
+                            orderStatusFilter === tab.key
+                              ? "bg-black text-white"
+                              : "bg-stone-100 text-stone-600 hover:text-black"
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Search inside orders */}
                     {userOrders.length > 0 && (
-                      <div className="relative mb-4">
+                      <div className="relative mb-6">
                         <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
                           type="text"
                           value={orderSearchQuery}
                           onChange={(e) => setOrderSearchQuery(e.target.value)}
-                          placeholder="Tìm theo mã đơn hàng hoặc tên sản phẩm..."
-                          className="w-full pl-9 pr-3 py-2 text-xs border border-stone-200 rounded-md bg-stone-50 focus:bg-white focus:outline-none focus:border-black"
+                          placeholder="Tìm theo mã đơn hoặc tên sản phẩm..."
+                          className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-200 rounded-sm focus:outline-none focus:border-black bg-stone-50/50"
                         />
                       </div>
                     )}
 
+                    {/* Orders listing */}
                     {isLoadingOrders ? (
-                      <div className="py-12 text-center text-gray-500">
-                        <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#888]" />
+                      <div className="py-16 text-center text-stone-500">
+                        <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-stone-400" />
                         <p className="text-xs font-semibold uppercase tracking-wider">
                           Đang tải danh sách đơn hàng...
                         </p>
                       </div>
-                    ) : userOrders.length === 0 ? (
-                      <div className="py-12 text-center">
+                    ) : filteredOrders.length === 0 ? (
+                      <div className="py-16 text-center">
                         <Package className="w-12 h-12 text-stone-300 mx-auto mb-3" />
-                        <h3 className="text-sm font-bold uppercase tracking-wide text-stone-800 mb-1">
-                          Bạn chưa có đơn hàng nào
+                        <h3 className="text-sm font-bold uppercase tracking-wide text-black mb-1">
+                          Không tìm thấy đơn hàng nào
                         </h3>
-                        <p className="text-xs text-stone-500 mb-6 max-w-xs mx-auto">
-                          Khám phá các thiết kế áo thun di sản Hà Nội, Huế, Hội An và đặt hàng nhận ưu đãi ngay hôm nay.
+                        <p className="text-xs text-stone-500 mb-6 max-w-sm mx-auto">
+                          Bạn chưa có đơn hàng nào trong mục này. Khám phá các mẫu áo thun di sản Hà Nội, Huế, Hội An ngay hôm nay!
                         </p>
                         <Link
                           href="/products"
-                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111] text-white text-xs font-bold uppercase tracking-wider hover:bg-neutral-800 rounded-sm transition-colors"
+                          className="px-6 py-2.5 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors inline-block"
                         >
-                          <ShoppingBag className="w-3.5 h-3.5" />
-                          <span>Khám phá Cửa Hàng</span>
+                          Khám phá Cửa hàng
                         </Link>
                       </div>
                     ) : (
-                      <div className="space-y-4 max-h-[520px] overflow-y-auto pr-1">
-                        {filteredUserOrders.length === 0 ? (
-                          <div className="py-8 text-center text-stone-500 text-xs">
-                            Không tìm thấy đơn hàng nào khớp với từ khóa tìm kiếm.
-                          </div>
-                        ) : (
-                          filteredUserOrders.map((ord) => (
-                            <div
-                              key={ord.id}
-                              className="p-4 rounded-xl border border-[#eaeaea] bg-[#fafafa] hover:border-[#111] transition-colors"
-                            >
-                              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#eaeaea]">
-                                <div>
-                                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#888] block">
-                                    Mã đơn hàng
-                                  </span>
-                                  <span className="text-xs font-mono font-bold text-black">
-                                    #{ord.id.slice(0, 10).toUpperCase()}
-                                  </span>
-                                </div>
-                                <div className="text-right">
-                                  {renderStatusBadge(ord.status)}
-                                  <span className="text-[10px] text-gray-400 block mt-1">
-                                    {new Date(ord.created_at).toLocaleDateString("vi-VN", {
-                                      year: "numeric",
-                                      month: "2-digit",
-                                      day: "2-digit",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })}
-                                  </span>
-                                </div>
+                      <div className="space-y-4">
+                        {filteredOrders.map((ord) => (
+                          <div
+                            key={ord.id}
+                            className="p-5 border border-[#eaeaea] rounded-sm bg-[#FAFAFA] hover:border-black transition-colors"
+                          >
+                            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#eaeaea]">
+                              <div>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block">
+                                  Mã đơn hàng
+                                </span>
+                                <span className="text-xs font-mono font-bold text-black">
+                                  #{ord.id.slice(0, 10).toUpperCase()}
+                                </span>
                               </div>
-
-                              {/* Items list */}
-                              <div className="py-3 space-y-2 border-b border-[#eaeaea]">
-                                {ord.items &&
-                                  ord.items.map((it, idx) => (
-                                    <div key={idx} className="flex justify-between items-start text-xs">
-                                      <div>
-                                        <p className="font-semibold text-stone-900">{it.product_name}</p>
-                                        <p className="text-[11px] text-stone-500">
-                                          Màu: {it.color} • Size: {it.size} • SL: {it.quantity}
-                                        </p>
-                                      </div>
-                                      <span className="font-medium text-stone-800">
-                                        {formatPrice(it.price * it.quantity)}
-                                      </span>
-                                    </div>
-                                  ))}
-                              </div>
-
-                              {/* Footer Info */}
-                              <div className="pt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <div className="text-[11px] text-stone-600 max-w-[280px]">
-                                  <p className="truncate">
-                                    <MapPin className="w-3 h-3 inline mr-1 text-stone-400" />
-                                    {ord.shipping_address}
-                                  </p>
-                                  <p className="text-stone-500 mt-0.5">
-                                    Người nhận: {ord.receiver_name} ({ord.receiver_phone})
-                                  </p>
-                                </div>
-                                <div className="text-right">
-                                  <span className="text-[10px] uppercase font-bold text-stone-500 block">
-                                    Thanh toán COD
-                                  </span>
-                                  <span className="text-sm font-extrabold text-black">
-                                    {formatPrice(ord.total_amount)}
-                                  </span>
-                                </div>
+                              <div className="text-right">
+                                {renderStatusBadge(ord.status)}
+                                <span className="text-[10px] text-stone-400 block mt-1">
+                                  {new Date(ord.created_at).toLocaleDateString("vi-VN", {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </span>
                               </div>
                             </div>
-                          ))
-                        )}
+
+                            {/* Items list */}
+                            <div className="py-3.5 space-y-2.5 border-b border-[#eaeaea]">
+                              {ord.items &&
+                                ord.items.map((it, idx) => (
+                                  <div key={idx} className="flex justify-between items-start text-xs">
+                                    <div>
+                                      <p className="font-bold text-stone-900">{it.product_name}</p>
+                                      <p className="text-[11px] text-stone-500 mt-0.5">
+                                        Màu sắc: {it.color} • Kích cỡ: {it.size} • Số lượng: {it.quantity}
+                                      </p>
+                                    </div>
+                                    <span className="font-semibold text-stone-900">
+                                      {formatPrice(it.price * it.quantity)}
+                                    </span>
+                                  </div>
+                                ))}
+                            </div>
+
+                            {/* Bottom row */}
+                            <div className="pt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                              <div className="text-stone-600 max-w-sm">
+                                <p className="truncate text-[11px]">
+                                  <MapPin className="w-3.5 h-3.5 inline mr-1 text-stone-400" />
+                                  {ord.shipping_address}
+                                </p>
+                                <p className="text-[11px] text-stone-500 mt-0.5">
+                                  Người nhận: {ord.receiver_name} ({ord.receiver_phone})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block">
+                                  Thanh toán khi nhận hàng (COD)
+                                </span>
+                                <span className="text-sm font-extrabold text-black">
+                                  {formatPrice(ord.total_amount)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
                 )}
-              </div>
-            ) : (
-              /* ============================================================== */
-              /* VIEW B: IF USER IS NOT LOGGED IN -> ONLY LOGIN / REGISTER TABS */
-              /* ============================================================== */
-              <div>
-                {/* 2 Tab switchers: ĐĂNG NHẬP / ĐĂNG KÝ */}
-                <div className="flex border-b border-[#eaeaea] mb-6">
-                  <button
-                    onClick={() => {
-                      setAuthMode("login");
-                      setErrorMessage(null);
-                    }}
-                    className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
-                      authMode === "login"
-                        ? "border-[#111] text-[#111]"
-                        : "border-transparent text-[#888] hover:text-[#111]"
-                    }`}
-                  >
-                    ĐĂNG NHẬP
-                  </button>
-                  <button
-                    onClick={() => {
-                      setAuthMode("register");
-                      setErrorMessage(null);
-                    }}
-                    className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
-                      authMode === "register"
-                        ? "border-[#111] text-[#111]"
-                        : "border-transparent text-[#888] hover:text-[#111]"
-                    }`}
-                  >
-                    ĐĂNG KÝ MỚI
-                  </button>
-                </div>
 
-                {/* Status messages */}
-                {errorMessage && (
-                  <div className="mb-5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
-                {successMessage && (
-                  <div className="mb-5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
-                    <span>{successMessage}</span>
-                  </div>
-                )}
-
-                {/* TAB 1: LOGIN FORM */}
-                {authMode === "login" && (
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                      <label className="text-[11px] font-bold uppercase tracking-wider text-[#333] block mb-1">
-                        Email đăng nhập
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="email"
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="name@example.com"
-                          className="w-full pl-9 pr-3 py-2.5 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] rounded-md"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] font-bold uppercase tracking-wider text-[#333] block mb-1">
-                        Mật khẩu
-                      </label>
-                      <div className="relative">
-                        <Lock className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          required
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full pl-9 pr-10 py-2.5 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] rounded-md"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888]"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full mt-2 py-3.5 bg-[#111] text-white text-xs font-bold uppercase tracking-widest hover:bg-black rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>ĐANG XÁC THỰC...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>ĐĂNG NHẬP VÀO TÀI KHOẢN</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
-
-                    {/* Quick Demo Pre-fill */}
-                    <div className="mt-6 pt-5 border-t border-[#eaeaea]">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#888]">
-                          Tài khoản thử nghiệm:
-                        </span>
-                        <span className="text-[10px] text-[#aaa]">(Click để điền)</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleQuickFill("admin@vietcitywear.com", "password123")}
-                          className="p-2 border border-[#eaeaea] bg-[#fafafa] hover:border-[#111] rounded-md text-left transition-colors"
-                        >
-                          <div className="text-[11px] font-bold text-[#111]">Admin</div>
-                          <div className="text-[10px] text-[#777] truncate">admin@vietcitywear.com</div>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleQuickFill("khachhang@gmail.com", "password123")}
-                          className="p-2 border border-[#eaeaea] bg-[#fafafa] hover:border-[#111] rounded-md text-left transition-colors"
-                        >
-                          <div className="text-[11px] font-bold text-[#111]">Khách hàng</div>
-                          <div className="text-[10px] text-[#777] truncate">khachhang@gmail.com</div>
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                )}
-
-                {/* TAB 2: REGISTER FORM (KHUYẾN NGHỊ TẠO TÀI KHOẢN ĐỂ TRA CỨU ĐƠN) */}
-                {authMode === "register" && (
+                {/* ------------------------------------------------------------- */}
+                {/* TAB 2: SỔ ĐỊA CHỈ                                            */}
+                {/* ------------------------------------------------------------- */}
+                {activeTab === "address" && (
                   <div>
-                    {/* Recommendation note */}
-                    <div className="mb-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-lg text-xs text-amber-900 leading-relaxed">
-                      <p className="font-bold flex items-center gap-1.5 mb-1">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Đặc quyền tài khoản thành viên</span>
-                      </p>
-                      <span>
-                        Tạo tài khoản để dễ dàng <strong>tra cứu hành trình đơn hàng</strong>, lưu địa chỉ giao hàng và nhận ưu đãi độc quyền từ VIET CITY WEAR.
-                      </span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#eaeaea] mb-6">
+                      <div>
+                        <h2 className="text-base font-bold uppercase tracking-tight text-black">
+                          SỔ ĐỊA CHỈ NHẬN HÀNG
+                        </h2>
+                        <p className="text-xs text-stone-500 mt-0.5">
+                          Quản lý danh sách địa chỉ giao hàng của bạn
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setIsAddingAddress(!isAddingAddress)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Thêm địa chỉ mới</span>
+                      </button>
                     </div>
 
-                    <form onSubmit={handleRegister} className="space-y-3.5">
-                      <div>
-                        <label className="text-[11px] font-bold uppercase tracking-wider text-[#333] block mb-1">
-                          Họ và tên
-                        </label>
-                        <div className="relative">
-                          <User className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
-                          <input
-                            type="text"
+                    {/* Add Address Form */}
+                    {isAddingAddress && (
+                      <form onSubmit={handleAddAddress} className="mb-6 p-5 border border-stone-300 bg-[#FAFAFA] rounded-sm space-y-4">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-black">
+                          Thông tin địa chỉ mới
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                              Họ và tên người nhận *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={newAddrName}
+                              onChange={(e) => setNewAddrName(e.target.value)}
+                              placeholder="Ví dụ: Nguyễn Long"
+                              className="w-full px-3 py-2 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                              Số điện thoại *
+                            </label>
+                            <input
+                              type="tel"
+                              required
+                              value={newAddrPhone}
+                              onChange={(e) => setNewAddrPhone(e.target.value)}
+                              placeholder="0912 345 678"
+                              className="w-full px-3 py-2 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                            Địa chỉ chi tiết (Số nhà, đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành) *
+                          </label>
+                          <textarea
                             required
-                            value={regFullName}
-                            onChange={(e) => setRegFullName(e.target.value)}
-                            placeholder="Ví dụ: Nguyễn Văn A"
-                            className="w-full pl-9 pr-3 py-2.5 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] rounded-md"
+                            rows={2}
+                            value={newAddrDetail}
+                            onChange={(e) => setNewAddrDetail(e.target.value)}
+                            placeholder="Ví dụ: Số 18 Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm, Hà Nội"
+                            className="w-full px-3 py-2 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black resize-none"
                           />
                         </div>
-                      </div>
 
-                      <div>
-                        <label className="text-[11px] font-bold uppercase tracking-wider text-[#333] block mb-1">
-                          Số điện thoại nhận hàng
-                        </label>
-                        <div className="relative">
-                          <Phone className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
+                        <div className="flex items-center gap-2">
                           <input
-                            type="tel"
-                            required
-                            value={regPhone}
-                            onChange={(e) => setRegPhone(e.target.value)}
-                            placeholder="0912 345 678"
-                            className="w-full pl-9 pr-3 py-2.5 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] rounded-md"
+                            type="checkbox"
+                            id="setDefaultCheck"
+                            checked={newAddrIsDefault}
+                            onChange={(e) => setNewAddrIsDefault(e.target.checked)}
+                            className="w-4 h-4 accent-black cursor-pointer"
                           />
+                          <label htmlFor="setDefaultCheck" className="text-xs text-stone-700 cursor-pointer">
+                            Đặt làm địa chỉ nhận hàng mặc định
+                          </label>
                         </div>
-                      </div>
 
-                      <div>
-                        <label className="text-[11px] font-bold uppercase tracking-wider text-[#333] block mb-1">
-                          Địa chỉ Email
-                        </label>
-                        <div className="relative">
-                          <Mail className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
-                          <input
-                            type="email"
-                            required
-                            value={regEmail}
-                            onChange={(e) => setRegEmail(e.target.value)}
-                            placeholder="name@example.com"
-                            className="w-full pl-9 pr-3 py-2.5 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] rounded-md"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-[11px] font-bold uppercase tracking-wider text-[#333] block mb-1">
-                          Mật khẩu (tối thiểu 6 ký tự)
-                        </label>
-                        <div className="relative">
-                          <Lock className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            required
-                            value={regPassword}
-                            onChange={(e) => setRegPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full pl-9 pr-10 py-2.5 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] rounded-md"
-                          />
+                        <div className="flex gap-2 pt-2">
+                          <button
+                            type="submit"
+                            className="px-5 py-2 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors"
+                          >
+                            Lưu địa chỉ
+                          </button>
                           <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888]"
+                            onClick={() => setIsAddingAddress(false)}
+                            className="px-4 py-2 border border-stone-300 text-xs font-bold uppercase hover:bg-white transition-colors"
                           >
-                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            Hủy
                           </button>
+                        </div>
+                      </form>
+                    )}
+
+                    {/* Address cards */}
+                    {addresses.length === 0 ? (
+                      <div className="py-12 text-center text-stone-500 text-xs">
+                        Bạn chưa lưu địa chỉ nhận hàng nào. Bấm <strong>Thêm địa chỉ mới</strong> để lưu thông tin giao hàng thuận tiện hơn.
+                      </div>
+                    ) : (
+                      <div className="space-y-3.5">
+                        {addresses.map((addr) => (
+                          <div
+                            key={addr.id}
+                            className={`p-4 border rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                              addr.isDefault ? "border-black bg-stone-50/50" : "border-[#eaeaea] bg-white"
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-bold text-xs text-black">{addr.fullName}</span>
+                                <span className="text-stone-400">•</span>
+                                <span className="text-xs text-stone-600">{addr.phone}</span>
+                                {addr.isDefault && (
+                                  <span className="px-2 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider rounded-xs">
+                                    Mặc định
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-stone-600 leading-relaxed">{addr.address}</p>
+                            </div>
+
+                            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                              {!addr.isDefault && (
+                                <button
+                                  onClick={() => handleSetDefaultAddress(addr.id)}
+                                  className="text-[11px] font-bold text-stone-600 hover:text-black underline mr-2"
+                                >
+                                  Thiết lập mặc định
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleDeleteAddress(addr.id)}
+                                className="p-1.5 text-stone-400 hover:text-red-600 transition-colors"
+                                title="Xóa địa chỉ"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ------------------------------------------------------------- */}
+                {/* TAB 3: THÔNG TIN CỦA TÔI (PROFILE)                           */}
+                {/* ------------------------------------------------------------- */}
+                {activeTab === "profile" && (
+                  <div>
+                    <div className="pb-5 border-b border-[#eaeaea] mb-6">
+                      <h2 className="text-base font-bold uppercase tracking-tight text-black">
+                        THÔNG TIN CỦA TÔI
+                      </h2>
+                      <p className="text-xs text-stone-500 mt-0.5">
+                        Quản lý thông tin hồ sơ để bảo mật tài khoản
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleUpdateProfile} className="space-y-5 max-w-lg">
+                      <div>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                          Họ và tên *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={editFullName}
+                          onChange={(e) => setEditFullName(e.target.value)}
+                          className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                          Số điện thoại nhận hàng *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={editPhone}
+                          onChange={(e) => setEditPhone(e.target.value)}
+                          className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                          Địa chỉ Email liên kết
+                        </label>
+                        <input
+                          type="email"
+                          disabled
+                          value={userProfile.email}
+                          className="w-full px-3.5 py-2.5 text-xs border border-stone-200 bg-stone-100 text-stone-500 rounded-xs cursor-not-allowed"
+                        />
+                        <p className="text-[10px] text-stone-400 mt-1">Email dùng để đăng nhập và bảo mật</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                            Ngày sinh
+                          </label>
+                          <input
+                            type="date"
+                            value={editBirthday}
+                            onChange={(e) => setEditBirthday(e.target.value)}
+                            className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                            Giới tính
+                          </label>
+                          <select
+                            value={editGender}
+                            onChange={(e) => setEditGender(e.target.value)}
+                            className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-xs cursor-pointer"
+                          >
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                          </select>
                         </div>
                       </div>
 
                       <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full mt-2 py-3.5 bg-[#111] text-white text-xs font-bold uppercase tracking-widest hover:bg-black rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
+                        className="w-full sm:w-auto px-8 py-3 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors flex items-center justify-center gap-2 mt-4"
                       >
                         {isLoading ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>ĐANG TẠO TÀI KHOẢN...</span>
+                            <span>Đang lưu...</span>
                           </>
                         ) : (
                           <>
-                            <span>TẠO TÀI KHOẢN ĐỂ THEO DÕI ĐƠN</span>
-                            <ArrowRight className="w-4 h-4" />
+                            <Save className="w-4 h-4" />
+                            <span>Lưu thay đổi</span>
                           </>
                         )}
                       </button>
                     </form>
                   </div>
                 )}
-              </div>
-            )}
-          </div>
 
-          <div className="text-center mt-6 text-[11px] tracking-[0.2em] uppercase text-neutral-400 font-medium">
-            VIET CITY WEAR — LOCAL CITIES • REAL STORIES • WEAR IT
+                {/* ------------------------------------------------------------- */}
+                {/* TAB 4: MEMBERSHIP & QUÀ TẶNG (MATCHING LEVENTS SCREENSHOT)   */}
+                {/* ------------------------------------------------------------- */}
+                {activeTab === "membership" && (
+                  <div>
+                    <div className="pb-5 border-b border-[#eaeaea] mb-6">
+                      <h2 className="text-base font-bold uppercase tracking-tight text-black">
+                        HỘI VIÊN & QUÀ TẶNG VOUCHER
+                      </h2>
+                      <p className="text-xs text-stone-500 mt-0.5">
+                        Theo dõi cấp độ thành viên, điểm tích lũy và voucher quà tặng
+                      </p>
+                    </div>
+
+                    {/* Stats Grid matching Levents */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-[#FAFAFA] border border-[#eaeaea] rounded-sm mb-8">
+                      <div>
+                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Cấp độ:</span>
+                        <strong className="text-sm font-bold text-black mt-1 block">
+                          {totalSpent > 1000000 ? "Hội viên Bạc" : "Thành viên"}
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Tổng đơn mua:</span>
+                        <strong className="text-sm font-bold text-black mt-1 block">
+                          {userOrders.length} đơn
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Tổng tiền chi:</span>
+                        <strong className="text-sm font-bold text-black mt-1 block">
+                          {formatPrice(totalSpent)}
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Điểm thưởng:</span>
+                        <strong className="text-sm font-bold text-black mt-1 block">
+                          {Math.floor(totalSpent / 10000)} điểm
+                        </strong>
+                      </div>
+                    </div>
+
+                    {/* Vouchers list matching Levents */}
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-black mb-4 flex items-center gap-2">
+                        <Gift className="w-4 h-4" />
+                        <span>Voucher ưu đãi của bạn</span>
+                      </h3>
+
+                      <div className="space-y-3.5">
+                        {/* Voucher 1 */}
+                        <div className="p-4 border border-stone-200 rounded-sm flex items-center justify-between gap-4 bg-white hover:border-black transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center font-bold text-xs uppercase tracking-wider text-stone-700">
+                              VCW
+                            </div>
+                            <div>
+                              <p className="font-bold text-xs text-black">VCWFREESHIP</p>
+                              <p className="text-[11px] text-stone-500 mt-0.5">
+                                Miễn phí vận chuyển toàn quốc cho đơn hàng từ 500.000₫
+                              </p>
+                            </div>
+                          </div>
+                          <Link
+                            href="/products"
+                            className="px-4 py-1.5 border border-black text-black text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors"
+                          >
+                            Sử dụng
+                          </Link>
+                        </div>
+
+                        {/* Voucher 2 */}
+                        <div className="p-4 border border-stone-200 rounded-sm flex items-center justify-between gap-4 bg-white hover:border-black transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center font-bold text-xs uppercase tracking-wider text-stone-700">
+                              NFC
+                            </div>
+                            <div>
+                              <p className="font-bold text-xs text-black">VCWNFC2026</p>
+                              <p className="text-[11px] text-stone-500 mt-0.5">
+                                Tặng kèm 01 Móc khóa chip NFC + 05 Thẻ bưu thiếp văn hóa cho mọi đơn áo
+                              </p>
+                            </div>
+                          </div>
+                          <Link
+                            href="/products"
+                            className="px-4 py-1.5 border border-black text-black text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors"
+                          >
+                            Sử dụng
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ------------------------------------------------------------- */}
+                {/* TAB 5: THAY ĐỔI MẬT KHẨU                                     */}
+                {/* ------------------------------------------------------------- */}
+                {activeTab === "password" && (
+                  <div>
+                    <div className="pb-5 border-b border-[#eaeaea] mb-6">
+                      <h2 className="text-base font-bold uppercase tracking-tight text-black">
+                        THAY ĐỔI MẬT KHẨU
+                      </h2>
+                      <p className="text-xs text-stone-500 mt-0.5">
+                        Cập nhật mật khẩu để đảm bảo an toàn cho tài khoản của bạn
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
+                      <div>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                          Mật khẩu mới (tối thiểu 6 ký tự) *
+                        </label>
+                        <input
+                          type="password"
+                          required
+                          value={newPass}
+                          onChange={(e) => setNewPass(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                          Xác nhận mật khẩu mới *
+                        </label>
+                        <input
+                          type="password"
+                          required
+                          value={confirmPass}
+                          onChange={(e) => setConfirmPass(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-xs"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full sm:w-auto px-8 py-3 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors flex items-center justify-center gap-2 mt-4"
+                      >
+                        {isLoading ? "Đang cập nhật..." : "Cập nhật mật khẩu mới"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          /* ============================================================== */
+          /* VIEW B: IF USER IS NOT LOGGED IN -> REGISTER / LOGIN (LEVENTS) */
+          /* ============================================================== */
+          <div className="max-w-[480px] mx-auto py-6">
+            {/* Breadcrumb matching Levents (Home / Register Page) */}
+            <div className="flex items-center gap-2 text-xs text-stone-500 mb-8 font-medium">
+              <Link href="/" className="hover:text-black transition-colors">Home</Link>
+              <span>/</span>
+              <span className="text-black font-semibold">
+                {authMode === "register" ? "Register Page" : "Login Page"}
+              </span>
+            </div>
+
+            <div className="bg-white border border-[#E5E5E5] rounded-xl shadow-[0_12px_40px_-16px_rgba(0,0,0,0.08)] p-7 sm:p-9 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-black" />
+
+              {/* Title centered matching Levents */}
+              <div className="text-center mb-6">
+                <h1 className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-black">
+                  {authMode === "login" ? "Đăng nhập" : "Đăng ký"}
+                </h1>
+                <p className="text-xs text-stone-500 mt-1">
+                  {authMode === "login"
+                    ? "Chào mừng bạn quay trở lại với VIET CITY WEAR"
+                    : "Tạo tài khoản để theo dõi đơn hàng và nhận ưu đãi độc quyền"}
+                </p>
+              </div>
+
+              {/* Tab switcher */}
+              <div className="flex border-b border-[#eaeaea] mb-6">
+                <button
+                  onClick={() => {
+                    setAuthMode("login");
+                    setErrorMessage(null);
+                  }}
+                  className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                    authMode === "login"
+                      ? "border-black text-black"
+                      : "border-transparent text-stone-400 hover:text-black"
+                  }`}
+                >
+                  ĐĂNG NHẬP
+                </button>
+                <button
+                  onClick={() => {
+                    setAuthMode("register");
+                    setErrorMessage(null);
+                  }}
+                  className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                    authMode === "register"
+                      ? "border-black text-black"
+                      : "border-transparent text-stone-400 hover:text-black"
+                  }`}
+                >
+                  ĐĂNG KÝ
+                </button>
+              </div>
+
+              {/* Feedback messages */}
+              {errorMessage && (
+                <div className="mb-5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+              {successMessage && (
+                <div className="mb-5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+                  <span>{successMessage}</span>
+                </div>
+              )}
+
+              {/* LOGIN FORM */}
+              {authMode === "login" ? (
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                      Email đăng nhập *
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@example.com"
+                        className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                      Mật khẩu *
+                    </label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full pl-9 pr-10 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-black"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full mt-2 py-3.5 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 rounded-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>ĐANG ĐĂNG NHẬP...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>ĐĂNG NHẬP</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+
+                  {/* Demo fill buttons */}
+                  <div className="mt-6 pt-5 border-t border-[#eaeaea]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                        Tài khoản mẫu:
+                      </span>
+                      <span className="text-[10px] text-stone-400">(Bấm để điền nhanh)</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleQuickFill("admin@vietcitywear.com", "password123")}
+                        className="p-2 border border-stone-200 bg-stone-50 hover:border-black rounded-sm text-left transition-colors"
+                      >
+                        <div className="text-[11px] font-bold text-black">Admin</div>
+                        <div className="text-[10px] text-stone-500 truncate">admin@vietcitywear.com</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleQuickFill("khachhang@gmail.com", "password123")}
+                        className="p-2 border border-stone-200 bg-stone-50 hover:border-black rounded-sm text-left transition-colors"
+                      >
+                        <div className="text-[11px] font-bold text-black">Khách hàng</div>
+                        <div className="text-[10px] text-stone-500 truncate">khachhang@gmail.com</div>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              ) : (
+                /* REGISTER FORM MATCHING LEVENTS SCREENSHOT 1 */
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                      Họ và tên *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={regFullName}
+                      onChange={(e) => setRegFullName(e.target.value)}
+                      placeholder="Nhập họ tên tại đây"
+                      className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                      Số điện thoại *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={regPhone}
+                      onChange={(e) => setRegPhone(e.target.value)}
+                      placeholder="Nhập số điện thoại tại đây"
+                      className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder="Thông tin này cần bắt buộc"
+                      className="w-full px-3.5 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                      Mật khẩu *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        required
+                        value={regPassword}
+                        onChange={(e) => setRegPassword(e.target.value)}
+                        placeholder="Mật khẩu tối thiểu 6 ký tự"
+                        className="w-full px-3.5 pr-10 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-black"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full mt-2 py-3.5 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 rounded-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>ĐANG TẠO TÀI KHOẢN...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>ĐĂNG KÝ</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+
+                  <div className="text-center pt-2 text-xs text-stone-500">
+                    Bạn đã có tài khoản?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode("login")}
+                      className="text-black font-bold hover:underline"
+                    >
+                      Đăng nhập tại đây
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-4 text-center text-[11px] text-neutral-400 border-t border-[#EAEAEA] bg-white">
+      <footer className="w-full py-4 text-center text-[11px] text-stone-400 border-t border-[#EAEAEA] bg-white">
         © {new Date().getFullYear()} VIET CITY WEAR. All rights reserved.
       </footer>
     </div>
@@ -1062,7 +1651,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-screen w-full flex items-center justify-center bg-[#FAFAFA]">
-          <Loader2 className="w-8 h-8 animate-spin text-[#888]" />
+          <Loader2 className="w-8 h-8 animate-spin text-stone-400" />
         </div>
       }
     >

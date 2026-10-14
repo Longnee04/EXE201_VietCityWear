@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { CartProvider } from "@/lib/cart-context";
 import { BRAND_SLOGAN, HERO_HEADLINE, BRAND_TAGLINE } from "@/data/brand";
+import SupportChatWidget from "@/components/layout/SupportChatWidget";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,7 +36,10 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${inter.variable} h-full antialiased scroll-smooth`}>
       <body className="min-h-full flex flex-col bg-white text-[#111]">
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          {children}
+          <SupportChatWidget />
+        </CartProvider>
       </body>
     </html>
   );
