@@ -260,29 +260,34 @@ export default function SupportChatWidget() {
           onPointerCancel={handlePointerUp}
           aria-label="Nhắn tin hỗ trợ Viet City Wear (Có thể kéo di chuyển)"
           title="Kéo để di chuyển • Bấm để trò chuyện"
-          className={`group relative flex items-center justify-center w-14 h-14 rounded-full bg-white border-2 border-black shadow-[0_10px_35px_rgba(0,0,0,0.22)] select-none transition-transform duration-100 ${
-            isDragging ? "cursor-grabbing scale-105 shadow-2xl" : "cursor-grab hover:scale-105 active:scale-95"
+          className={`group relative flex items-center justify-center w-14 h-14 rounded-full bg-white border border-stone-200/90 shadow-[0_8px_25px_rgba(0,0,0,0.12),0_2px_6px_rgba(0,0,0,0.06)] select-none transition-all duration-150 ${
+            isDragging
+              ? "cursor-grabbing scale-110 shadow-[0_12px_35px_rgba(0,0,0,0.22)]"
+              : "cursor-grab hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.16)] active:scale-95"
           }`}
         >
           {isOpen ? (
-            <X className="w-6 h-6 text-black pointer-events-none" />
+            <div className="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center pointer-events-none">
+              <X className="w-4 h-4 text-stone-700 transition-transform duration-200 group-hover:rotate-90" />
+            </div>
           ) : (
-            <div className="relative w-9 h-9 pointer-events-none">
+            <div className="relative w-11 h-11 rounded-full overflow-hidden bg-[#ECE6D9] border border-stone-200/60 shadow-inner flex items-center justify-center pointer-events-none">
               <Image
                 src="/images/logo-vietcitywear.png"
                 alt="Viet City Wear Support"
                 fill
-                className="object-contain"
-                sizes="36px"
+                className="object-cover scale-110"
+                sizes="44px"
+                priority
               />
             </div>
           )}
 
-          {/* Pulse notification badge */}
+          {/* Online notification badge */}
           {!isOpen && (
-            <span className="absolute top-1 right-1 flex h-3 w-3 pointer-events-none">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-white"></span>
+            <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5 pointer-events-none">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" style={{ animationDuration: '2s' }}></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white shadow-xs"></span>
             </span>
           )}
         </button>
@@ -298,12 +303,12 @@ export default function SupportChatWidget() {
           <div className="bg-[#1E293B] text-white p-5 relative">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="relative w-8 h-8 rounded-full bg-white p-1 overflow-hidden flex-shrink-0">
+                <div className="relative w-8 h-8 rounded-full overflow-hidden bg-[#ECE6D9] border border-white/20 flex-shrink-0">
                   <Image
                     src="/images/logo-vietcitywear.png"
                     alt="Viet City Wear"
                     fill
-                    className="object-contain p-0.5"
+                    className="object-cover scale-110"
                     sizes="32px"
                   />
                 </div>
