@@ -706,12 +706,12 @@ function LoginContent() {
               <div className="w-full md:w-64 lg:w-72 bg-white p-6 border border-[#eaeaea] rounded-sm shrink-0">
                 {/* User Greeting & Avatar */}
                 <div className="flex items-center gap-3.5 pb-6 border-b border-[#eaeaea]">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-stone-200 bg-[#F7F4EE] flex-shrink-0">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-stone-200/80 bg-[#ECE6D9] shadow-xs flex-shrink-0">
                     <Image
                       src="/images/logo-vietcitywear.png"
                       alt="Viet City Wear"
                       fill
-                      className="object-contain p-1"
+                      className="object-cover scale-110"
                       sizes="48px"
                     />
                   </div>
