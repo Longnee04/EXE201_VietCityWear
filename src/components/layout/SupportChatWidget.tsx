@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   X,
   Send,
@@ -15,6 +16,7 @@ import {
   Sparkles,
   UserCheck,
   PhoneCall,
+  Move,
 } from "lucide-react";
 
 interface Message {
@@ -25,6 +27,21 @@ interface Message {
 }
 
 export default function SupportChatWidget() {
+  const pathname = usePathname();
+
+  // ONLY show on user shopping/e-commerce related pages, NEVER on admin or system pages
+  const isSalesUserPage = useMemo(() => {
+    if (!pathname) return false;
+    if (pathname.startsWith("/admin") || pathname.startsWith("/api")) return false;
+    return (
+      pathname === "/" ||
+      pathname.startsWith("/products") ||
+      pathname.startsWith("/checkout") ||
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/explore")
+    );
+  }, [pathname]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<"menu" | "chat">("menu");
   const [messages, setMessages] = useState<Message[]>([
@@ -38,12 +55,99 @@ export default function SupportChatWidget() {
   const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Draggable button position state
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const pointerDownRef = useRef<{
+    startX: number;
+    startY: number;
+    buttonX: number;
+    buttonY: number;
+    hasMoved: boolean;
+  }>({
+    startX: 0,
+    startY: 0,
+    buttonX: 0,
+    buttonY: 0,
+    hasMoved: false,
+  });
+
+  // Keep button within window bounds on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setPos((prev) => {
+        if (!prev) return null;
+        const maxX = window.innerWidth - 56 - 16;
+        const maxY = window.innerHeight - 56 - 16;
+        return {
+          x: Math.min(Math.max(16, prev.x), Math.max(16, maxX)),
+          y: Math.min(Math.max(16, prev.y), Math.max(16, maxY)),
+        };
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Auto scroll to bottom of messages
   useEffect(() => {
     if (mode === "chat") {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, mode]);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return; // Only main button
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+
+    pointerDownRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      buttonX: rect.left,
+      buttonY: rect.top,
+      hasMoved: false,
+    };
+
+    setIsDragging(true);
+    try {
+      target.setPointerCapture(e.pointerId);
+    } catch {}
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - pointerDownRef.current.startX;
+    const dy = e.clientY - pointerDownRef.current.startY;
+
+    if (Math.hypot(dx, dy) > 5) {
+      pointerDownRef.current.hasMoved = true;
+    }
+
+    const btnSize = 56;
+    const minX = 16;
+    const maxX = Math.max(minX, window.innerWidth - btnSize - 16);
+    const minY = 16;
+    const maxY = Math.max(minY, window.innerHeight - btnSize - 16);
+
+    const nextX = Math.min(Math.max(minX, pointerDownRef.current.buttonX + dx), maxX);
+    const nextY = Math.min(Math.max(minY, pointerDownRef.current.buttonY + dy), maxY);
+
+    setPos({ x: nextX, y: nextY });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+
+    // Only toggle chat if user clicked without moving
+    if (!pointerDownRef.current.hasMoved) {
+      setIsOpen((prev) => !prev);
+    }
+  };
 
   const handleSelectQuickPrompt = (promptText: string, botReply: string) => {
     const userMsg: Message = {
@@ -104,19 +208,66 @@ export default function SupportChatWidget() {
     }, 600);
   };
 
+  // If page is not in user sales category, don't render anything
+  if (!isSalesUserPage) {
+    return null;
+  }
+
+  // Dynamic popup positioning based on movable button position
+  const popupStyle: React.CSSProperties = pos
+    ? {
+        position: "fixed",
+        zIndex: 50,
+        ...(pos.x > (typeof window !== "undefined" ? window.innerWidth / 2 : 500)
+          ? { right: `${Math.max(16, (typeof window !== "undefined" ? window.innerWidth : 1000) - (pos.x + 56))}px` }
+          : { left: `${Math.max(16, pos.x)}px` }),
+        ...(pos.y > (typeof window !== "undefined" ? window.innerHeight / 2 : 400)
+          ? { bottom: `${Math.max(16, (typeof window !== "undefined" ? window.innerHeight : 800) - pos.y + 12)}px` }
+          : { top: `${Math.max(16, pos.y + 68)}px` }),
+      }
+    : {
+        position: "fixed",
+        bottom: "96px",
+        right: "24px",
+        zIndex: 50,
+      };
+
+  const buttonStyle: React.CSSProperties = pos
+    ? {
+        position: "fixed",
+        left: `${pos.x}px`,
+        top: `${pos.y}px`,
+        zIndex: 50,
+        touchAction: "none",
+      }
+    : {
+        position: "fixed",
+        bottom: "24px",
+        right: "24px",
+        zIndex: 50,
+        touchAction: "none",
+      };
+
   return (
     <>
-      {/* Floating Action Trigger Button (Bottom-Right) */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Draggable Floating Action Trigger Button */}
+      <div style={buttonStyle}>
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Nhắn tin hỗ trợ Viet City Wear"
-          className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-white border-2 border-black shadow-[0_8px_30px_rgb(0,0,0,0.18)] hover:scale-105 active:scale-95 transition-all duration-200 overflow-hidden"
+          type="button"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          aria-label="Nhắn tin hỗ trợ Viet City Wear (Có thể kéo di chuyển)"
+          title="Kéo để di chuyển • Bấm để trò chuyện"
+          className={`group relative flex items-center justify-center w-14 h-14 rounded-full bg-white border-2 border-black shadow-[0_10px_35px_rgba(0,0,0,0.22)] select-none transition-transform duration-100 ${
+            isDragging ? "cursor-grabbing scale-105 shadow-2xl" : "cursor-grab hover:scale-105 active:scale-95"
+          }`}
         >
           {isOpen ? (
-            <X className="w-6 h-6 text-black" />
+            <X className="w-6 h-6 text-black pointer-events-none" />
           ) : (
-            <div className="relative w-9 h-9">
+            <div className="relative w-9 h-9 pointer-events-none">
               <Image
                 src="/images/logo-vietcitywear.png"
                 alt="Viet City Wear Support"
@@ -127,9 +278,9 @@ export default function SupportChatWidget() {
             </div>
           )}
 
-          {/* Pulse badge */}
+          {/* Pulse notification badge */}
           {!isOpen && (
-            <span className="absolute top-1 right-1 flex h-3 w-3">
+            <span className="absolute top-1 right-1 flex h-3 w-3 pointer-events-none">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-white"></span>
             </span>
@@ -139,7 +290,10 @@ export default function SupportChatWidget() {
 
       {/* Chat Window Popup */}
       {isOpen && (
-        <div className="fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[380px] max-h-[580px] flex flex-col bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-stone-200 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
+        <div
+          style={popupStyle}
+          className="w-[calc(100vw-32px)] sm:w-[380px] max-h-[580px] flex flex-col bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-stone-200 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200"
+        >
           {/* Header styled like Levents */}
           <div className="bg-[#1E293B] text-white p-5 relative">
             <div className="flex items-start justify-between">
