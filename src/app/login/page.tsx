@@ -1398,27 +1398,27 @@ function LoginContent() {
           </div>
         ) : (
           /* ============================================================== */
-          /* VIEW B: IF USER IS NOT LOGGED IN -> REGISTER / LOGIN           */
+          /* VIEW B: IF USER IS NOT LOGGED IN -> REGISTER / LOGIN (LEVENTS) */
           /* ============================================================== */
-          <div className="max-w-[480px] mx-auto py-8 sm:py-12 px-4">
-            {/* Breadcrumb matching brand style */}
-            <div className="flex items-center gap-2 text-xs text-stone-500 mb-6 font-medium">
+          <div className="max-w-[460px] mx-auto py-8 sm:py-12 px-4">
+            {/* Breadcrumb matching Levents (Home / Login Page or Register Page) */}
+            <div className="flex items-center gap-1.5 text-xs text-stone-500 mb-6 font-normal">
               <Link href="/" className="hover:text-black transition-colors">
                 Home
               </Link>
-              <span>/</span>
+              <span className="text-stone-400">/</span>
               <span className="text-black font-semibold">
                 {authMode === "register" ? "Register Page" : "Login Page"}
               </span>
             </div>
 
-            {/* Premium Card Container */}
+            {/* Streetwear Studio Card Container */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl shadow-[0_12px_40px_-16px_rgba(0,0,0,0.08)] p-7 sm:p-9 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-black" />
 
-              {/* Title centered */}
+              {/* Title centered matching Levents streetwear */}
               <div className="text-center mb-6">
-                <h1 className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-black">
+                <h1 className="text-2xl font-bold uppercase tracking-tight text-black">
                   {authMode === "login" ? "Đăng nhập" : "Đăng ký"}
                 </h1>
                 <p className="text-xs text-stone-500 mt-1">
@@ -1428,7 +1428,7 @@ function LoginContent() {
                 </p>
               </div>
 
-              {/* Tab switcher */}
+              {/* Minimalist Tab Switcher */}
               <div className="flex border-b border-[#eaeaea] mb-6">
                 <button
                   type="button"
@@ -1462,51 +1462,47 @@ function LoginContent() {
 
               {/* Feedback messages */}
               {errorMessage && (
-                <div className="mb-5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+                <div className="mb-5 p-3 rounded-none bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
                   <span>{errorMessage}</span>
                 </div>
               )}
               {successMessage && (
-                <div className="mb-5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                <div className="mb-5 p-3 rounded-none bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
                   <span>{successMessage}</span>
                 </div>
               )}
 
-              {/* LOGIN FORM */}
+              {/* LOGIN FORM (LEVENTS STYLE) */}
               {authMode === "login" ? (
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
-                      Số điện thoại hoặc Email *
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
+                      Số điện thoại *
                     </label>
-                    <div className="relative">
-                      <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Nhập số điện thoại hoặc email tại đây"
-                        className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Nhập số điện thoại tại đây"
+                      className="w-full px-3.5 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
                       Mật khẩu *
                     </label>
                     <div className="relative">
-                      <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
                       <input
                         type={showPassword ? "text" : "password"}
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        className="w-full pl-9 pr-10 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
+                        placeholder="Mật khẩu tối thiểu 6 ký tự"
+                        className="w-full px-3.5 pr-10 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
                       />
                       <button
                         type="button"
@@ -1518,164 +1514,159 @@ function LoginContent() {
                     </div>
                   </div>
 
-                  {/* Left-aligned forgot password */}
+                  {/* Left-aligned "Quên thông tin tài khoản" matching Levents */}
                   <div className="pt-0.5">
                     <button
                       type="button"
                       onClick={() => setForgotModalOpen(true)}
                       className="text-xs text-stone-600 hover:text-black hover:underline transition-colors"
                     >
-                      Quên thông tin tài khoản?
+                      Quên thông tin tài khoản
                     </button>
                   </div>
 
-                  {/* Submit Button */}
+                  {/* Big full-width black button matching Levents */}
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full mt-2 py-3.5 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 rounded-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
+                    className="w-full mt-3 py-3.5 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors disabled:opacity-70 rounded-none flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>ĐANG ĐĂNG NHẬP...</span>
+                        <span>Đang đăng nhập...</span>
                       </>
                     ) : (
-                      <>
-                        <span>ĐĂNG NHẬP</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
+                      "Đăng nhập"
                     )}
                   </button>
 
-                  {/* Demo fill buttons */}
-                  <div className="mt-6 pt-5 border-t border-[#eaeaea]">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
-                        Tài khoản mẫu:
-                      </span>
-                      <span className="text-[10px] text-stone-400">(Bấm để điền nhanh)</span>
+                  {/* Centered switch to register */}
+                  <div className="text-center pt-4 text-xs text-stone-600">
+                    Bạn chưa có tài khoản?{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthMode("register");
+                        setErrorMessage(null);
+                      }}
+                      className="text-black font-bold hover:underline"
+                    >
+                      Đăng ký ngay
+                    </button>
+                  </div>
+
+                  {/* Demo accounts for easy testing */}
+                  <div className="mt-6 pt-5 border-t border-dashed border-stone-200">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-stone-400 mb-2 text-center">
+                      Tài khoản mẫu (Bấm để điền nhanh)
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => handleQuickFill("admin@vietcitywear.com", "password123")}
-                        className="p-2 border border-stone-200 bg-stone-50 hover:border-black rounded-sm text-left transition-colors"
+                        className="p-2 border border-stone-200 hover:border-black text-left text-[11px] bg-[#FAFAFA] rounded-none transition-colors"
                       >
-                        <div className="text-[11px] font-bold text-black">Admin</div>
+                        <div className="font-bold text-black">Admin</div>
                         <div className="text-[10px] text-stone-500 truncate">admin@vietcitywear.com</div>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleQuickFill("khachhang@gmail.com", "password123")}
-                        className="p-2 border border-stone-200 bg-stone-50 hover:border-black rounded-sm text-left transition-colors"
+                        className="p-2 border border-stone-200 hover:border-black text-left text-[11px] bg-[#FAFAFA] rounded-none transition-colors"
                       >
-                        <div className="text-[11px] font-bold text-black">Khách hàng</div>
+                        <div className="font-bold text-black">Khách hàng</div>
                         <div className="text-[10px] text-stone-500 truncate">khachhang@gmail.com</div>
                       </button>
                     </div>
                   </div>
                 </form>
               ) : (
-                /* REGISTER FORM */
+                /* REGISTER FORM (LEVENTS STYLE) */
                 <form onSubmit={handleRegister} className="space-y-4">
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
                       Họ và tên *
                     </label>
-                    <div className="relative">
-                      <User className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        required
-                        value={regFullName}
-                        onChange={(e) => setRegFullName(e.target.value)}
-                        placeholder="Nhập họ tên tại đây"
-                        className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={regFullName}
+                      onChange={(e) => setRegFullName(e.target.value)}
+                      placeholder="Nhập họ tên tại đây"
+                      className="w-full px-3.5 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
                       Số điện thoại *
                     </label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="tel"
-                        required
-                        value={regPhone}
-                        onChange={(e) => setRegPhone(e.target.value)}
-                        placeholder="Nhập số điện thoại tại đây"
-                        className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
-                      />
-                    </div>
+                    <input
+                      type="tel"
+                      required
+                      value={regPhone}
+                      onChange={(e) => setRegPhone(e.target.value)}
+                      placeholder="Nhập số điện thoại tại đây"
+                      className="w-full px-3.5 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
                       Email *
                     </label>
-                    <div className="relative">
-                      <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="email"
-                        required
-                        value={regEmail}
-                        onChange={(e) => setRegEmail(e.target.value)}
-                        placeholder="Thông tin này cần bắt buộc"
-                        className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
-                        Ngày sinh *
-                      </label>
-                      <div className="relative">
-                        <Calendar className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="date"
-                          required
-                          value={regBirthday}
-                          onChange={(e) => setRegBirthday(e.target.value)}
-                          className="w-full pl-9 pr-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
-                        Giới tính
-                      </label>
-                      <select
-                        value={regGender}
-                        onChange={(e) => setRegGender(e.target.value)}
-                        className="w-full px-3 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors cursor-pointer"
-                      >
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                        <option value="Khác">Khác</option>
-                      </select>
-                    </div>
+                    <input
+                      type="email"
+                      required
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder="Thông tin này cần bắt buộc"
+                      className="w-full px-3.5 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
+                      Ngày sinh *
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={regBirthday}
+                      onChange={(e) => setRegBirthday(e.target.value)}
+                      placeholder="dd/mm/yyyy"
+                      className="w-full px-3.5 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
+                      Giới tính
+                    </label>
+                    <select
+                      value={regGender}
+                      onChange={(e) => setRegGender(e.target.value)}
+                      className="w-full px-3.5 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors cursor-pointer"
+                    >
+                      <option value="Nam">Nam</option>
+                      <option value="Nữ">Nữ</option>
+                      <option value="Khác">Khác</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-900 mb-1.5">
                       Mật khẩu *
                     </label>
                     <div className="relative">
-                      <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
                       <input
                         type={showPassword ? "text" : "password"}
                         required
                         value={regPassword}
                         onChange={(e) => setRegPassword(e.target.value)}
                         placeholder="Mật khẩu tối thiểu 6 ký tự"
-                        className="w-full pl-9 pr-10 py-2.5 text-xs border border-stone-300 bg-[#FAFAFA] focus:bg-white focus:outline-none focus:border-black rounded-sm transition-colors"
+                        className="w-full px-3.5 pr-10 py-3 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black rounded-none transition-colors"
                       />
                       <button
                         type="button"
@@ -1687,30 +1678,31 @@ function LoginContent() {
                     </div>
                   </div>
 
-                  {/* Submit button */}
+                  {/* Big full-width black button matching Levents */}
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full mt-2 py-3.5 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 rounded-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
+                    className="w-full mt-3 py-3.5 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors disabled:opacity-70 rounded-none flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>ĐANG TẠO TÀI KHOẢN...</span>
+                        <span>Đang tạo tài khoản...</span>
                       </>
                     ) : (
-                      <>
-                        <span>ĐĂNG KÝ TÀI KHOẢN</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
+                      "Đăng ký"
                     )}
                   </button>
 
-                  <div className="text-center pt-2 text-xs text-stone-500">
+                  {/* Centered switch to login */}
+                  <div className="text-center pt-4 text-xs text-stone-600">
                     Bạn đã có tài khoản?{" "}
                     <button
                       type="button"
-                      onClick={() => setAuthMode("login")}
+                      onClick={() => {
+                        setAuthMode("login");
+                        setErrorMessage(null);
+                      }}
                       className="text-black font-bold hover:underline"
                     >
                       Đăng nhập tại đây
