@@ -36,6 +36,7 @@ import {
 import { supabase } from "@/lib/supabase/client";
 import { type User as SupabaseUser } from "@supabase/supabase-js";
 import { formatPrice } from "@/data/products";
+import AddressAutocompleteInput from "@/components/common/AddressAutocompleteInput";
 
 function formatAuthError(message: string): string {
   if (message.includes("Invalid login credentials")) {
@@ -1022,16 +1023,19 @@ function LoginContent() {
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
-                            Địa chỉ chi tiết (Số nhà, đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành) *
-                          </label>
-                          <textarea
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block">
+                              Địa chỉ chi tiết (Số nhà, đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành) *
+                            </label>
+                            <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                              <span>MapVina API</span>
+                            </span>
+                          </div>
+                          <AddressAutocompleteInput
                             required
-                            rows={2}
                             value={newAddrDetail}
-                            onChange={(e) => setNewAddrDetail(e.target.value)}
-                            placeholder="Ví dụ: Số 18 Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm, Hà Nội"
-                            className="w-full px-3 py-2 text-xs border border-stone-300 bg-white focus:outline-none focus:border-black resize-none"
+                            onChange={(val) => setNewAddrDetail(val)}
+                            placeholder="Nhập địa chỉ để tự động tìm kiếm (ví dụ: 18 Hàng Gai, Hoàn Kiếm...)"
                           />
                         </div>
 

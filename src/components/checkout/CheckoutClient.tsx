@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2, UserCheck, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { type User as SupabaseUser } from "@supabase/supabase-js";
+import AddressAutocompleteInput from "@/components/common/AddressAutocompleteInput";
 
 export default function CheckoutClient() {
   const { items, itemCount, clearCart } = useCart();
@@ -258,16 +259,19 @@ export default function CheckoutClient() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                  Địa chỉ giao hàng chi tiết *
-                </label>
-                <textarea
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+                    Địa chỉ giao hàng chi tiết *
+                  </label>
+                  <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                    MapVina API
+                  </span>
+                </div>
+                <AddressAutocompleteInput
                   required
-                  rows={3}
                   value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-gray-300 rounded-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors resize-none"
-                  placeholder="Số nhà, ngõ/đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố"
+                  onChange={(val) => setFormData({ ...formData, address: val })}
+                  placeholder="Nhập địa chỉ nhận hàng (ví dụ: 18 Hàng Gai, Hoàn Kiếm, Hà Nội...)"
                 />
               </div>
 
