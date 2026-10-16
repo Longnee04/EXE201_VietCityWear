@@ -1023,19 +1023,14 @@ function LoginContent() {
                         </div>
 
                         <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block">
-                              Địa chỉ chi tiết (Số nhà, đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành) *
-                            </label>
-                            <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                              <span>MapVina API</span>
-                            </span>
-                          </div>
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block mb-1">
+                            Địa chỉ chi tiết (Số nhà, đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành) *
+                          </label>
                           <AddressAutocompleteInput
                             required
                             value={newAddrDetail}
                             onChange={(val) => setNewAddrDetail(val)}
-                            placeholder="Nhập địa chỉ để tự động tìm kiếm (ví dụ: 18 Hàng Gai, Hoàn Kiếm...)"
+                            placeholder="Nhập địa chỉ nhận hàng (ví dụ: 18 Hàng Gai, Hoàn Kiếm...)"
                           />
                         </div>
 

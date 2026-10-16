@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MapPin, Loader2, X, Search, Check } from "lucide-react";
+import { MapPin, Loader2, X, Search, Check, Map } from "lucide-react";
+import MapLocationPickerModal from "./MapLocationPickerModal";
 
 export interface MapVinaSuggestion {
   id: string;
@@ -22,6 +23,7 @@ interface AddressAutocompleteInputProps {
   className?: string;
   id?: string;
   disabled?: boolean;
+  showMapPickerButton?: boolean;
 }
 
 const DEFAULT_MAPVINA_KEY = "3d1782815560911298d03b9ac0c68f4437";
@@ -34,12 +36,15 @@ export default function AddressAutocompleteInput({
   className = "",
   id,
   disabled = false,
+  showMapPickerButton = true,
 }: AddressAutocompleteInputProps) {
   const [inputValue, setInputValue] = useState(value);
   const [suggestions, setSuggestions] = useState<MapVinaSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [currentCoords, setCurrentCoords] = useState<[number, number] | undefined>(undefined);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -111,7 +116,7 @@ export default function AddressAutocompleteInput({
         setSuggestions([]);
       }
     } catch (err) {
-      console.warn("MapVina Autocomplete warning:", err);
+      console.warn("Address Autocomplete warning:", err);
       setSuggestions([]);
     } finally {
       setIsLoading(false);
@@ -133,6 +138,9 @@ export default function AddressAutocompleteInput({
   const handleSelectSuggestion = (s: MapVinaSuggestion) => {
     const fullAddress = s.label || s.name;
     setInputValue(fullAddress);
+    if (s.coordinates) {
+      setCurrentCoords(s.coordinates);
+    }
     onChange(fullAddress, s);
     setSuggestions([]);
     setIsOpen(false);
@@ -145,6 +153,7 @@ export default function AddressAutocompleteInput({
     setSuggestions([]);
     setIsOpen(false);
     setSelectedIndex(-1);
+    setCurrentCoords(undefined);
     inputRef.current?.focus();
   };
 
@@ -167,56 +176,72 @@ export default function AddressAutocompleteInput({
     }
   };
 
+  const handleLocationPickedFromMap = (address: string, coords?: [number, number]) => {
+    setInputValue(address);
+    if (coords) setCurrentCoords(coords);
+    onChange(address, coords ? { id: `map-${Date.now()}`, name: address, label: address, coordinates: coords } : undefined);
+    setIsOpen(false);
+    setSuggestions([]);
+  };
+
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* Input Field */}
-      <div className="relative flex items-center">
-        <div className="absolute left-3 text-stone-400 pointer-events-none flex items-center">
-          <MapPin className="w-4 h-4 text-stone-500" />
+      {/* Input Field & Action Buttons */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1 flex items-center">
+          <div className="absolute left-3 text-stone-400 pointer-events-none flex items-center">
+            <MapPin className="w-4 h-4 text-stone-500" />
+          </div>
+
+          <input
+            ref={inputRef}
+            id={id}
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={() => {
+              if (suggestions.length > 0) setIsOpen(true);
+              else if (inputValue.trim().length >= 2) fetchSuggestions(inputValue);
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            required={required}
+            disabled={disabled}
+            autoComplete="off"
+            className={`w-full pl-9 pr-9 py-2.5 text-xs bg-white border border-stone-300 focus:outline-none focus:border-black rounded-xs transition-colors ${className}`}
+          />
+
+          {/* Right action icons inside input */}
+          <div className="absolute right-2.5 flex items-center gap-1">
+            {isLoading && (
+              <Loader2 className="w-3.5 h-3.5 text-stone-400 animate-spin" />
+            )}
+
+            {!isLoading && inputValue && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="p-1 text-stone-400 hover:text-black rounded-full hover:bg-stone-100 transition-colors"
+                title="Xóa địa chỉ"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
-        <input
-          ref={inputRef}
-          id={id}
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={() => {
-            if (suggestions.length > 0) setIsOpen(true);
-            else if (inputValue.trim().length >= 2) fetchSuggestions(inputValue);
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          required={required}
-          disabled={disabled}
-          autoComplete="off"
-          className={`w-full pl-9 pr-14 py-2.5 text-xs bg-white border border-stone-300 focus:outline-none focus:border-black rounded-xs transition-colors ${className}`}
-        />
-
-        {/* Right action icons */}
-        <div className="absolute right-2.5 flex items-center gap-1">
-          {isLoading && (
-            <Loader2 className="w-3.5 h-3.5 text-stone-400 animate-spin" />
-          )}
-
-          {!isLoading && inputValue && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="p-1 text-stone-400 hover:text-black rounded-full hover:bg-stone-100 transition-colors"
-              title="Xóa địa chỉ"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
-
-          <span
-            className="text-[9px] font-bold tracking-tight text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 select-none hidden sm:inline-block"
-            title="Được định tuyến bởi MapVina"
+        {/* Map Button next to Input */}
+        {showMapPickerButton && (
+          <button
+            type="button"
+            onClick={() => setIsMapModalOpen(true)}
+            className="px-3 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold rounded-xs border border-stone-300 transition-colors flex items-center gap-1.5 shrink-0"
+            title="Mở bản đồ để chọn vị trí chính xác"
           >
-            MapVina
-          </span>
-        </div>
+            <Map className="w-3.5 h-3.5 text-stone-700" />
+            <span className="hidden sm:inline">Bản đồ</span>
+          </button>
+        )}
       </div>
 
       {/* Floating Suggestions Dropdown */}
@@ -226,7 +251,7 @@ export default function AddressAutocompleteInput({
           <div className="px-3 py-1.5 bg-stone-50 border-b border-stone-100 flex items-center justify-between text-[10px] text-stone-500 font-medium">
             <span className="flex items-center gap-1.5">
               <Search className="w-3 h-3 text-stone-400" />
-              <span>Gợi ý địa chỉ từ <strong>MapVina</strong></span>
+              <span>Gợi ý địa chỉ tự động</span>
             </span>
             <span className="text-[9px] text-stone-400">Dùng phím ↑ ↓ Enter để chọn</span>
           </div>
@@ -263,12 +288,46 @@ export default function AddressAutocompleteInput({
             })}
           </ul>
 
-          {/* Footer note */}
-          <div className="px-3 py-1.5 bg-[#FBFBFA] border-t border-stone-100 text-center text-[9px] text-stone-400">
-            Dữ liệu địa giới hành chính cập nhật chính xác bởi MapVina API
+          {/* Footer quick map open button */}
+          <div className="p-2 bg-stone-50 border-t border-stone-100 flex items-center justify-between">
+            <span className="text-[10px] text-stone-500">Không thấy địa chỉ bạn cần?</span>
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                setIsMapModalOpen(true);
+              }}
+              className="text-[11px] font-bold text-black hover:underline flex items-center gap-1"
+            >
+              <Map className="w-3 h-3" />
+              <span>Định vị trên bản đồ</span>
+            </button>
           </div>
         </div>
       )}
+
+      {/* Subtext Link to Open Map */}
+      {showMapPickerButton && (
+        <div className="mt-1 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setIsMapModalOpen(true)}
+            className="text-[11px] text-stone-500 hover:text-black font-medium transition-colors flex items-center gap-1"
+          >
+            <Map className="w-3 h-3 text-stone-500" />
+            <span>Không tìm thấy số nhà? <strong>Bấm đây để định vị trên bản đồ</strong></span>
+          </button>
+        </div>
+      )}
+
+      {/* Interactive Map Picker Modal */}
+      <MapLocationPickerModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        onSelectLocation={handleLocationPickedFromMap}
+        initialAddress={inputValue}
+        initialCoords={currentCoords}
+      />
     </div>
   );
 }

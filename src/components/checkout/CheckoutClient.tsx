@@ -259,14 +259,9 @@ export default function CheckoutClient() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
-                    Địa chỉ giao hàng chi tiết *
-                  </label>
-                  <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                    MapVina API
-                  </span>
-                </div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                  Địa chỉ giao hàng chi tiết *
+                </label>
                 <AddressAutocompleteInput
                   required
                   value={formData.address}
