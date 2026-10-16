@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { X, MapPin, Navigation, Loader2, Check, Search } from "lucide-react";
 
 interface MapLocationPickerModalProps {
@@ -23,6 +24,7 @@ export default function MapLocationPickerModal({
   initialAddress = "",
   initialCoords,
 }: MapLocationPickerModalProps) {
+  const [mounted, setMounted] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapInstanceRef = useRef<any>(null);
@@ -37,6 +39,10 @@ export default function MapLocationPickerModal({
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState<Array<{ id: string; label: string; coordinates: [number, number] }>>([]);
   const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 1. Load MapVina GL JS & CSS
   useEffect(() => {
@@ -146,14 +152,12 @@ export default function MapLocationPickerModal({
         reverseGeocode(startCenter[0], startCenter[1]);
       }
     } else {
-      // If map already exists, resize it properly
       setTimeout(() => {
         mapInstanceRef.current?.resize();
       }, 200);
     }
 
     return () => {
-      // Cleanup on unmount
       if (mapInstanceRef.current) {
         try {
           mapInstanceRef.current.remove();
@@ -165,7 +169,10 @@ export default function MapLocationPickerModal({
   }, [isOpen, isScriptLoaded, initialCoords, initialAddress, reverseGeocode]);
 
   // GPS Geolocation
-  const handleLocateMe = () => {
+  const handleLocateMe = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!navigator.geolocation) {
       alert("Trình duyệt của bạn không hỗ trợ định vị GPS.");
       return;
@@ -203,9 +210,12 @@ export default function MapLocationPickerModal({
     );
   };
 
-  // Search places in modal
-  const handleSearchPlace = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Search places in modal — NO FORM SUBMIT
+  const handleSearchPlace = async (e?: React.SyntheticEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!searchKeyword.trim() || searchKeyword.trim().length < 2) return;
 
     setIsSearching(true);
@@ -216,6 +226,9 @@ export default function MapLocationPickerModal({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const withCoords = data.suggestions.filter((s: any) => s.coordinates && s.coordinates.length === 2);
         setSearchResults(withCoords);
+        if (withCoords.length > 0) {
+          handleSelectSearchResult(withCoords[0]);
+        }
       }
     } catch {
       setSearchResults([]);
@@ -229,7 +242,6 @@ export default function MapLocationPickerModal({
     setCurrentCoords(coords);
     setDetectedAddress(result.label);
     setSearchResults([]);
-    setSearchKeyword("");
 
     if (mapInstanceRef.current) {
       mapInstanceRef.current.flyTo({
@@ -242,7 +254,10 @@ export default function MapLocationPickerModal({
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!detectedAddress.trim()) {
       alert("Chưa xác định được địa chỉ. Vui lòng di chuyển ghim trên bản đồ.");
       return;
@@ -251,11 +266,26 @@ export default function MapLocationPickerModal({
     onClose();
   };
 
-  if (!isOpen) return null;
+  const handleCloseModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClose();
+  };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col border border-stone-200 max-h-[92vh]">
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
+    <div
+      onClick={(e) => {
+        // Prevent background click from propagating to any background forms
+        e.stopPropagation();
+      }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col border border-stone-200 max-h-[92vh]"
+      >
         {/* Header */}
         <div className="p-4 border-b border-stone-200 flex items-center justify-between bg-stone-50/80">
           <div className="flex items-center gap-2">
@@ -273,7 +303,7 @@ export default function MapLocationPickerModal({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleCloseModal}
             className="p-1.5 rounded-full text-stone-400 hover:text-black hover:bg-stone-200/60 transition-colors"
             title="Đóng"
           >
@@ -281,32 +311,40 @@ export default function MapLocationPickerModal({
           </button>
         </div>
 
-        {/* Search bar inside map */}
+        {/* Search bar inside map (Pure DIV without <form> to prevent outer submit) */}
         <div className="relative p-2.5 bg-white border-b border-stone-100 z-10 flex gap-2">
-          <form onSubmit={handleSearchPlace} className="flex-1 relative flex items-center">
+          <div className="flex-1 relative flex items-center">
             <Search className="w-3.5 h-3.5 text-stone-400 absolute left-3 pointer-events-none" />
             <input
               type="text"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
-              placeholder="Tìm kiếm khu vực / đường phố để nhảy nhanh đến..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSearchPlace();
+                }
+              }}
+              placeholder="Nhập tên đường, phường, quận để nhảy nhanh đến..."
               className="w-full pl-8 pr-16 py-1.5 text-xs bg-stone-50 border border-stone-300 rounded focus:outline-none focus:border-black"
             />
             <button
-              type="submit"
+              type="button"
+              onClick={handleSearchPlace}
               disabled={isSearching}
-              className="absolute right-1 px-2.5 py-1 text-[11px] font-bold text-stone-700 hover:text-black"
+              className="absolute right-1 px-2.5 py-1 text-[11px] font-bold text-stone-700 hover:text-black cursor-pointer"
             >
               {isSearching ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Tìm"}
             </button>
-          </form>
+          </div>
 
           {/* GPS Locate Button */}
           <button
             type="button"
             onClick={handleLocateMe}
             disabled={isLocatingGPS}
-            className="px-3 py-1.5 text-xs font-semibold bg-stone-100 hover:bg-stone-200 text-stone-800 rounded border border-stone-200 flex items-center gap-1.5 shrink-0 transition-colors"
+            className="px-3 py-1.5 text-xs font-semibold bg-stone-100 hover:bg-stone-200 text-stone-800 rounded border border-stone-200 flex items-center gap-1.5 shrink-0 transition-colors cursor-pointer"
             title="Định vị vị trí hiện tại của tôi"
           >
             {isLocatingGPS ? (
@@ -366,8 +404,8 @@ export default function MapLocationPickerModal({
           <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-stone-300 rounded text-xs font-bold uppercase tracking-wider hover:bg-stone-50 transition-colors"
+              onClick={handleCloseModal}
+              className="px-4 py-2 border border-stone-300 rounded text-xs font-bold uppercase tracking-wider hover:bg-stone-50 transition-colors cursor-pointer"
             >
               Hủy
             </button>
@@ -375,7 +413,7 @@ export default function MapLocationPickerModal({
               type="button"
               onClick={handleConfirm}
               disabled={isReverseLoading || !detectedAddress}
-              className="px-5 py-2 bg-black text-white rounded text-xs font-bold uppercase tracking-wider hover:bg-stone-800 disabled:opacity-40 transition-colors flex items-center gap-1.5"
+              className="px-5 py-2 bg-black text-white rounded text-xs font-bold uppercase tracking-wider hover:bg-stone-800 disabled:opacity-40 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Check className="w-3.5 h-3.5" />
               <span>Xác nhận vị trí</span>
@@ -383,6 +421,7 @@ export default function MapLocationPickerModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
