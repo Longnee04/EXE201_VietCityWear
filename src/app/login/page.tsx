@@ -26,14 +26,12 @@ import {
   MapPin,
   RefreshCw,
   Sparkles,
-  Gift,
   KeyRound,
   Plus,
   Trash2,
   Check,
   Calendar,
   CreditCard,
-  Crown,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { type User as SupabaseUser } from "@supabase/supabase-js";
@@ -87,7 +85,7 @@ interface SavedAddress {
   isDefault: boolean;
 }
 
-type TabType = "orders" | "address" | "profile" | "membership" | "password";
+type TabType = "orders" | "address" | "profile" | "password";
 
 function LoginContent() {
   const router = useRouter();
@@ -629,11 +627,6 @@ function LoginContent() {
     );
   };
 
-  const totalSpent = userOrders.reduce(
-    (sum, o) => sum + (o.status === "completed" ? Number(o.total_amount) : 0),
-    0
-  );
-
   return (
     <div className="min-h-screen w-full bg-[#FAFAFA] flex flex-col justify-between text-[#111111] antialiased selection:bg-black selection:text-white">
       {/* Top Header */}
@@ -720,11 +713,8 @@ function LoginContent() {
                     <h2 className="text-sm font-bold text-black truncate uppercase tracking-tight">
                       {userProfile.full_name || "Thành viên"}
                     </h2>
-                    <p className="text-[11px] text-stone-500 flex items-center gap-1 mt-0.5">
-                      <span>Cấp độ:</span>
-                      <strong className="text-black font-semibold">
-                        {totalSpent > 1000000 ? "Hội viên Bạc" : "Thành viên"}
-                      </strong>
+                    <p className="text-[11px] text-stone-500 truncate mt-0.5">
+                      {userProfile.email}
                     </p>
                   </div>
                 </div>
@@ -776,18 +766,6 @@ function LoginContent() {
                   >
                     <User className="w-4 h-4" />
                     <span>Thông tin của tôi</span>
-                  </button>
-
-                  <button
-                    onClick={() => setActiveTab("membership")}
-                    className={`w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xs font-semibold uppercase tracking-wider transition-colors text-left ${
-                      activeTab === "membership"
-                        ? "bg-black text-white"
-                        : "text-stone-700 hover:bg-stone-50 hover:text-black"
-                    }`}
-                  >
-                    <Crown className="w-4 h-4" />
-                    <span>Membership & Quà tặng</span>
                   </button>
 
                   <button
@@ -1244,101 +1222,7 @@ function LoginContent() {
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* TAB 4: MEMBERSHIP & QUÀ TẶNG (MATCHING LEVENTS SCREENSHOT)   */}
-                {/* ------------------------------------------------------------- */}
-                {activeTab === "membership" && (
-                  <div>
-                    <div className="pb-5 border-b border-[#eaeaea] mb-6">
-                      <h2 className="text-base font-bold uppercase tracking-tight text-black">
-                        HỘI VIÊN & QUÀ TẶNG VOUCHER
-                      </h2>
-                      <p className="text-xs text-stone-500 mt-0.5">
-                        Theo dõi cấp độ thành viên, điểm tích lũy và voucher quà tặng
-                      </p>
-                    </div>
 
-                    {/* Stats Grid matching Levents */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-[#FAFAFA] border border-[#eaeaea] rounded-sm mb-8">
-                      <div>
-                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Cấp độ:</span>
-                        <strong className="text-sm font-bold text-black mt-1 block">
-                          {totalSpent > 1000000 ? "Hội viên Bạc" : "Thành viên"}
-                        </strong>
-                      </div>
-                      <div>
-                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Tổng đơn mua:</span>
-                        <strong className="text-sm font-bold text-black mt-1 block">
-                          {userOrders.length} đơn
-                        </strong>
-                      </div>
-                      <div>
-                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Tổng tiền chi:</span>
-                        <strong className="text-sm font-bold text-black mt-1 block">
-                          {formatPrice(totalSpent)}
-                        </strong>
-                      </div>
-                      <div>
-                        <span className="text-[11px] text-stone-500 uppercase font-semibold block">Điểm thưởng:</span>
-                        <strong className="text-sm font-bold text-black mt-1 block">
-                          {Math.floor(totalSpent / 10000)} điểm
-                        </strong>
-                      </div>
-                    </div>
-
-                    {/* Vouchers list matching Levents */}
-                    <div>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-black mb-4 flex items-center gap-2">
-                        <Gift className="w-4 h-4" />
-                        <span>Voucher ưu đãi của bạn</span>
-                      </h3>
-
-                      <div className="space-y-3.5">
-                        {/* Voucher 1 */}
-                        <div className="p-4 border border-stone-200 rounded-sm flex items-center justify-between gap-4 bg-white hover:border-black transition-colors">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center font-bold text-xs uppercase tracking-wider text-stone-700">
-                              VCW
-                            </div>
-                            <div>
-                              <p className="font-bold text-xs text-black">VCWFREESHIP</p>
-                              <p className="text-[11px] text-stone-500 mt-0.5">
-                                Miễn phí vận chuyển toàn quốc cho đơn hàng từ 500.000₫
-                              </p>
-                            </div>
-                          </div>
-                          <Link
-                            href="/products"
-                            className="px-4 py-1.5 border border-black text-black text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors"
-                          >
-                            Sử dụng
-                          </Link>
-                        </div>
-
-                        {/* Voucher 2 */}
-                        <div className="p-4 border border-stone-200 rounded-sm flex items-center justify-between gap-4 bg-white hover:border-black transition-colors">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center font-bold text-xs uppercase tracking-wider text-stone-700">
-                              NFC
-                            </div>
-                            <div>
-                              <p className="font-bold text-xs text-black">VCWNFC2026</p>
-                              <p className="text-[11px] text-stone-500 mt-0.5">
-                                Tặng kèm 01 Móc khóa chip NFC + 05 Thẻ bưu thiếp văn hóa cho mọi đơn áo
-                              </p>
-                            </div>
-                          </div>
-                          <Link
-                            href="/products"
-                            className="px-4 py-1.5 border border-black text-black text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors"
-                          >
-                            Sử dụng
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* ------------------------------------------------------------- */}
                 {/* TAB 5: THAY ĐỔI MẬT KHẨU                                     */}

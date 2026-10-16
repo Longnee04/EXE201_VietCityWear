@@ -48,7 +48,7 @@ export default function SupportChatWidget() {
     {
       id: "1",
       sender: "bot",
-      text: "Chào bạn! Viet City Wear rất vui được hỗ trợ bạn. Bạn cần tư vấn về kích cỡ áo, đơn hàng COD hay quà tặng chip NFC ạ?",
+      text: "Chào bạn! Viet City Wear rất vui được hỗ trợ bạn. Bạn cần tư vấn về kích cỡ áo, đơn hàng COD hay trải nghiệm chạm chip di sản NFC ạ?",
       time: "Vừa xong",
     },
   ]);
@@ -388,18 +388,18 @@ export default function SupportChatWidget() {
                 <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* Option 4: Hạng thành viên & Quà tặng NFC */}
+              {/* Option 4: Trải nghiệm chip di sản NFC */}
               <button
                 onClick={() =>
                   handleSelectQuickPrompt(
-                    "Hạng thành viên & Trải nghiệm NFC 👑",
-                    "Khi mua sắm và tạo tài khoản tại Viet City Wear, bạn sẽ được tích điểm thành viên nhận chiết khấu và quét chip NFC trên móc khóa để mở trang di sản thành phố tương ứng."
+                    "Trải nghiệm chạm chip di sản NFC 🏛️",
+                    "Mỗi chiếc áo Viet City Wear đều đi kèm 01 móc khóa gắn chip NFC. Bạn chỉ cần chạm nhẹ điện thoại vào móc khóa để mở ngay trang khám phá di sản văn hóa số của thành phố tương ứng ạ!"
                   )
                 }
                 className="w-full p-3 rounded-xl border border-stone-200 bg-stone-50/60 hover:bg-stone-100/90 text-left transition-colors flex items-center justify-between group"
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="text-sm font-medium text-stone-800">Hạng thành viên & Trải nghiệm NFC 👑</span>
+                  <span className="text-sm font-medium text-stone-800">Trải nghiệm chip di sản NFC 🏛️</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-0.5 transition-transform" />
               </button>
