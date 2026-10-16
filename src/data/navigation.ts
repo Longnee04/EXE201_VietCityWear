@@ -25,17 +25,7 @@ export const mainNav: NavLink[] = [
       { label: "Sản phẩm bán chạy", href: "/products?filter=best-seller" },
     ],
   },
-  {
-    label: "KHÁM PHÁ",
-    href: "/explore",
-    children: [
-      { label: "Di sản Hà Nội & NFC", href: "/explore/hanoi" },
-      { label: "Cố đô Huế", href: "/explore#hue" },
-      { label: "Phố cổ Hội An", href: "/explore#hoian" },
-      { label: "Thành phố Đà Nẵng", href: "/explore#danang" },
-      { label: "TP. Hồ Chí Minh", href: "/explore#hcm" },
-    ],
-  },
+  { label: "KHÁM PHÁ", href: "/explore" },
   { label: "CẨM NANG BLOG", href: "/blog" },
   { label: "VỀ CHÚNG TÔI", href: "/about" },
   { label: "LIÊN HỆ", href: "/contact" },
