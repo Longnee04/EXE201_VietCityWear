@@ -27,8 +27,8 @@ const cities = [
     statusLabel: "ĐÃ PHÁT HÀNH • BỘ MVP",
     tagline: "Thủ đô ngàn năm văn hiến",
     description:
-      "Khám phá trọn vẹn 5 địa danh di sản: Hồ Hoàn Kiếm, Văn Miếu, Lăng Bác, Nhà Thờ Lớn, Phố Cổ 36 phố phường cùng thuyết minh audio song ngữ và cẩm nang ẩm thực.",
-    image: "/images/hanoi-heritage-set.png",
+      "Khám phá trọn vẹn các địa danh di sản: Hồ Hoàn Kiếm, Văn Miếu, Lăng Bác, Nhà Thờ Lớn, Phố Cổ 36 phố phường, Cầu Long Biên cùng thuyết minh audio song ngữ và cẩm nang ẩm thực.",
+    image: "/images/landmarks/ho-guom.jpg",
     exploreHref: "/explore/hanoi",
     shopHref: "/#t-shirts",
   },
@@ -41,7 +41,7 @@ const cities = [
     tagline: "Thành phố hoa phượng đỏ",
     description:
       "Ghi dấu tọa độ 20.8449°N, 106.6881°E, kiến trúc Nhà hát lớn Hải Phòng và tinh thần phóng khoáng miền duyên hải cửa biển.",
-    image: "/images/ao-thun-hai-phong-coming-soon.png",
+    image: "/images/haiphong-banner.jpg",
     exploreHref: "#",
     shopHref: "/products/ao-thun-hai-phong-heritage-tee",
   },
@@ -78,7 +78,7 @@ const cities = [
     tagline: "Thành phố của những cây cầu",
     description:
       "Cầu Rồng, Cầu Vàng Bà Nà hùng vĩ và bãi biển xanh cát trắng hiện đại đầy năng lượng.",
-    image: "/images/landmarks/ho-guom.jpg",
+    image: "/images/danang-banner.jpg",
     exploreHref: "#",
   },
   {
@@ -90,7 +90,7 @@ const cities = [
     tagline: "Nhịp đập đô thị phương Nam",
     description:
       "Giao thoa giữa nét kiến trúc Sài Gòn xưa và tinh thần chuyển mình trẻ trung, năng động của đại đô thị.",
-    image: "/images/landmarks/pho-co.jpg",
+    image: "/images/saigon-banner.jpg",
     exploreHref: "#",
   },
 ];

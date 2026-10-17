@@ -39,7 +39,7 @@ Nằm trên gò đất nổi giữa hồ, Tháp Rùa soi bóng nước xanh màu
 # Tinh thần VIET CITY WEAR
 
 Lấy cảm hứng từ sắc xanh rêu phong cổ kính và bóng Tháp Rùa trầm mặc, BST Heritage Tee tái hiện lại nét đẹp thiêng liêng ấy qua những nét vẽ tối giản nhưng giàu hồn cốt.`,
-    cover_image: "/images/hanoi-banner.jpg",
+    cover_image: "/images/landmarks/ho-guom.jpg",
     category: "culture",
     status: "Published",
     published_at: "2026-01-01T00:00:00.000Z",

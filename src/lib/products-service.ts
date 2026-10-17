@@ -56,7 +56,20 @@ export function mapDbProductToUi(
   const generatedSlug = slugify(dbProd.name) || dbProd.id;
 
   const isSet = dbProd.name.toLowerCase().includes("set");
-  const isComingSoon = dbProd.name.toLowerCase().includes("coming soon");
+  const isComingSoon = dbProd.name.toLowerCase().includes("coming soon") || dbProd.name.toLowerCase().includes("hải phòng");
+
+  if (isSet && images.length <= 2) {
+    images.push(
+      "/images/products/ao-thun-ha-noi-front.png",
+      "/images/products/ao-thun-ha-noi-back.png",
+      "/images/the-dia-danh-hanoi.png",
+      "/images/moc-khoa-qr-hanoi.png"
+    );
+  }
+
+  if (dbProd.name.toLowerCase().includes("hải phòng") && !images.includes("/images/ao-thun-hai-phong-coming-soon.png")) {
+    images.push("/images/ao-thun-hai-phong-coming-soon.png");
+  }
   const isAccessory =
     dbProd.name.toLowerCase().includes("keychain") ||
     dbProd.name.toLowerCase().includes("móc khóa") ||

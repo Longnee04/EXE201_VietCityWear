@@ -109,7 +109,7 @@ export default function LandmarkHighlights() {
               </p>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
-              5 ĐỊA DANH DI SẢN HÀ NỘI
+              ĐỊA DANH DI SẢN HÀ NỘI
             </h2>
           </div>
         </div>

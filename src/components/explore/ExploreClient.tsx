@@ -118,7 +118,7 @@ export default function ExploreClient() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="max-w-3xl space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-white/80 rounded-full text-[11px] font-bold tracking-widest uppercase">
-              HANOI HERITAGE COLLECTION • 5 ICONS
+              HANOI HERITAGE COLLECTION • DI SẢN THỦ ĐÔ
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight">
               {lang === "vi" ? guide.city_name_vi : guide.city_name_en}
