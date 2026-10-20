@@ -14,8 +14,8 @@ export default function ContactPage() {
       defaultContent={`**Thông tin liên hệ & Hỗ trợ khách hàng:**
 
 **Kênh mạng xã hội chính thức:**
-- **Facebook:** [fb.com/vietcitywear](https://www.facebook.com/vietcitywear)
-- **TikTok:** [@vietcitywear](https://www.tiktok.com/@vietcitywear)
+- **Facebook:** [Viet City Wear Official](https://www.facebook.com/profile.php?id=61594562979390)
+- **TikTok:** [@vietct.wr26](https://www.tiktok.com/@vietct.wr26)
 - **Instagram:** [@vietcitywear](https://www.instagram.com/vietcitywear)
 
 **Hotline & Zalo tư vấn:**

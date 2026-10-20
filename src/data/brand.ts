@@ -19,7 +19,7 @@ export const BRAND_TAGLINE = "LOCAL CITIES • REAL STORIES • WEAR IT.";
 
 // Các liên kết mạng xã hội chính thức
 export const SOCIAL_LINKS = {
-  facebook: "https://www.facebook.com/vietcitywear",
-  tiktok: "https://www.tiktok.com/@vietcitywear",
+  facebook: "https://www.facebook.com/profile.php?id=61594562979390",
+  tiktok: "https://www.tiktok.com/@vietct.wr26",
   instagram: "https://www.instagram.com/vietcitywear",
 } as const;

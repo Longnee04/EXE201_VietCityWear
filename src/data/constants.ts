@@ -127,8 +127,8 @@ export const BRAND_CONFIG = {
 
   // Mạng xã hội
   social: {
-    facebook: "https://www.facebook.com/vietcitywear",
-    tiktok: "https://www.tiktok.com/@vietcitywear",
+    facebook: "https://www.facebook.com/profile.php?id=61594562979390",
+    tiktok: "https://www.tiktok.com/@vietct.wr26",
     instagram: "https://www.instagram.com/vietcitywear",
   },
 

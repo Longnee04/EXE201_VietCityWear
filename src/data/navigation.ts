@@ -49,8 +49,8 @@ export const footerNav = {
     { label: "Chính sách bảo mật", href: "/privacy" },
   ],
   social: [
+    { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61594562979390" },
+    { label: "TikTok", href: "https://www.tiktok.com/@vietct.wr26" },
     { label: "Instagram", href: "https://instagram.com/vietcitywear" },
-    { label: "Facebook", href: "https://facebook.com/vietcitywear" },
-    { label: "TikTok", href: "https://tiktok.com/@vietcitywear" },
   ],
 };

@@ -166,7 +166,7 @@ Số 123, Đường ABC, Quận XYZ, Hà Nội, Việt Nam
 - Báo chí truyền thông: pr@vietcitywear.com
 
 **Mạng xã hội:**
-- Facebook: facebook.com/vietcitywear
+- Facebook: facebook.com/profile.php?id=61594562979390
 - Instagram: @vietcitywear
 - TikTok: @vietcitywear
 
