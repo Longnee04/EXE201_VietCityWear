@@ -61,7 +61,7 @@ export const BRAND_CONFIG = {
       includes: [
         "01 Áo thun văn hóa Hà Nội",
         "05 Thẻ địa danh Hà Nội chính thức",
-        "01 Móc khóa gỗ khắc CNC tích hợp chip NFC",
+        "01 Móc khóa gỗ khắc CNC tích hợp mã QR di sản",
       ],
     },
     {
@@ -75,7 +75,7 @@ export const BRAND_CONFIG = {
       includes: [
         "01 Áo thun chất liệu tốt hơn (dày dặn, giữ form)",
         "05 Thẻ địa danh Hà Nội chính thức",
-        "01 Móc khóa gỗ khắc CNC tích hợp chip NFC",
+        "01 Móc khóa gỗ khắc CNC tích hợp mã QR di sản",
         "01 Hộp quà tặng thiết kế thủ công đặc biệt",
       ],
     },
@@ -125,17 +125,17 @@ export const BRAND_CONFIG = {
     workingHours: "[CẦN XÁC NHẬN: 08:30 – 21:30 hàng ngày]",
   },
 
-  // Mạng xã hội (Placeholder [CẦN XÁC NHẬN: ...])
+  // Mạng xã hội
   social: {
-    facebook: "[CẦN XÁC NHẬN: https://facebook.com/vietcitywear]",
-    instagram: "[CẦN XÁC NHẬN: https://instagram.com/vietcitywear]",
-    tiktok: "[CẦN XÁC NHẬN: https://tiktok.com/@vietcitywear]",
+    facebook: "https://www.facebook.com/vietcitywear",
+    tiktok: "https://www.tiktok.com/@vietcitywear",
+    instagram: "https://www.instagram.com/vietcitywear",
   },
 
-  // Chính sách sản phẩm (Placeholder [CẦN XÁC NHẬN: ...])
+  // Chính sách sản phẩm
   policies: {
-    material: "[CẦN XÁC NHẬN: 100% Cotton định lượng 250gsm, xử lý bề mặt mềm mịn, thoáng mát]",
-    returnPolicy: "[CẦN XÁC NHẬN: Đổi trả trong 7 ngày đối với sản phẩm còn nguyên tem mác và thẻ NFC]",
-    warranty: "[CẦN XÁC NHẬN: Bảo hành lỗi kỹ thuật chip NFC trong 30 ngày]",
+    material: "100% Cotton định lượng 250gsm, xử lý bề mặt mềm mịn, thoáng mát, giữ form chuẩn",
+    returnPolicy: "Đổi trả trong 7 ngày đối với sản phẩm còn nguyên tem mác, phụ kiện (thẻ/móc khóa) và chưa qua sử dụng",
+    warranty: "Đổi mới 100% miễn phí trong 7 ngày nếu có lỗi từ nhà sản xuất hoặc giao sai mẫu mã, kích cỡ",
   },
 } as const;

@@ -167,7 +167,7 @@ export default function ProductsPageClient() {
                 Tất Cả Sản Phẩm Thời Trang Di Sản
               </h1>
               <p className="text-xs sm:text-sm text-[#666] mt-1.5 max-w-2xl leading-relaxed">
-                Khám phá các mẫu áo thun kết hợp nghệ thuật đường phố và di sản văn hóa Việt Nam, tích hợp công nghệ chạm NFC kết nối hành trình trải nghiệm số.
+                Khám phá các mẫu áo thun kết hợp nghệ thuật đường phố và di sản văn hóa Việt Nam, tích hợp công nghệ mã QR kết nối hành trình trải nghiệm số.
               </p>
             </div>
 

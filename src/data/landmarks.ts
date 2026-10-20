@@ -1,4 +1,4 @@
-export interface LandmarkFood {
+﻿export interface LandmarkFood {
   name_vi: string;
   name_en: string;
   dish_vi: string;
@@ -142,8 +142,8 @@ export const HANOI_GUIDE: CityGuide = {
       history_vi: "Khởi công ngày 2/9/1973 và khánh thành ngày 29/8/1975, Lăng Bác là điểm đến thiêng liêng của hàng triệu đồng bào và bạn bè quốc tế khi đặt chân đến thủ đô.",
       history_en: "Commenced in 1973 and officially opened in 1975, the Mausoleum serves as the focal pilgrimage destination for millions of Vietnamese and international guests.",
       address: "2 Hùng Vương, Điện Biên, Ba Đình, Hà Nội",
-      best_time_vi: "06:00 sáng xem nghi lễ Thượng cờ hoặc 21:00 xem lễ Hạ cờ tại Quảng trường Ba Đình",
-      best_time_en: "06:00 AM for the flag-raising ceremony or 21:00 for the evening lowering ceremony",
+      best_time_vi: "Lễ Thượng cờ: 06:00 (Mùa hè: 01/04 – 31/10) hoặc 06:30 (Mùa đông: 01/11 – 31/03); Lễ Hạ cờ: 21:00 hàng ngày tại Quảng trường Ba Đình. (Lưu ý: Lăng Bác tu bổ định kỳ hàng năm vào mùa thu từ tháng 9 đến đầu tháng 11).",
+      best_time_en: "Flag ceremony: 06:00 AM (Summer: Apr 1 – Oct 31) or 06:30 AM (Winter: Nov 1 – Mar 31); Flag lowering: 21:00 daily at Ba Dinh Square. (Note: Annual maintenance in autumn from Sep to early Nov).",
       image: "/images/landmarks/lang-bac.jpg",
       audio_title_vi: "Tiếng bước chân chào cờ Ba Đình sớm",
       audio_title_en: "Dawn Flag Ceremony at Ba Dinh Square",

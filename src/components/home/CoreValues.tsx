@@ -14,9 +14,9 @@ export default function CoreValues() {
     },
     {
       number: "03",
-      title: "NFC = Trải nghiệm.",
-      subtitle: "Móc khóa NFC",
-      description: "Chạm điện thoại vào móc khóa để mở trang web khám phá du lịch số.",
+      title: "QR Code = Trải nghiệm số.",
+      subtitle: "Móc khóa & Thẻ QR",
+      description: "Quét mã QR để mở trang web khám phá di sản và cẩm nang du lịch số.",
     },
   ];
 

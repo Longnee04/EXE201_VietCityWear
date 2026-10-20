@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -163,7 +163,7 @@ export default function AdminDashboardPage() {
             Tổng quan Dự án VIET CITY WEAR
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-xl">
-            Theo dõi danh mục áo thun văn hóa, tình trạng kho biến thể, đơn đặt hàng COD và lượt tương tác thẻ chip NFC di sản.
+            Theo dõi danh mục áo thun văn hóa, tình trạng kho biến thể, đơn đặt hàng và lượt quét mã QR di sản số.
           </p>
         </div>
 
@@ -253,7 +253,7 @@ export default function AdminDashboardPage() {
         <div className="bg-white border border-[#E5E5E5] rounded-xl p-5 shadow-xs">
           <div className="flex items-center justify-between text-neutral-500 mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
-              Thẻ NFC Kích hoạt
+              Mã QR Di Sản Kích hoạt
             </span>
             <div className="p-2 rounded-lg bg-purple-50 text-purple-700">
               <QrCode className="w-4 h-4" />
@@ -359,7 +359,7 @@ export default function AdminDashboardPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold text-sm text-neutral-900 group-hover:text-black">
-                      Thẻ NFC & Trải nghiệm
+                      Mã QR Di Sản & Trải nghiệm
                     </span>
                     <QrCode className="w-4 h-4 text-neutral-500 group-hover:text-black" />
                   </div>
@@ -368,7 +368,7 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
                 <div className="mt-4 pt-2 border-t border-neutral-200/60 flex items-center justify-between text-xs font-semibold text-neutral-700 group-hover:text-black">
-                  <span>Cấu hình NFC</span>
+                  <span>Cấu hình Mã QR</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </div>
               </Link>

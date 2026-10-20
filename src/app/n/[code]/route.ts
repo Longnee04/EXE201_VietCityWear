@@ -44,12 +44,12 @@ export async function GET(
   const acceptLanguage = request.headers.get("accept-language") || "vi";
 
   console.log(
-    `[NFC SCAN EVENT] Tag: ${normalizedCode} | Target: ${targetUrl} | Time: ${new Date().toISOString()} | Lang: ${acceptLanguage} | UA: ${userAgent}`
+    `[QR SCAN EVENT] Tag: ${normalizedCode} | Target: ${targetUrl} | Time: ${new Date().toISOString()} | Lang: ${acceptLanguage} | UA: ${userAgent}`
   );
 
   // Chuyển hướng tới trang trải nghiệm
   const redirectUrl = new URL(targetUrl, request.url);
-  redirectUrl.searchParams.set("source", "nfc");
+  redirectUrl.searchParams.set("source", "qr");
   redirectUrl.searchParams.set("tag", normalizedCode);
 
   return NextResponse.redirect(redirectUrl);

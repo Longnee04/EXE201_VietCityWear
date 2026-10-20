@@ -24,7 +24,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Bắc",
     status: "active",
     badgeText: "CHÍNH THỨC PHÁT HÀNH",
-    description: "5 địa danh di sản, bộ thẻ văn hóa và móc khóa gỗ NFC.",
+    description: "5 địa danh di sản, bộ thẻ văn hóa và móc khóa gỗ QR.",
     landmarksCount: 5,
     href: "/#t-shirts",
     exploreHref: "/explore/hanoi",

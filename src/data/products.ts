@@ -100,10 +100,11 @@ export const products: Product[] = [
     city: "Hải Phòng",
     description:
       "Bộ sưu tập Thành phố cảng hoa phượng đỏ — Mặt trước in logo VIET CITY WEAR, mặt sau in hình Nhà hát lớn, Cầu Bính và hoa phượng đỏ rực.",
-    inStock: true,
+    inStock: false,
     includes: [
-      "01 × Áo thun Hải Phòng Heritage Tee",
-      "Đợt phát hành dự kiến tiếp theo",
+      "01 × Áo thun Hải Phòng Heritage Tee (Dự kiến mở bán)",
+      "01 × Thẻ bưu thiếp Hải Phòng Heritage Card",
+      "01 × Móc khóa gỗ QR Hải Phòng",
     ],
   },
   {

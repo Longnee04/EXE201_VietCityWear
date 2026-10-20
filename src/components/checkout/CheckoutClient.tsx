@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
@@ -296,7 +296,7 @@ export default function CheckoutClient() {
                         Thanh toán khi nhận hàng (Ship COD)
                       </span>
                       <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
-                        Kiểm tra hàng trước khi thanh toán. Trọn bộ gồm áo thun, hộp quà di sản, 05 thẻ bưu thiếp và móc khóa chạm chip NFC.
+                        Kiểm tra hàng trước khi thanh toán. Trọn bộ gồm áo thun, hộp quà di sản, 05 thẻ bưu thiếp và móc khóa gỗ khắc mã QR.
                       </p>
                     </div>
                   </label>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -848,7 +848,7 @@ export default function AdminCitiesPage() {
                     Thêm Thành Phố Di Sản & Cấu Hình Bản Đồ Số
                   </h3>
                   <p className="text-[11px] text-neutral-500">
-                    Nhập bản sắc văn hóa và liên kết tọa độ Google Maps hiển thị ở trang Khám phá & NFC.
+                    Nhập bản sắc văn hóa và liên kết tọa độ Google Maps hiển thị ở trang Khám phá & Di sản số.
                   </p>
                 </div>
               </div>

@@ -37,7 +37,7 @@ export const footerNav = {
     { label: "Sản phẩm mới", href: "/products?filter=new" },
     { label: "Sản phẩm bán chạy", href: "/products?filter=best-seller" },
     { label: "Khám phá các thành phố", href: "/explore" },
-    { label: "Di sản Hà Nội & NFC", href: "/explore/hanoi" },
+    { label: "Di sản Hà Nội & QR Code", href: "/explore/hanoi" },
   ],
   about: [
     { label: "Giới thiệu thương hiệu", href: "/about" },

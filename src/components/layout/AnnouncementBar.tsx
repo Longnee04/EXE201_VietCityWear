@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 const messages = [
   "Mặc thành phố – Chạm câu chuyện",
   "Ra mắt Hanoi Heritage Set — 219.000₫",
-  "Chạm NFC & Quét QR khám phá di sản Hà Nội",
+  "Quét Mã QR khám phá di sản số Hà Nội",
   "Miễn phí vận chuyển cho đơn từ 500K",
 ];
 

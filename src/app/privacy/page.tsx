@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import ContentPageClient from "@/components/content/ContentPageClient";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
 Chúng tôi thu thập các thông tin sau:
 - Họ tên, số điện thoại, địa chỉ email
 - Địa chỉ giao hàng
-- Lịch sử mua hàng và tương tác NFC
+- Lịch sử mua hàng và lượt quét mã QR di sản
 
 **2. Sử dụng thông tin**
 Thông tin được sử dụng để:
@@ -26,7 +26,7 @@ Thông tin được sử dụng để:
 
 **3. Bảo mật thông tin**
 - Thông tin được mã hóa và lưu trữ an toàn
-- Không chia sẻ thông tin cho bên thứ ba
+- Không chia sẻ thông tin cho bên thứ ba, ngoại trừ đơn vị vận chuyển đối tác (GHTK, Viettel Post) phục vụ mục đích giao nhận hàng hóa
 - Tuân thủ các quy định về bảo vệ dữ liệu cá nhân
 
 **4. Cookie và công nghệ theo dõi**

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -56,7 +56,7 @@ const mockDefaultProducts: Product[] = [
     id: "p3",
     name: "Hanoi QR Keychain",
     base_price: 29000,
-    package_type: "Móc khóa gỗ QR/NFC",
+    package_type: "Móc khóa gỗ QR",
     front_image: "/images/moc-khoa-qr-hanoi.png",
     back_image: "/images/moc-khoa-qr-hanoi.png",
     description: "Móc khóa gỗ tròn 2 mặt: một bên khắc logo VIET CITY WEAR, một bên khắc mã QR kết nối website di sản số.",
@@ -622,7 +622,7 @@ export default function AdminProductsPage() {
                   >
                     <option value="Áo thun di sản">Áo thun di sản</option>
                     <option value="Set đầy đủ (Full Box)">Set đầy đủ (Full Box)</option>
-                    <option value="Móc khóa gỗ QR/NFC">Móc khóa gỗ QR/NFC</option>
+                    <option value="Móc khóa gỗ QR">Móc khóa gỗ QR/NFC</option>
                     <option value="Thẻ địa danh sưu tập">Thẻ địa danh sưu tập</option>
                     <option value="Hộp quà sưu tập">Hộp quà sưu tập</option>
                   </select>

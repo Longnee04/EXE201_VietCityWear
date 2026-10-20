@@ -65,8 +65,8 @@ export default function ExploreClient() {
         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
         <span>
           {lang === "vi"
-            ? "Trang trải nghiệm di sản số VIET CITY WEAR — Kết nối qua Thẻ QR & Móc khóa NFC"
-            : "VIET CITY WEAR Digital Heritage Guide — Linked via QR Cards & NFC Tag"}
+            ? "Trang trải nghiệm di sản số VIET CITY WEAR — Kết nối qua Thẻ QR & Móc khóa QR"
+            : "VIET CITY WEAR Digital Heritage Guide — Linked via QR Cards & QR Keychain"}
         </span>
       </div>
 

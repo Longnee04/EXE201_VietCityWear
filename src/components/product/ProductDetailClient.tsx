@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import { type Product, formatPrice } from "@/data/products";
 import { useCart } from "@/lib/cart-context";
-import { ShoppingBag, Check, ShieldCheck, Truck, X, Sparkles, Box } from "lucide-react";
+import { ShoppingBag, Check, ShieldCheck, Truck, X, Sparkles, Box, Clock, Bell } from "lucide-react";
 
 const sizeChart = [
   { size: "S", chest: "100 cm", length: "68 cm", height: "1m50 – 1m60", weight: "45 – 55 kg" },
@@ -17,8 +17,14 @@ const sizeChart = [
 export default function ProductDetailClient({ product }: { product: Product }) {
   const { addToCart } = useCart();
   
+  // Phân biệt sản phẩm áo thời trang và phụ kiện (móc khóa, thẻ địa danh, hộp 10 thẻ)
+  const isApparel = !["keychain", "móc khóa", "card", "thẻ", "hộp", "box"].some((term) =>
+    product.name.toLowerCase().includes(term)
+  );
+  const isComingSoon = product.badge === "COMING SOON" || !product.inStock;
+
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(isApparel ? null : "One Size");
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [viewSide, setViewSide] = useState<"front" | "back">("front");
@@ -26,7 +32,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const currentImage = product.images[selectedImageIndex] || product.images[0];
   
   const handleAddToCart = () => {
-    if (!selectedSize) {
+    if (isComingSoon) {
+      alert("Sản phẩm sắp mở bán, hiện chưa thể thêm vào giỏ hàng.");
+      return;
+    }
+
+    if (isApparel && !selectedSize) {
       alert("Vui lòng chọn size áo trước khi thêm vào giỏ hàng");
       return;
     }
@@ -35,7 +46,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       productId: product.id,
       name: product.name,
       price: product.price,
-      size: selectedSize,
+      size: selectedSize || "One Size",
       color: selectedColor,
       image: currentImage || product.images[0],
     });
@@ -47,38 +58,45 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         
         {/* Left: Images & View Angle */}
         <div className="flex flex-col gap-4">
-          {/* Front / Back Toggle Tabs */}
-          <div className="flex items-center gap-2 border-b border-[#eaeaea] pb-2">
-            <button
-              onClick={() => {
-                setViewSide("front");
-                setSelectedImageIndex(0);
-              }}
-              className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
-                viewSide === "front"
-                  ? "bg-[#111] text-white"
-                  : "bg-[#f5f5f5] text-[#666] hover:text-[#111]"
-              }`}
-            >
-              Mặt trước
-            </button>
-            <button
-              onClick={() => {
-                setViewSide("back");
-                setSelectedImageIndex(product.images.length > 1 ? 1 : 0);
-              }}
-              className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
-                viewSide === "back"
-                  ? "bg-[#111] text-white"
-                  : "bg-[#f5f5f5] text-[#666] hover:text-[#111]"
-              }`}
-            >
-              Mặt sau
-            </button>
-            <span className="text-[11px] text-[#888] ml-auto">
-              {viewSide === "front" ? "Tên thành phố & Logo" : "Họa tiết địa danh di sản"}
-            </span>
-          </div>
+          {/* Front / Back Toggle Tabs (chỉ hiện khi là áo và có từ 2 ảnh trở lên) */}
+          {isApparel && product.images.length > 1 ? (
+            <div className="flex items-center gap-2 border-b border-[#eaeaea] pb-2">
+              <button
+                onClick={() => {
+                  setViewSide("front");
+                  setSelectedImageIndex(0);
+                }}
+                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+                  viewSide === "front"
+                    ? "bg-[#111] text-white"
+                    : "bg-[#f5f5f5] text-[#666] hover:text-[#111]"
+                }`}
+              >
+                Mặt trước
+              </button>
+              <button
+                onClick={() => {
+                  setViewSide("back");
+                  setSelectedImageIndex(1);
+                }}
+                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+                  viewSide === "back"
+                    ? "bg-[#111] text-white"
+                    : "bg-[#f5f5f5] text-[#666] hover:text-[#111]"
+                }`}
+              >
+                Mặt sau
+              </button>
+              <span className="text-[11px] text-[#888] ml-auto">
+                {viewSide === "front" ? "Tên thành phố & Logo" : "Họa tiết địa danh di sản"}
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between border-b border-[#eaeaea] pb-2 text-[11px] font-semibold text-[#888] uppercase tracking-wider">
+              <span>Hình ảnh chi tiết sản phẩm</span>
+              <span>VIET CITY WEAR</span>
+            </div>
+          )}
 
           {/* Main Visual */}
           <div className="relative w-full aspect-[4/5] bg-[#F7F4EE] rounded-sm overflow-hidden border border-[#eaeaea]">
@@ -89,9 +107,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               className="object-contain p-4"
               priority
             />
-            <div className="absolute bottom-3 left-3 bg-[#111]/80 backdrop-blur-xs text-white text-[10px] font-semibold px-2.5 py-1 tracking-widest uppercase">
-              {viewSide === "front" ? "GÓC NHÌN: MẶT TRƯỚC" : "GÓC NHÌN: MẶT SAU"}
-            </div>
+            {isApparel && product.images.length > 1 && (
+              <div className="absolute bottom-3 left-3 bg-[#111]/80 backdrop-blur-xs text-white text-[10px] font-semibold px-2.5 py-1 tracking-widest uppercase">
+                {viewSide === "front" ? "GÓC NHÌN: MẶT TRƯỚC" : "GÓC NHÌN: MẶT SAU"}
+              </div>
+            )}
           </div>
 
           {/* Thumbnails list if multiple images exist */}
@@ -132,7 +152,15 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </span>
             )}
             {product.badge && (
-              <span className="px-2.5 py-0.5 bg-black text-white text-[10px] font-bold tracking-[0.1em] uppercase">
+              <span
+                className={`px-2.5 py-0.5 text-white text-[10px] font-bold tracking-[0.1em] uppercase ${
+                  product.badge === "COMING SOON"
+                    ? "bg-[#8B4513]"
+                    : product.badge === "NEW"
+                    ? "bg-black"
+                    : "bg-[#2C4C5E]"
+                }`}
+              >
                 {product.badge}
               </span>
             )}
@@ -187,36 +215,38 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Size Selection & Guide trigger */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[12px] font-semibold tracking-[0.05em] uppercase text-[#111]">
-                Kích thước áo {selectedSize ? `(${selectedSize})` : ""}
-              </span>
-              <button
-                type="button"
-                onClick={() => setSizeGuideOpen(true)}
-                className="text-[12px] font-semibold text-[#111] underline underline-offset-4 hover:text-[#555]"
-              >
-                Hướng dẫn chọn size
-              </button>
-            </div>
-            <div className="grid grid-cols-5 gap-2">
-              {product.sizes.map((s) => (
+          {/* Size Selection & Guide trigger (chỉ hiển thị cho Áo) */}
+          {isApparel && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-[12px] font-semibold tracking-[0.05em] uppercase text-[#111]">
+                  Kích thước áo {selectedSize ? `(${selectedSize})` : ""}
+                </span>
                 <button
-                  key={s}
-                  onClick={() => setSelectedSize(s)}
-                  className={`h-11 border text-[12px] font-bold uppercase tracking-[0.05em] transition-colors ${
-                    selectedSize === s
-                      ? "border-black bg-black text-white"
-                      : "border-[#eaeaea] bg-white text-[#111] hover:border-black"
-                  }`}
+                  type="button"
+                  onClick={() => setSizeGuideOpen(true)}
+                  className="text-[12px] font-semibold text-[#111] underline underline-offset-4 hover:text-[#555]"
                 >
-                  {s}
+                  Hướng dẫn chọn size
                 </button>
-              ))}
+              </div>
+              <div className="grid grid-cols-5 gap-2">
+                {product.sizes.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedSize(s)}
+                    className={`h-11 border text-[12px] font-bold uppercase tracking-[0.05em] transition-colors ${
+                      selectedSize === s
+                        ? "border-black bg-black text-white"
+                        : "border-[#eaeaea] bg-white text-[#111] hover:border-black"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Product Inclusions Preview */}
           <div className="mb-6 p-3.5 bg-[#fafafa] border border-[#eaeaea]">
@@ -244,7 +274,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
-                    <span>01 × Móc khóa gắn chip NFC kết nối trang trải nghiệm số</span>
+                    <span>01 × Móc khóa gỗ khắc mã QR kết nối trang trải nghiệm số</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-[#111] rounded-full flex-shrink-0" />
@@ -255,37 +285,58 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </ul>
           </div>
 
-          {/* Add to Cart Button */}
-          <button
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
-            className="w-full h-[52px] bg-black text-white flex items-center justify-center gap-2 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-gray-800 transition-colors disabled:bg-[#eaeaea] disabled:text-[#999] disabled:cursor-not-allowed mb-6"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            {product.inStock ? "Thêm vào giỏ hàng" : "Hết hàng"}
-          </button>
+          {/* Add to Cart Button or Coming Soon Banner */}
+          {isComingSoon ? (
+            <div className="mb-6 space-y-3">
+              <button
+                disabled={true}
+                className="w-full h-[52px] bg-[#8B4513] text-white flex items-center justify-center gap-2 text-[12px] font-bold tracking-[0.15em] uppercase cursor-not-allowed opacity-90"
+              >
+                <Clock className="w-4 h-4" />
+                SẢN PHẨM SẮP MỞ BÁN (COMING SOON)
+              </button>
+              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-sm text-xs text-amber-900 flex items-start gap-2.5">
+                <Bell className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold uppercase tracking-wider mb-0.5">Dự kiến phát hành đợt tới</p>
+                  <p className="text-amber-800 leading-relaxed text-[11px]">
+                    Sản phẩm đang trong giai đoạn hoàn thiện sản xuất giới hạn và chưa mở bán trực tiếp trên website. Quý khách vui lòng liên hệ fanpage hoặc theo dõi các kênh truyền thông chính thức để nhận thông báo ngay khi mở đặt hàng!
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              disabled={!product.inStock}
+              className="w-full h-[52px] bg-black text-white flex items-center justify-center gap-2 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-gray-800 transition-colors disabled:bg-[#eaeaea] disabled:text-[#999] disabled:cursor-not-allowed mb-6"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              {product.inStock ? "Thêm vào giỏ hàng" : "Hết hàng"}
+            </button>
+          )}
 
           {/* Trust Badges */}
           <div className="border-t border-[#eaeaea] pt-5 flex flex-col gap-2.5">
             <div className="flex items-center gap-2 text-xs text-[#666]">
               <Sparkles className="w-3.5 h-3.5 text-[#111] flex-shrink-0" />
-              <span>Tích hợp thẻ NFC & mã QR di sản số</span>
+              <span>Tích hợp mã QR kết nối di sản số</span>
             </div>
             <div className="flex items-center gap-2 text-xs text-[#666]">
               <Truck className="w-3.5 h-3.5 text-[#111] flex-shrink-0" />
-              <span>Thanh toán COD toàn quốc • Freeship từ 500.000₫</span>
+              <span>Thanh toán COD toàn quốc & Chuyển khoản VietQR • Freeship từ 500.000₫</span>
             </div>
             <div className="flex items-center gap-2 text-xs text-[#666]">
               <ShieldCheck className="w-3.5 h-3.5 text-[#111] flex-shrink-0" />
-              <span>Đổi trả trong 7 ngày</span>
+              <span>Đổi trả miễn phí 7 ngày cho lỗi sản xuất</span>
             </div>
           </div>
 
         </div>
       </div>
 
-      {/* Size Guide Modal */}
-      {sizeGuideOpen && (
+      {/* Size Guide Modal (chỉ có khi là áo) */}
+      {isApparel && sizeGuideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="bg-white max-w-lg w-full p-6 border border-[#111] shadow-2xl relative">
             <div className="flex items-center justify-between pb-3 border-b border-[#eaeaea] mb-4">

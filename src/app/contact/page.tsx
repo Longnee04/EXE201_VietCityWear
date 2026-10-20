@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import ContentPageClient from "@/components/content/ContentPageClient";
 
 export const metadata: Metadata = {
@@ -11,24 +11,24 @@ export default function ContactPage() {
     <ContentPageClient
       pageName="contact"
       defaultTitle="Liên hệ với chúng tôi"
-      defaultContent={`**Thông tin liên hệ:**
+      defaultContent={`**Thông tin liên hệ & Hỗ trợ khách hàng:**
+
+**Kênh mạng xã hội chính thức:**
+- **Facebook:** [fb.com/vietcitywear](https://www.facebook.com/vietcitywear)
+- **TikTok:** [@vietcitywear](https://www.tiktok.com/@vietcitywear)
+- **Instagram:** [@vietcitywear](https://www.instagram.com/vietcitywear)
+
+**Hotline & Zalo tư vấn:**
+0912 345 678 (Hỗ trợ 08:30 – 21:30 hàng ngày)
+
+**Hộp thư điện tử:**
+- Hỗ trợ khách hàng & đơn hàng: support@vietcitywear.com
+- Hợp tác & Dự án di sản: contact@vietcitywear.com
 
 **Địa chỉ văn phòng:**
-Số 123, Đường ABC, Quận XYZ, Hà Nội, Việt Nam
+Khu trải nghiệm văn hóa số & lưu niệm di sản VIET CITY WEAR, Hà Nội, Việt Nam.
 
-**Hotline/Zalo:**
-0901 234 567 (8:00 - 20:00 hàng ngày)
-
-**Email:**
-- Hỗ trợ khách hàng: support@vietcitywear.com
-- Hợp tác kinh doanh: business@vietcitywear.com
-- Báo chí truyền thông: pr@vietcitywear.com
-
-**Thời gian làm việc:**
-Thứ 2 - Thứ 6: 8:00 - 18:00
-Thứ 7 - Chủ nhật: 9:00 - 17:00
-
-Chúng tôi luôn sẵn sàng hỗ trợ và lắng nghe ý kiến của bạn!`}
+Chúng tôi luôn sẵn sàng hỗ trợ và đồng hành cùng bạn trên hành trình khám phá di sản văn hóa Việt Nam!`}
     />
   );
 }

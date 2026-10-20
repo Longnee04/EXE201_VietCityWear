@@ -8,7 +8,7 @@ import { RefreshCw } from "lucide-react";
 export const metadata: Metadata = {
   title: "Cửa Hàng — Tất Cả Sản Phẩm Thời Trang Di Sản | VIET CITY WEAR",
   description:
-    "Khám phá các mẫu áo thun thời trang di sản và quà tặng lưu niệm văn hóa VIET CITY WEAR kết hợp công nghệ chạm NFC độc đáo.",
+    "Khám phá các mẫu áo thun thời trang di sản và quà tặng lưu niệm văn hóa VIET CITY WEAR kết hợp công nghệ mã QR độc đáo.",
 };
 
 export default function ProductsPage() {

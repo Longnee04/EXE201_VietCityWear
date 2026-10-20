@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import {
@@ -74,13 +74,13 @@ export default function ContentManagementPage() {
           id: "1",
           type: "about",
           title: "Giới thiệu VIET CITY WEAR",
-          content: `VIET CITY WEAR là thương hiệu thời trang văn hóa độc đáo, kết hợp áo thun lưu niệm với công nghệ NFC để mang đến trải nghiệm khám phá di sản Việt Nam.
+          content: `VIET CITY WEAR là thương hiệu thời trang văn hóa độc đáo, kết hợp áo thun lưu niệm với mã QR di sản để mang đến trải nghiệm khám phá di sản Việt Nam.
 
 **Sứ mệnh:** Mặc thành phố – Chạm câu chuyện
 
 **Sản phẩm:**
 - Áo thun văn hóa theo từng thành phố
-- Thẻ địa danh và móc khóa NFC
+- Thẻ địa danh và móc khóa QR
 - Trải nghiệm văn hóa số qua công nghệ
 
 **Liên hệ:**
@@ -123,7 +123,7 @@ Chào mừng bạn đến với VIET CITY WEAR. Khi sử dụng website và dị
 Chúng tôi thu thập các thông tin sau:
 - Họ tên, số điện thoại, địa chỉ email
 - Địa chỉ giao hàng
-- Lịch sử mua hàng và tương tác NFC
+- Lịch sử mua hàng và lượt quét mã QR di sản
 
 **2. Sử dụng thông tin**
 Thông tin được sử dụng để:

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -51,7 +51,7 @@ const adminNavItems = [
   },
   {
     href: "/admin/nfc",
-    label: "Thẻ NFC",
+    label: "Mã QR Di Sản",
     icon: QrCode,
   },
   {

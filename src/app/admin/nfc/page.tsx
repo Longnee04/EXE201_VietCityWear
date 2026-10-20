@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useMemo } from "react";
 import {
@@ -344,7 +344,7 @@ export default function AdminNfcPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-neutral-900">
-              Quản Lý Thẻ Chip NFC & Trải Nghiệm Di Sản
+              Quản Lý Mã Định Danh QR & Trải Nghiệm Di Sản
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-100 text-emerald-800 border border-emerald-200">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -352,7 +352,7 @@ export default function AdminNfcPage() {
             </span>
           </div>
           <p className="text-xs text-neutral-500 mt-1">
-            Gán mã chip NTAG vào móc khóa gỗ, cấu hình URL trải nghiệm di sản và theo dõi số lượt quét thực tế.
+            Gán mã định danh QR vào móc khóa gỗ & thẻ di sản, cấu hình URL trải nghiệm di sản và theo dõi số lượt quét thực tế.
           </p>
         </div>
 

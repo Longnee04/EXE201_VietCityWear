@@ -10,33 +10,33 @@ export default function CampaignSection() {
             Công nghệ & Trải nghiệm
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
-            NFC & HANOI STORY CARDS
+            QR CODE & HANOI STORY CARDS
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {/* Card 1: [BLOCK_MOC_KHOA_NFC] */}
+          {/* Card 1: [BLOCK_MOC_KHOA_QR] */}
           <div className="bg-[#fafafa] rounded-sm p-6 sm:p-8 border border-[#eaeaea] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] font-semibold tracking-[0.15em] uppercase bg-[#111] text-white px-3 py-1">
-                  MÓC KHÓA NFC
+                  MÓC KHÓA QR
                 </span>
-                <span className="text-[11px] text-[#777] font-mono">CHIP NTAG213</span>
+                <span className="text-[11px] text-[#777] font-mono">KHẮC LASER 2 MẶT</span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#111] uppercase mb-2">
-                Móc khóa gỗ NFC di sản
+                Móc khóa gỗ QR di sản
               </h3>
 
               <p className="text-xs sm:text-sm text-[#555] leading-relaxed mb-5">
-                Chạm nhẹ điện thoại vào móc khóa để mở ngay trang trải nghiệm di sản số, bản đồ ẩm thực và lịch trình khám phá văn hóa đô thị.
+                Quét mã QR trên móc khóa để mở ngay trang trải nghiệm di sản số, bản đồ ẩm thực và lịch trình khám phá văn hóa đô thị.
               </p>
 
-              {/* Image [BLOCK_MOC_KHOA_NFC] */}
+              {/* Image [BLOCK_MOC_KHOA_QR] */}
               <div
-                id="[BLOCK_MOC_KHOA_NFC]"
-                className="block-moc-khoa-nfc relative w-full aspect-square max-h-[340px] mx-auto rounded-none overflow-hidden bg-white border border-[#eaeaea]"
+                id="[BLOCK_MOC_KHOA_QR]"
+                className="block-moc-khoa-qr relative w-full aspect-square max-h-[340px] mx-auto rounded-none overflow-hidden bg-white border border-[#eaeaea]"
               >
                 <Image
                   src="/images/moc-khoa-qr-hanoi.png"
@@ -50,13 +50,13 @@ export default function CampaignSection() {
 
             <div className="mt-5 border-t border-[#eaeaea] pt-4 flex items-center justify-between">
               <span className="text-[11px] text-[#888] font-mono uppercase tracking-wider">
-                CHẠM ĐIỆN THOẠI ĐỂ MỞ
+                QUÉT MÃ QR ĐỂ MỞ
               </span>
               <Link
                 href="/explore/hanoi"
                 className="inline-flex items-center justify-center px-4 py-2.5 bg-[#111] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#333] transition-colors flex-shrink-0"
               >
-                Chạm thử NFC →
+                Quét thử QR →
               </Link>
             </div>
           </div>

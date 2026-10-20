@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 
@@ -52,6 +52,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, isLoaded]);
 
   const addToCart = useCallback((item: Omit<CartItem, "quantity">) => {
+    // Chặn sản phẩm Coming Soon / chưa mở bán
+    if (item.productId === "vcw-hp-001") {
+      setToast("Sản phẩm Hải Phòng Heritage Tee sắp ra mắt, hiện chưa thể thêm vào giỏ hàng.");
+      setTimeout(() => setToast(null), 3000);
+      return;
+    }
     setItems((prev) => {
       const existing = prev.find(
         (i) => i.productId === item.productId && i.size === item.size

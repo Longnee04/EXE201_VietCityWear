@@ -17,7 +17,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const { addToCart } = useCart();
 
+  const isUnavailable = !product.inStock || product.badge === "COMING SOON";
+
   const handleAddToCart = () => {
+    if (isUnavailable) return;
     if (!selectedSize) return;
     addToCart({
       productId: product.id,
@@ -87,14 +90,21 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {/* Quick Add — appears on hover (desktop) */}
+        {/* Quick Add or Coming Soon / View Details */}
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 transition-all duration-300 ease-out z-10",
             isHovered ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
           )}
         >
-          {!quickAddOpen ? (
+          {isUnavailable ? (
+            <Link
+              href={`/products/${product.slug}`}
+              className="block w-full text-center bg-[#8B4513]/90 backdrop-blur-xs text-white text-[11px] font-semibold tracking-[0.12em] uppercase py-3.5 hover:bg-[#8B4513] transition-colors"
+            >
+              SẮP RA MẮT • XEM CHI TIẾT
+            </Link>
+          ) : !quickAddOpen ? (
             <button
               onClick={() => setQuickAddOpen(true)}
               className="w-full bg-[#111]/90 backdrop-blur-xs text-white text-[11px] font-semibold tracking-[0.12em] uppercase py-3.5 hover:bg-[#111] transition-colors"
@@ -138,12 +148,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Mobile Quick Add button */}
-        <button
-          onClick={() => setQuickAddOpen(!quickAddOpen)}
-          className="lg:hidden absolute bottom-3 right-3 z-10 w-8 h-8 bg-white border border-[#ddd] flex items-center justify-center shadow-xs text-[#111]"
-        >
-          <span className="text-[16px] leading-none font-bold">+</span>
-        </button>
+        {!isUnavailable && (
+          <button
+            onClick={() => setQuickAddOpen(!quickAddOpen)}
+            className="lg:hidden absolute bottom-3 right-3 z-10 w-8 h-8 bg-white border border-[#ddd] flex items-center justify-center shadow-xs text-[#111]"
+          >
+            <span className="text-[16px] leading-none font-bold">+</span>
+          </button>
+        )}
       </div>
 
       {/* Product Info */}
@@ -190,7 +202,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Mobile Quick Add panel */}
-      {quickAddOpen && (
+      {!isUnavailable && quickAddOpen && (
         <div className="lg:hidden mt-2 p-3 border border-[#eaeaea] bg-white">
           <div className="flex flex-wrap gap-1.5 mb-2.5">
             {product.sizes.map((size) => (

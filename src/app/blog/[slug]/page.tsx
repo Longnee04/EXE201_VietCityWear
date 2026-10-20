@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -198,7 +198,7 @@ export default async function BlogDetailPage({ params }: Props) {
                 {HERO_HEADLINE.vi}
               </h3>
               <p className="text-xs text-neutral-300 max-w-md">
-                Áo thun di sản tích hợp thẻ thông minh NFC & QR khám phá văn hóa các thành phố.
+                Áo thun di sản tích hợp mã QR thông minh khám phá văn hóa các thành phố.
               </p>
             </div>
             <Link

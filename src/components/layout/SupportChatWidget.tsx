@@ -48,7 +48,7 @@ export default function SupportChatWidget() {
     {
       id: "1",
       sender: "bot",
-      text: "Chào bạn! Viet City Wear rất vui được hỗ trợ bạn. Bạn cần tư vấn về kích cỡ áo, đơn hàng COD hay trải nghiệm chạm chip di sản NFC ạ?",
+      text: "Chào bạn! Viet City Wear rất vui được hỗ trợ bạn. Bạn cần tư vấn về kích cỡ áo, đơn hàng COD hay trải nghiệm quét mã QR di sản ạ?",
       time: "Vừa xong",
     },
   ]);
@@ -192,8 +192,8 @@ export default function SupportChatWidget() {
         reply = "Form áo Viet City Wear là dáng Oversized thoải mái (Cotton 100% 250GSM). M (50-65kg), L (65-75kg), XL (75-85kg). Bạn cho mình xin chiều cao và cân nặng để tư vấn chuẩn nhất nhé!";
       } else if (lower.includes("đơn") || lower.includes("ship") || lower.includes("cod") || lower.includes("sepay")) {
         reply = "Đơn hàng hỗ trợ cả 2 hình thức: Thanh toán khi nhận hàng (Ship COD) và Chuyển khoản ngân hàng tự động qua mã SePay QR. Bạn có thể đăng nhập tài khoản để tra cứu chi tiết hành trình vận chuyển bất kỳ lúc nào ạ.";
-      } else if (lower.includes("nfc") || lower.includes("quà")) {
-        reply = "Mỗi chiếc áo đều đi kèm hộp quà Branded Box, 05 bưu thiếp địa danh và 01 móc khóa chip NFC chạm điện thoại mở trang di sản văn hóa số.";
+      } else if (lower.includes("qr") || lower.includes("quà") || lower.includes("móc khóa")) {
+        reply = "Mỗi chiếc áo đều đi kèm hộp quà Branded Box, 05 bưu thiếp địa danh và 01 móc khóa gỗ khắc mã QR quét bằng điện thoại mở trang di sản văn hóa số.";
       }
 
       setMessages((prev) => [
@@ -361,7 +361,7 @@ export default function SupportChatWidget() {
                 onClick={() =>
                   handleSelectQuickPrompt(
                     "Mình muốn biết về thông tin ưu đãi 🏷️",
-                    "Hiện tại Viet City Wear đang áp dụng: Freeship toàn quốc cho đơn từ 500.000₫. Mỗi áo đều đi kèm 01 móc khóa gắn chip NFC + 05 bưu thiếp văn hóa + Hộp quà đóng gói cao cấp."
+                    "Hiện tại Viet City Wear đang áp dụng: Freeship toàn quốc cho đơn từ 500.000₫. Mỗi áo đều đi kèm 01 móc khóa gỗ khắc mã QR + 05 bưu thiếp văn hóa + Hộp quà đóng gói cao cấp."
                   )
                 }
                 className="w-full p-3 rounded-xl border border-stone-200 bg-stone-50/60 hover:bg-stone-100/90 text-left transition-colors flex items-center justify-between group"
@@ -377,7 +377,7 @@ export default function SupportChatWidget() {
                 onClick={() =>
                   handleSelectQuickPrompt(
                     "Mình muốn kiểm tra tình trạng đơn hàng 🛒",
-                    "Bạn có thể vào mục Tài Khoản > 'Đơn hàng của tôi' để tra cứu chi tiết tiến độ giao hàng COD. Hoặc gửi cho mình số điện thoại đặt hàng để tụi mình hỗ trợ kiểm tra ngay nhé!"
+                    "Bạn có thể vào mục Tài Khoản > 'Đơn hàng của tôi' để tra cứu chi tiết tiến độ giao hàng. Hoặc gửi cho mình số điện thoại đặt hàng để tụi mình hỗ trợ kiểm tra ngay nhé!"
                   )
                 }
                 className="w-full p-3 rounded-xl border border-stone-200 bg-stone-50/60 hover:bg-stone-100/90 text-left transition-colors flex items-center justify-between group"
@@ -388,18 +388,18 @@ export default function SupportChatWidget() {
                 <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* Option 4: Trải nghiệm chip di sản NFC */}
+              {/* Option 4: Trải nghiệm mã di sản QR */}
               <button
                 onClick={() =>
                   handleSelectQuickPrompt(
-                    "Trải nghiệm chạm chip di sản NFC 🏛️",
-                    "Mỗi chiếc áo Viet City Wear đều đi kèm 01 móc khóa gắn chip NFC. Bạn chỉ cần chạm nhẹ điện thoại vào móc khóa để mở ngay trang khám phá di sản văn hóa số của thành phố tương ứng ạ!"
+                    "Trải nghiệm quét mã QR di sản 🏛️",
+                    "Mỗi chiếc áo Viet City Wear đều đi kèm 01 móc khóa khắc mã QR di sản. Bạn chỉ cần dùng camera điện thoại quét mã trên móc khóa để mở ngay trang khám phá di sản văn hóa số của thành phố tương ứng ạ!"
                   )
                 }
                 className="w-full p-3 rounded-xl border border-stone-200 bg-stone-50/60 hover:bg-stone-100/90 text-left transition-colors flex items-center justify-between group"
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="text-sm font-medium text-stone-800">Trải nghiệm chip di sản NFC 🏛️</span>
+                  <span className="text-sm font-medium text-stone-800">Trải nghiệm mã QR di sản 🏛️</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-0.5 transition-transform" />
               </button>

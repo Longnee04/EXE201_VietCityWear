@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import ContentPageClient from "@/components/content/ContentPageClient";
 
 export const metadata: Metadata = {
@@ -12,26 +12,24 @@ export default function TermsPage() {
       pageName="terms"
       defaultTitle="Điều khoản sử dụng"
       defaultContent={`**1. Giới thiệu**
-Chào mừng bạn đến với VIET CITY WEAR. Khi sử dụng website và dịch vụ của chúng tôi, bạn đồng ý tuân thủ các điều khoản sau.
+Chào mừng bạn đến với VIET CITY WEAR. Khi sử dụng website và mua sắm các sản phẩm thời trang di sản của chúng tôi, bạn đồng ý tuân thủ các điều khoản sau.
 
 **2. Sử dụng dịch vụ**
-- Bạn phải từ 18 tuổi trở lên để mua hàng
-- Thông tin cung cấp phải chính xác và trung thực
-- Không sử dụng website cho mục đích bất hợp pháp
+- Thông tin khách hàng cung cấp khi đặt hàng phải chính xác và trung thực (họ tên, số điện thoại, địa chỉ nhận hàng).
+- Không sử dụng website cho bất kỳ hành vi lừa đảo, tấn công mạng hay mục đích bất hợp pháp nào.
 
 **3. Đặt hàng và thanh toán**
-- Đơn hàng được xác nhận qua email
-- Hiện chỉ hỗ trợ thanh toán COD (tiền mặt khi nhận hàng)
-- Giá sản phẩm có thể thay đổi mà không cần báo trước
+- VIET CITY WEAR hỗ trợ 02 hình thức thanh toán an toàn, minh bạch:
+  1. Thanh toán tiền mặt khi nhận hàng (Ship COD toàn quốc, khách hàng được kiểm tra hàng trước khi nhận).
+  2. Chuyển khoản ngân hàng tự động quét mã SePay VietQR (xác nhận đơn hàng tức thì).
+- Miễn phí vận chuyển toàn quốc cho đơn hàng có giá trị từ 500.000₫. Đơn hàng dưới 500.000₫ áp dụng phí giao hàng cố định 30.000₫.
 
-**4. Chính sách đổi trả**
-- Đổi size trong vòng 7 ngày nếu sản phẩm chưa sử dụng
-- Không hỗ trợ hoàn tiền
-- Khách hàng chịu phí vận chuyển đổi hàng
+**4. Chính sách bảo hành và đổi trả**
+- **Đổi trả do lỗi sản xuất:** Đổi mới 100% hoàn toàn miễn phí trong vòng 07 ngày nếu phát hiện lỗi đường may, hình in hoặc giao nhầm sản phẩm/kích cỡ.
+- **Hỗ trợ đổi size:** Hỗ trợ đổi size trong vòng 07 ngày kể từ ngày nhận hàng với điều kiện sản phẩm còn nguyên tem mác, hộp đóng gói và đầy đủ phụ kiện (thẻ địa danh, móc khóa QR), chưa qua sử dụng hay giặt tẩy. Quý khách vui lòng hỗ trợ chi phí vận chuyển 1 chiều khi đổi size theo nhu cầu cá nhân.
 
-**5. Quyền sở hữu trí tuệ**
-- Mọi nội dung trên website thuộc quyền sở hữu của VIET CITY WEAR
-- Không được sao chép, sử dụng trái phép các thiết kế và nội dung`}
+**5. Bản quyền và quyền sở hữu trí tuệ**
+- Toàn bộ thiết kế thời trang, hình ảnh mỹ thuật các địa danh, logo VIET CITY WEAR và nội dung bài viết di sản số đều thuộc quyền sở hữu độc quyền của VIET CITY WEAR. Mọi hành vi sao chép nhằm mục đích thương mại khi chưa được sự cho phép bằng văn bản đều vi phạm quyền tác giả.`}
     />
   );
 }

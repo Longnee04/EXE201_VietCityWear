@@ -29,7 +29,7 @@ export default function BrandStory() {
               {BRAND_SLOGAN.vi}
             </p>
             <p className="text-xs sm:text-sm leading-relaxed text-[#555] max-w-lg">
-              VIET CITY WEAR kể câu chuyện văn hóa các vùng đất qua góc nhìn thời trang streetwear tối giản, kết hợp thẻ thông minh NFC để mở ra trải nghiệm di sản sống động.
+              VIET CITY WEAR kể câu chuyện văn hóa các vùng đất qua góc nhìn thời trang streetwear tối giản, kết hợp mã QR thông minh để mở ra trải nghiệm di sản sống động.
             </p>
             <div className="pt-2">
               <a
