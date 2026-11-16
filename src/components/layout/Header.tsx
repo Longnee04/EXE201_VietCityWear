@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingBag, Menu, X, User, ArrowRight, ShieldCheck } from "lucide-react";
+import { Search, ShoppingBag, Menu, X, User, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 import { mainNav } from "@/data/navigation";
 import { useCart } from "@/lib/cart-context";
 import { BRAND_SLOGAN } from "@/data/brand";
@@ -78,24 +78,23 @@ export default function Header() {
       .slice(0, 4);
   }, [searchQuery, allProducts]);
 
-
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-[#eaeaea]">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 transition-all duration-300 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
-        <div className="flex items-center justify-between h-[60px] lg:h-[64px]">
+        <div className="flex items-center justify-between h-[62px] lg:h-[68px]">
           {/* LEFT — Mobile menu + [BLOCK_LOGO] + Brand Name */}
-          <div className="flex items-center gap-3 sm:gap-4 lg:w-[260px]">
+          <div className="flex items-center gap-3 sm:gap-4 lg:w-[280px]">
             <button
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-1 -ml-1 text-[#555] hover:text-[#111]"
+              className="lg:hidden p-1.5 -ml-1 text-neutral-700 hover:text-black transition-colors rounded-md hover:bg-neutral-100"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group transition-transform hover:opacity-95">
               <div
                 id="[BLOCK_LOGO]"
-                className="block-logo relative w-10 h-10 sm:w-11 sm:h-11 overflow-hidden rounded-md border border-[#eaeaea] bg-[#F7F4EE] shadow-2xs flex-shrink-0"
+                className="block-logo relative w-10 h-10 sm:w-11 sm:h-11 overflow-hidden rounded-md border border-neutral-200 bg-[#F7F4EE] shadow-xs flex-shrink-0 transition-transform group-hover:scale-105"
               >
                 <Image
                   src="/images/logo-vietcitywear.png"
@@ -120,12 +119,12 @@ export default function Header() {
           </div>
 
           {/* CENTER — Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-0.5">
+          <nav className="hidden lg:flex items-center gap-1">
             {mainNav.map((link) => (
               <div key={link.href} className="relative group">
                 <Link
                   href={link.href}
-                  className="px-3.5 py-2 text-[12px] font-medium tracking-[0.1em] uppercase text-[#555] transition-colors hover:text-[#111] inline-flex items-center gap-1"
+                  className="relative px-4 py-2 text-[12px] font-semibold tracking-[0.12em] uppercase text-neutral-600 transition-colors hover:text-black inline-flex items-center gap-1.5 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200"
                 >
                   <span>{link.label}</span>
                   {link.children && (
@@ -134,13 +133,13 @@ export default function Header() {
                 </Link>
 
                 {link.children && (
-                  <div className="absolute left-0 top-full pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                    <div className="bg-white border border-[#eaeaea] shadow-lg rounded-sm py-2 min-w-[200px]">
+                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="bg-white border border-neutral-200 shadow-xl rounded-md py-2 min-w-[210px] backdrop-blur-md">
                       {link.children.map((sub) => (
                         <Link
                           key={sub.href}
                           href={sub.href}
-                          className="block px-4 py-2 text-[12px] font-medium text-[#444] hover:text-black hover:bg-[#fafafa] transition-colors"
+                          className="block px-4 py-2.5 text-[12px] font-medium text-neutral-700 hover:text-black hover:bg-neutral-50 transition-colors"
                         >
                           {sub.label}
                         </Link>
@@ -153,10 +152,10 @@ export default function Header() {
           </nav>
 
           {/* RIGHT — Actions (Icons & Cart badge) */}
-          <div className="flex items-center gap-1 lg:w-[260px] justify-end">
+          <div className="flex items-center gap-1.5 lg:w-[280px] justify-end">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2.5 text-[#555] hover:text-[#111] transition-colors"
+              className="p-2 text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-full transition-all"
               aria-label="Tìm kiếm sản phẩm"
               title="Tìm kiếm"
             >
@@ -165,7 +164,7 @@ export default function Header() {
             {currentUser?.role === "admin" && (
               <Link
                 href="/admin/dashboard"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#111] text-white hover:bg-neutral-800 transition-colors text-[11px] font-bold uppercase tracking-wider mr-1 shadow-2xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black text-white hover:bg-neutral-800 transition-colors text-[11px] font-bold uppercase tracking-wider mr-1 shadow-xs"
                 title="Vào Trang Quản Trị Hệ Thống"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
@@ -174,23 +173,23 @@ export default function Header() {
             )}
             <Link
               href={currentUser ? (currentUser.role === "admin" ? "/admin/dashboard" : "/login") : "/login"}
-              className="p-2.5 text-[#555] hover:text-[#111] transition-colors relative"
+              className="p-2 text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-full transition-all relative"
               aria-label="Tài khoản / Đăng nhập"
               title={currentUser ? `Tài khoản: ${currentUser.email} (${currentUser.role})` : "Đăng nhập tài khoản"}
             >
               <User className={cn("w-[18px] h-[18px]", currentUser && "text-black stroke-[2.5]")} />
               {currentUser && (
-                <span className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-emerald-500 border border-white" />
+                <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" />
               )}
             </Link>
             <button
               onClick={() => setCartOpen(true)}
-              className="relative p-2.5 text-[#555] hover:text-[#111] transition-colors"
+              className="relative p-2 text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-full transition-all"
               aria-label="Cart"
             >
-              <ShoppingBag className="w-[18px] h-[18px]" />
+              <ShoppingBag className="w-[19px] h-[19px]" />
               {itemCount > 0 && (
-                <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 rounded-full bg-[#111] text-white text-[9px] font-bold">
+                <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-black text-white text-[10px] font-bold shadow-xs">
                   {itemCount}
                 </span>
               )}
@@ -201,24 +200,24 @@ export default function Header() {
 
       {/* Header Search Dropdown Bar */}
       {searchOpen && (
-        <div className="border-t border-[#eaeaea] bg-white py-4 px-4 sm:px-6 lg:px-10 shadow-md">
+        <div className="border-t border-neutral-200 bg-white/95 backdrop-blur-md py-4 px-4 sm:px-6 lg:px-10 shadow-lg animate-in slide-in-from-top-2 duration-200">
           <div className="mx-auto max-w-[1440px]">
             <div className="relative flex items-center">
-              <Search className="w-4 h-4 text-[#888] absolute left-3.5" />
+              <Search className="w-4 h-4 text-neutral-400 absolute left-4" />
               <input
                 type="text"
                 autoFocus
-                placeholder="Tìm kiếm mẫu áo theo tên, thành phố, hoặc địa danh..."
+                placeholder="Tìm kiếm mẫu áo theo tên, thành phố, hoặc địa danh di sản..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 text-sm border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111]"
+                className="w-full pl-11 pr-10 py-3 text-sm rounded-full border border-neutral-300 bg-neutral-50/80 focus:bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all shadow-inner"
               />
               <button
                 onClick={() => {
                   setSearchOpen(false);
                   setSearchQuery("");
                 }}
-                className="absolute right-3 text-[#888] hover:text-[#111] p-1"
+                className="absolute right-3.5 text-neutral-400 hover:text-black p-1 transition-colors"
                 aria-label="Đóng tìm kiếm"
               >
                 <X className="w-4 h-4" />
@@ -227,10 +226,10 @@ export default function Header() {
 
             {/* Quick Live Results */}
             {searchQuery.trim() !== "" && (
-              <div className="mt-3 pt-3 border-t border-[#f0f0f0]">
+              <div className="mt-4 pt-3 border-t border-neutral-100">
                 {searchResults.length > 0 ? (
-                  <div className="space-y-2">
-                    <p className="text-[11px] font-semibold text-[#888] uppercase tracking-wider">
+                  <div className="space-y-2.5">
+                    <p className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
                       Gợi ý kết quả ({searchResults.length})
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -239,19 +238,19 @@ export default function Header() {
                           key={product.id}
                           href={`/products/${product.slug}`}
                           onClick={() => setSearchOpen(false)}
-                          className="flex items-center gap-3 p-2 border border-[#eaeaea] hover:border-[#111] bg-white transition-colors"
+                          className="flex items-center gap-3 p-2.5 rounded-lg border border-neutral-200 hover:border-black bg-white transition-all shadow-xs hover:shadow-sm group"
                         >
-                          <div className="relative w-12 h-12 bg-[#f5f5f5] flex-shrink-0">
+                          <div className="relative w-12 h-12 bg-neutral-100 rounded-md overflow-hidden flex-shrink-0">
                             <Image
                               src={product.images[0]}
                               alt={product.name}
                               fill
-                              className="object-contain p-1"
+                              className="object-contain p-1 group-hover:scale-105 transition-transform"
                             />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs font-semibold text-[#111] truncate">{product.name}</p>
-                            <p className="text-[11px] text-[#777]">{formatPrice(product.price)}</p>
+                            <p className="text-xs font-semibold text-neutral-900 truncate group-hover:text-black">{product.name}</p>
+                            <p className="text-[11px] font-bold text-neutral-600">{formatPrice(product.price)}</p>
                           </div>
                         </Link>
                       ))}
@@ -260,7 +259,7 @@ export default function Header() {
                       <Link
                         href="/#t-shirts"
                         onClick={() => setSearchOpen(false)}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#111] hover:underline"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-black hover:underline uppercase tracking-wider"
                       >
                         <span>Xem tất cả sản phẩm</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -268,7 +267,7 @@ export default function Header() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-[#888] py-2">
+                  <p className="text-xs text-neutral-500 py-3 text-center">
                     Không tìm thấy sản phẩm nào khớp với &quot;{searchQuery}&quot;.
                   </p>
                 )}
@@ -280,17 +279,17 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
+        <div className="fixed inset-0 z-[60] lg:hidden animate-in fade-in duration-200">
           {/* Overlay */}
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => setMobileOpen(false)}
           />
           {/* Drawer */}
-          <div className="absolute top-0 left-0 h-full w-[300px] bg-white shadow-xl flex flex-col">
-            <div className="flex items-center justify-between px-5 h-[60px] border-b border-[#eaeaea]">
+          <div className="absolute top-0 left-0 h-full w-[310px] bg-white shadow-2xl flex flex-col animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between px-5 h-[64px] border-b border-neutral-200">
               <div className="flex items-center gap-2.5">
-                <div className="relative w-9 h-9 rounded-md overflow-hidden border border-[#eaeaea] bg-[#F7F4EE] flex-shrink-0">
+                <div className="relative w-9 h-9 rounded-md overflow-hidden border border-neutral-200 bg-[#F7F4EE] flex-shrink-0">
                   <Image
                     src="/images/logo-vietcitywear.png"
                     alt="Logo VIET CITY WEAR"
@@ -309,7 +308,7 @@ export default function Header() {
               </div>
               <button
                 onClick={() => setMobileOpen(false)}
-                className="p-1 text-[#555] hover:text-[#111]"
+                className="p-1.5 text-neutral-500 hover:text-black rounded-md hover:bg-neutral-100"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
@@ -318,18 +317,18 @@ export default function Header() {
             <nav className="flex-1 px-5 py-6 flex flex-col gap-1 overflow-y-auto">
               {/* Mobile Search Input */}
               <div className="mb-4 relative">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#888]" />
+                <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                 <input
                   type="text"
                   placeholder="Tìm sản phẩm..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-7 py-2 text-xs border border-[#ddd] bg-[#fafafa] focus:bg-white focus:outline-none"
+                  className="w-full pl-9 pr-8 py-2.5 text-xs rounded-full border border-neutral-300 bg-neutral-50 focus:bg-white focus:outline-none focus:border-black"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] text-[#888]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-neutral-400 hover:text-black"
                   >
                     ✕
                   </button>
@@ -338,8 +337,8 @@ export default function Header() {
 
               {/* Mobile Live Search Results */}
               {searchQuery.trim() !== "" && (
-                <div className="mb-4 pb-3 border-b border-[#eaeaea] space-y-2">
-                  <p className="text-[10px] font-semibold text-[#888] uppercase">
+                <div className="mb-4 pb-3 border-b border-neutral-200 space-y-2">
+                  <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
                     Kết quả ({searchResults.length})
                   </p>
                   {searchResults.map((product) => (
@@ -350,9 +349,9 @@ export default function Header() {
                         setMobileOpen(false);
                         setSearchQuery("");
                       }}
-                      className="flex items-center gap-2 p-1.5 hover:bg-[#f5f5f5]"
+                      className="flex items-center gap-2.5 p-2 rounded-md hover:bg-neutral-100 transition-colors"
                     >
-                      <div className="relative w-9 h-9 bg-[#f5f5f5] flex-shrink-0">
+                      <div className="relative w-10 h-10 bg-neutral-100 rounded-md overflow-hidden flex-shrink-0">
                         <Image
                           src={product.images[0]}
                           alt={product.name}
@@ -361,8 +360,8 @@ export default function Header() {
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-[#111] truncate">{product.name}</p>
-                        <p className="text-[10px] text-[#777]">{formatPrice(product.price)}</p>
+                        <p className="text-xs font-semibold text-neutral-900 truncate">{product.name}</p>
+                        <p className="text-[10px] font-bold text-neutral-600">{formatPrice(product.price)}</p>
                       </div>
                     </Link>
                   ))}
@@ -370,23 +369,23 @@ export default function Header() {
               )}
 
               {mainNav.map((link) => (
-                <div key={link.href} className="border-b border-[#f0f0f0] last:border-0 py-2">
+                <div key={link.href} className="border-b border-neutral-100 last:border-0 py-2">
                   <Link
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-between py-1 text-[13px] font-bold tracking-[0.08em] uppercase text-[#111] hover:text-[#555]"
+                    className="flex items-center justify-between py-1.5 text-[13px] font-bold tracking-[0.08em] uppercase text-neutral-900 hover:text-black transition-colors"
                   >
                     <span>{link.label}</span>
                   </Link>
 
                   {link.children && (
-                    <div className="pl-3 pt-1 pb-1 space-y-1">
+                    <div className="pl-3 pt-1.5 pb-1 space-y-1.5">
                       {link.children.map((sub) => (
                         <Link
                           key={sub.href}
                           href={sub.href}
                           onClick={() => setMobileOpen(false)}
-                          className="block py-1 text-xs text-[#666] hover:text-black transition-colors"
+                          className="block py-1 text-xs text-neutral-600 hover:text-black transition-colors"
                         >
                           • {sub.label}
                         </Link>
@@ -403,7 +402,7 @@ export default function Header() {
                   setMobileOpen(false);
                   setCartOpen(true);
                 }}
-                className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between border-b border-[#f0f0f0]"
+                className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between border-b border-neutral-100"
               >
                 <span className="flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4" />
@@ -419,9 +418,9 @@ export default function Header() {
                 <Link
                   href="/admin/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between bg-amber-50 px-2 rounded-xs my-1"
+                  className="py-3 text-[13px] font-bold tracking-[0.08em] uppercase text-black flex items-center justify-between bg-amber-50 px-2.5 rounded-md my-1.5"
                 >
-                  <span className="flex items-center gap-2 text-amber-800">
+                  <span className="flex items-center gap-2 text-amber-900 font-bold">
                     <ShieldCheck className="w-4 h-4 text-amber-600" />
                     TRANG QUẢN TRỊ ADMIN
                   </span>
@@ -437,7 +436,7 @@ export default function Header() {
                 <User className="w-4 h-4" />
               </Link>
             </nav>
-            <div className="p-5 border-t border-[#eaeaea] text-[11px] text-[#777]">
+            <div className="p-5 border-t border-neutral-200 text-[11px] text-neutral-500 font-medium">
               {BRAND_SLOGAN.vi}
             </div>
           </div>

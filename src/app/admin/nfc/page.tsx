@@ -111,8 +111,8 @@ export default function AdminNfcPage() {
 
       setTags(enriched);
     } catch (err) {
-      console.error("Lỗi khi tải dữ liệu thẻ NFC:", err);
-      setMessage({ type: "error", text: "Không thể kết nối đến Supabase để tải danh sách NFC." });
+      console.error("Lỗi khi tải dữ liệu mã QR di sản:", err);
+      setMessage({ type: "error", text: "Không thể kết nối đến Supabase để tải danh sách mã QR di sản." });
     } finally {
       setIsLoading(false);
     }
@@ -150,11 +150,11 @@ export default function AdminNfcPage() {
     setTimeout(() => setCopiedId(null), 2500);
     setMessage({
       type: "success",
-      text: `Đã sao chép link quét NFC: ${fullUrl} (Ghi link này vào chip NFC qua app NFC Tools)`,
+      text: `Đã sao chép link quét QR: ${fullUrl} (In mã QR từ link này hoặc khắc lên móc khóa gỗ)`,
     });
   };
 
-  // Giả lập quét thẻ NFC (cập nhật trực tiếp lên Supabase)
+  // Giả lập quét mã QR (cập nhật trực tiếp lên Supabase)
   const handleSimulateScan = async (tag: NfcTag) => {
     const newCount = (tag.scan_count || 0) + 1;
     try {
@@ -171,7 +171,7 @@ export default function AdminNfcPage() {
 
       setMessage({
         type: "success",
-        text: `Mô phỏng 1 lượt chạm NFC vào "${tag.nfc_code}" thành công! Lượt quét Supabase hiện tại: ${newCount}.`,
+        text: `Mô phỏng 1 lượt quét QR "${tag.nfc_code}" thành công! Lượt quét Supabase hiện tại: ${newCount}.`,
       });
     } catch (err) {
       console.error("Lỗi khi mô phỏng lượt chạm:", err);
@@ -179,7 +179,7 @@ export default function AdminNfcPage() {
     }
   };
 
-  // Thêm thẻ NFC mới lên Supabase
+  // Thêm mã QR mới lên Supabase
   const handleCreateTag = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingCreate(true);
@@ -187,7 +187,7 @@ export default function AdminNfcPage() {
 
     const code = createForm.nfc_code.toUpperCase().trim();
     if (!code) {
-      setMessage({ type: "error", text: "Vui lòng nhập mã NFC." });
+      setMessage({ type: "error", text: "Vui lòng nhập mã định danh QR." });
       setIsSubmittingCreate(false);
       return;
     }
@@ -223,7 +223,7 @@ export default function AdminNfcPage() {
       setTags((prev) => [newTag, ...prev]);
       setMessage({
         type: "success",
-        text: `Đã khởi tạo thẻ chip NFC "${code}" thành công trên Supabase!`,
+        text: `Đã khởi tạo mã QR di sản "${code}" thành công trên Supabase!`,
       });
       setIsCreateModalOpen(false);
       setCreateForm({
@@ -233,18 +233,18 @@ export default function AdminNfcPage() {
         experience_url: "/explore/hanoi",
       });
     } catch (err: unknown) {
-      console.error("Lỗi khi tạo mã thẻ NFC:", err);
+      console.error("Lỗi khi tạo mã QR di sản:", err);
       const errMsg = err && typeof err === "object" && "message" in err ? String(err.message) : "Lỗi không xác định";
       setMessage({
         type: "error",
-        text: `Không thể tạo mã thẻ NFC: ${errMsg}. (Kiểm tra xem mã có bị trùng lặp không).`,
+        text: `Không thể tạo mã QR di sản: ${errMsg}. (Kiểm tra xem mã có bị trùng lặp không).`,
       });
     } finally {
       setIsSubmittingCreate(false);
     }
   };
 
-  // Mở modal Sửa Thẻ
+  // Mở modal Sửa mã QR
   const openEditModal = (tag: NfcTag) => {
     setEditForm({
       id: tag.id,
@@ -257,7 +257,7 @@ export default function AdminNfcPage() {
     setIsEditModalOpen(true);
   };
 
-  // Cập nhật Thẻ NFC trên Supabase
+  // Cập nhật mã QR trên Supabase
   const handleUpdateTag = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingEdit(true);
@@ -265,7 +265,7 @@ export default function AdminNfcPage() {
 
     const code = editForm.nfc_code.toUpperCase().trim();
     if (!code) {
-      setMessage({ type: "error", text: "Vui lòng nhập mã NFC." });
+      setMessage({ type: "error", text: "Vui lòng nhập mã định danh QR." });
       setIsSubmittingEdit(false);
       return;
     }
@@ -305,24 +305,24 @@ export default function AdminNfcPage() {
 
       setMessage({
         type: "success",
-        text: `Đã cập nhật thông tin thẻ NFC "${code}" thành công!`,
+        text: `Đã cập nhật thông tin mã QR di sản "${code}" thành công!`,
       });
       setIsEditModalOpen(false);
     } catch (err: unknown) {
-      console.error("Lỗi khi cập nhật thẻ NFC:", err);
+      console.error("Lỗi khi cập nhật mã QR di sản:", err);
       const errMsg = err && typeof err === "object" && "message" in err ? String(err.message) : "Lỗi không xác định";
       setMessage({
         type: "error",
-        text: `Không thể cập nhật thẻ NFC: ${errMsg}`,
+        text: `Không thể cập nhật mã QR di sản: ${errMsg}`,
       });
     } finally {
       setIsSubmittingEdit(false);
     }
   };
 
-  // Xóa thẻ NFC trên Supabase
+  // Xóa mã QR trên Supabase
   const handleDeleteTag = async (id: string, code: string) => {
-    if (!confirm(`Bạn có chắc chắn muốn xóa mã thẻ NFC "${code}" khỏi cơ sở dữ liệu Supabase?`)) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa mã QR di sản "${code}" khỏi cơ sở dữ liệu Supabase?`)) {
       return;
     }
     try {
@@ -330,10 +330,10 @@ export default function AdminNfcPage() {
       if (error) throw error;
 
       setTags((prev) => prev.filter((t) => t.id !== id));
-      setMessage({ type: "success", text: `Đã xóa mã thẻ NFC "${code}" thành công!` });
+      setMessage({ type: "success", text: `Đã xóa mã QR di sản "${code}" thành công!` });
     } catch (err) {
-      console.error("Lỗi khi xóa thẻ NFC:", err);
-      setMessage({ type: "error", text: "Không thể xóa mã thẻ NFC trên Supabase." });
+      console.error("Lỗi khi xóa mã QR di sản:", err);
+      setMessage({ type: "error", text: "Không thể xóa mã QR di sản trên Supabase." });
     }
   };
 
@@ -379,7 +379,7 @@ export default function AdminNfcPage() {
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111] hover:bg-black text-white rounded-lg text-xs font-bold uppercase tracking-wider transition shadow-xs cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Tạo mã NFC mới</span>
+            <span>Tạo mã QR mới</span>
           </button>
         </div>
       </div>
@@ -417,7 +417,7 @@ export default function AdminNfcPage() {
               </div>
               <div>
                 <h3 className="text-base font-bold uppercase tracking-wider text-white">
-                  Quy Trình Tích Hợp Chip NFC Vào Móc Khóa Gỗ & Quét Mở Web
+                  Quy Trình Tạo Mã QR & Khắc Lên Móc Khóa Gỗ Di Sản
                 </h3>
                 <p className="text-xs text-neutral-400 mt-0.5">
                   Dành cho team sản xuất VIET CITY WEAR — Thực hiện 1 lần cho từng chiếc móc khóa
@@ -435,38 +435,38 @@ export default function AdminNfcPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-2">
               <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold text-[10px]">
-                BƯỚC 1: PHẦN CỨNG
+                BƯỚC 1: CHUẨN BỊ
               </div>
-              <h4 className="font-bold text-white text-sm">Chuẩn bị chip & gỗ</h4>
+              <h4 className="font-bold text-white text-sm">Chuẩn bị móc khóa gỗ & mã QR</h4>
               <p className="text-neutral-400 leading-relaxed">
-                Dùng chip <strong>NTAG213</strong> hoặc <strong>NTAG215</strong> dạng decal dán mỏng (đường kính 25mm, tần số 13.56 MHz).
-                Dán chìm vào khe lõm bên trong móc khóa gỗ hoặc ép giữa 2 lớp gỗ.
+                Tạo mã QR từ link định danh sản phẩm trên hệ thống admin (bấm nút "Sao chép Link" ở bảng bên dưới).
+                Sử dụng máy khắc laser CNC để khắc mã QR lên bề mặt móc khóa gỗ tròn.
               </p>
             </div>
 
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-2">
               <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono font-bold text-[10px]">
-                BƯỚC 2: CÀI APP
+                BƯỚC 2: TẠO QR
               </div>
-              <h4 className="font-bold text-white text-sm">Tải app NFC Tools</h4>
+              <h4 className="font-bold text-white text-sm">Tạo file QR Code</h4>
               <p className="text-neutral-400 leading-relaxed">
-                Tải ứng dụng <strong>NFC Tools</strong> (hoàn toàn miễn phí trên cả App Store cho iPhone và Google Play cho Android).
-                Bật tính năng NFC trên cài đặt điện thoại.
+                Dùng công cụ tạo QR miễn phí (qr-code-generator.com hoặc goqr.me) để chuyển link thành hình ảnh QR Code.
+                Tải file QR Code định dạng SVG hoặc PNG chất lượng cao để gửi cho xưởng khắc laser.
               </p>
             </div>
 
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-2">
               <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono font-bold text-[10px]">
-                BƯỚC 3: GHI URL VÀO CHIP
+                BƯỚC 3: KHẮC LASER
               </div>
               <h4 className="font-bold text-white text-sm">Ghi link định danh</h4>
               <p className="text-neutral-400 leading-relaxed">
-                Mở NFC Tools → chọn <strong>Write</strong> → <strong>Add a record</strong> → <strong>URL / URI</strong>.
+                Gửi file QR Code (SVG) và mã định danh sản phẩm cho xưởng khắc laser CNC.
                 Nhập link: <br />
                 <code className="text-amber-300 font-mono text-[10px] bg-neutral-800 px-1 py-0.5 rounded block mt-1 break-all">
                   https://vietcitywear.vercel.app/n/VCW-HN-001
                 </code>
-                Bấm <strong>Write</strong> và áp lưng máy vào móc khóa.
+                Xưởng khắc laser sẽ khắc mã QR lên mặt sau móc khóa gỗ, mặt trước khắc logo VIET CITY WEAR.
               </p>
             </div>
 
@@ -474,10 +474,10 @@ export default function AdminNfcPage() {
               <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono font-bold text-[10px]">
                 BƯỚC 4: KHÓA CHỐNG GHI ĐÈ
               </div>
-              <h4 className="font-bold text-white text-sm">Khóa chỉ đọc (Lock Tag)</h4>
+              <h4 className="font-bold text-white text-sm">Kiểm tra quét thử & đóng gói</h4>
               <p className="text-neutral-400 leading-relaxed">
-                Trong NFC Tools, vào <strong>Other options</strong> → chọn <strong>Lock tag</strong> (Read-Only) để khách mua áo không thể xóa hoặc đổi URL.
-                Khách chạm máy là tự động nhảy vào web!
+                Dùng camera điện thoại quét thử mã QR trên móc khóa thành phẩm để xác nhận chuyển hướng đúng trang di sản tương ứng.
+                Đóng gói cùng hộp quà Branded Box, thẻ bưu thiếp và áo thun di sản.
               </p>
             </div>
           </div>
@@ -489,7 +489,7 @@ export default function AdminNfcPage() {
         <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
-              Tổng lượt chạm NFC
+              Tổng lượt quét QR
             </span>
             <TrendingUp className="w-4 h-4 text-emerald-600" />
           </div>
@@ -502,7 +502,7 @@ export default function AdminNfcPage() {
         <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
-              Số chip đã kích hoạt
+              Số mã QR đã kích hoạt
             </span>
             <Cpu className="w-4 h-4 text-blue-600" />
           </div>
@@ -515,14 +515,14 @@ export default function AdminNfcPage() {
         <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
-              Chuẩn chip đề xuất
+              Công nghệ QR
             </span>
             <ShieldCheck className="w-4 h-4 text-purple-600" />
           </div>
           <div className="text-lg font-extrabold text-purple-700 mt-2">
-            NTAG213 / 215
+            QR CODE
           </div>
-          <p className="text-[10px] text-neutral-400 mt-0.5">Tần số 13.56 MHz (ISO 14443A)</p>
+          <p className="text-[10px] text-neutral-400 mt-0.5">Khắc laser CNC lên gỗ tự nhiên</p>
         </div>
 
         <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 shadow-xs">
@@ -547,27 +547,27 @@ export default function AdminNfcPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm theo mã NFC, tên áo, thành phố..."
+            placeholder="Tìm theo mã QR, tên sản phẩm, thành phố..."
             className="w-full pl-9 pr-3 py-2 text-xs border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
           />
         </div>
 
         <div className="text-xs text-neutral-500 font-medium">
-          Hiển thị <strong>{filteredTags.length}</strong> / {tags.length} mã chip NFC
+          Hiển thị <strong>{filteredTags.length}</strong> / {tags.length} mã QR di sản
         </div>
       </div>
 
-      {/* NFC Tags Table */}
+      {/* QR Tags Table */}
       <div className="bg-white border border-[#E5E5E5] rounded-xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-neutral-50 border-b border-[#E5E5E5] text-[11px] font-bold uppercase tracking-wider text-neutral-600">
-                <th className="py-3 px-4">Mã NFC (Khắc Móc Khóa)</th>
+                <th className="py-3 px-4">Mã QR (Khắc Móc Khóa)</th>
                 <th className="py-3 px-4">Sản Phẩm Áo Liên Kết</th>
                 <th className="py-3 px-4">Thành Phố</th>
                 <th className="py-3 px-4">URL Trải Nghiệm Đích</th>
-                <th className="py-3 px-4 text-center">Lượt Chạm</th>
+                <th className="py-3 px-4 text-center">Lượt Quét</th>
                 <th className="py-3 px-4 text-right">Hành Động</th>
               </tr>
             </thead>
@@ -582,13 +582,13 @@ export default function AdminNfcPage() {
               ) : filteredTags.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-neutral-400">
-                    {searchQuery ? "Không tìm thấy thẻ NFC nào phù hợp với từ khóa." : "Chưa có thẻ NFC nào được tạo."}
+                    {searchQuery ? "Không tìm thấy mã QR nào phù hợp với từ khóa." : "Chưa có mã QR di sản nào được tạo."}
                   </td>
                 </tr>
               ) : (
                 filteredTags.map((tag) => (
                   <tr key={tag.id} className="hover:bg-neutral-50/80 transition">
-                    {/* NFC Code */}
+                    {/* QR Code */}
                     <td className="py-3.5 px-4 font-mono font-bold text-neutral-900">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 border border-neutral-200">
                         <QrCode className="w-3.5 h-3.5 text-neutral-700" />
@@ -640,7 +640,7 @@ export default function AdminNfcPage() {
                               ? "bg-emerald-50 text-emerald-700 border-emerald-300"
                               : "bg-white hover:bg-neutral-100 text-neutral-700 border-neutral-200"
                           }`}
-                          title="Sao chép Link ghi vào chip NFC"
+                          title="Sao chép Link tạo mã QR"
                         >
                           {copiedId === tag.id ? (
                             <>
@@ -662,7 +662,7 @@ export default function AdminNfcPage() {
                           title="Giả lập 1 lượt quét điện thoại thực tế (Tăng scan_count trong database)"
                         >
                           <Smartphone className="w-3 h-3 text-neutral-700" />
-                          <span>Test Chạm</span>
+                          <span>Test Quét</span>
                         </button>
 
                         {/* Edit Button */}
@@ -692,7 +692,7 @@ export default function AdminNfcPage() {
         </div>
       </div>
 
-      {/* Modal Tạo Mã NFC Mới */}
+      {/* Modal Tạo Mã QR Mới */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
           <div className="bg-white rounded-2xl border border-[#E5E5E5] w-full max-w-md overflow-hidden shadow-2xl">
@@ -700,7 +700,7 @@ export default function AdminNfcPage() {
               <div className="flex items-center gap-2">
                 <QrCode className="w-4 h-4 text-black" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-black">
-                  Tạo Mã Chip NFC Mới
+                  Tạo Mã QR Di Sản Mới
                 </h3>
               </div>
               <button
@@ -714,7 +714,7 @@ export default function AdminNfcPage() {
             <form onSubmit={handleCreateTag} className="p-6 space-y-4 text-xs">
               <div>
                 <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                  Mã NFC Code (Khắc trên móc khóa) *
+                  Mã Định Danh QR (Khắc trên móc khóa) *
                 </label>
                 <input
                   type="text"
@@ -805,7 +805,7 @@ export default function AdminNfcPage() {
                   className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black font-mono"
                 />
                 <p className="text-[10px] text-neutral-400 mt-1">
-                  Khi người dùng chạm điện thoại, hệ thống sẽ tự động chuyển hướng đến URL này.
+                  Khi người dùng quét mã QR, hệ thống sẽ tự động chuyển hướng đến URL này.
                 </p>
               </div>
 
@@ -837,7 +837,7 @@ export default function AdminNfcPage() {
         </div>
       )}
 
-      {/* Modal Chỉnh Sửa Thẻ NFC */}
+      {/* Modal Chỉnh Sửa Mã QR */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
           <div className="bg-white rounded-2xl border border-[#E5E5E5] w-full max-w-md overflow-hidden shadow-2xl">
@@ -845,7 +845,7 @@ export default function AdminNfcPage() {
               <div className="flex items-center gap-2">
                 <Edit3 className="w-4 h-4 text-black" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-black">
-                  Chỉnh Sửa Thẻ Chip NFC
+                  Chỉnh Sửa Mã QR Di Sản
                 </h3>
               </div>
               <button
@@ -859,7 +859,7 @@ export default function AdminNfcPage() {
             <form onSubmit={handleUpdateTag} className="p-6 space-y-4 text-xs">
               <div>
                 <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                  Mã NFC Code *
+                  Mã Định Danh QR *
                 </label>
                 <input
                   type="text"
@@ -929,7 +929,7 @@ export default function AdminNfcPage() {
 
               <div>
                 <label className="block font-bold uppercase tracking-wider text-neutral-700 mb-1">
-                  Lượt chạm thực tế (Scan Count)
+                  Lượt quét thực tế (Scan Count)
                 </label>
                 <input
                   type="number"
