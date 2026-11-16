@@ -5,7 +5,7 @@ import { filterProducts, products as defaultProducts, type Product } from "@/dat
 import { fetchLiveProducts } from "@/lib/products-service";
 import ProductCard from "./ProductCard";
 import { cn } from "@/lib/utils";
-import { Search, SlidersHorizontal, RotateCcw, Sparkles } from "lucide-react";
+import { Search, SlidersHorizontal, RotateCcw } from "lucide-react";
 
 const categoryFilters = [
   { key: "all" as const, label: "Tất cả" },
@@ -37,7 +37,6 @@ export default function ProductGrid() {
   const [showFilters, setShowFilters] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>(defaultProducts);
 
-  // Tải danh sách sản phẩm động từ Supabase (móc nối trực tiếp từ Admin)
   useEffect(() => {
     fetchLiveProducts().then((data) => {
       if (data && data.length > 0) {
@@ -46,7 +45,6 @@ export default function ProductGrid() {
     });
   }, []);
 
-  // Danh sách các thành phố thực tế có sản phẩm
   const availableCities = useMemo(() => {
     const set = new Set<string>();
     allProducts.forEach((p) => {
@@ -84,37 +82,34 @@ export default function ProductGrid() {
   };
 
   return (
-    <section id="t-shirts" className="py-16 sm:py-24 border-t border-neutral-200/80 bg-white">
+    <section id="t-shirts" className="py-16 sm:py-24 border-t border-[#f0f0f0] bg-white">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         {/* Top Header: Title & Search bar */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-black inline-block" />
-              <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-neutral-500">
-                BỘ SƯU TẬP ÁO THUN & VẬT PHẨM LƯU NIỆM
-              </p>
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-black uppercase">
+            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#888] mb-1">
+              Bộ sưu tập áo thun & vật phẩm lưu niệm
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
               BỘ SƯU TẬP SẢN PHẨM
             </h2>
           </div>
 
           {/* Search box & filter trigger */}
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <div className="relative flex-1 md:w-[300px]">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <div className="relative flex-1 md:w-[280px]">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#888]" />
               <input
                 type="text"
-                placeholder="Tìm áo, địa danh di sản, thẻ..."
+                placeholder="Tìm áo, địa danh, phố cổ..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-8 py-2.5 text-xs rounded-full border border-neutral-300 bg-neutral-50 focus:bg-white focus:outline-none focus:border-black transition-all"
+                className="w-full pl-9 pr-3 py-2 text-[12px] border border-[#e0e0e0] bg-[#fafafa] focus:bg-white focus:outline-none focus:border-[#111] transition-colors"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-neutral-400 hover:text-black"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] text-[#888] hover:text-[#111]"
                 >
                   ✕
                 </button>
@@ -124,8 +119,8 @@ export default function ProductGrid() {
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={cn(
-                "md:hidden flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-xs font-bold border uppercase tracking-wider transition-colors",
-                showFilters ? "border-black bg-black text-white" : "border-neutral-300 bg-neutral-50 text-neutral-800"
+                "md:hidden flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium border uppercase tracking-wider",
+                showFilters ? "border-[#111] bg-[#111] text-white" : "border-[#e0e0e0] bg-[#fafafa] text-[#333]"
               )}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -136,10 +131,10 @@ export default function ProductGrid() {
 
         {/* Filter controls row */}
         <div className={cn("space-y-4 mb-8", !showFilters && "hidden md:block")}>
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-neutral-100">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#f0f0f0]">
             {/* Category tabs */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-bold tracking-wider text-neutral-400 uppercase mr-1 font-mono">
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="text-[11px] font-semibold tracking-wider text-[#999] uppercase mr-1">
                 Phân loại:
               </span>
               {categoryFilters.map((f) => (
@@ -147,10 +142,10 @@ export default function ProductGrid() {
                   key={f.key}
                   onClick={() => setActiveCategory(f.key)}
                   className={cn(
-                    "px-3 py-1.5 rounded-full text-[11px] font-bold tracking-[0.05em] uppercase transition-all shadow-2xs",
+                    "px-3 py-1.5 text-[11px] font-medium tracking-[0.05em] uppercase transition-colors",
                     activeCategory === f.key
-                      ? "bg-black text-white"
-                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-black"
+                      ? "bg-[#111] text-white"
+                      : "bg-[#f5f5f5] text-[#666] hover:bg-[#eee] hover:text-[#111]"
                   )}
                 >
                   {f.label}
@@ -159,8 +154,8 @@ export default function ProductGrid() {
             </div>
 
             {/* City tabs */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-bold tracking-wider text-neutral-400 uppercase mr-1 font-mono">
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="text-[11px] font-semibold tracking-wider text-[#999] uppercase mr-1">
                 Thành phố:
               </span>
               {availableCities.map((cityName) => (
@@ -168,10 +163,10 @@ export default function ProductGrid() {
                   key={cityName}
                   onClick={() => setActiveCity(cityName)}
                   className={cn(
-                    "px-3 py-1.5 rounded-full text-[11px] font-bold tracking-[0.05em] uppercase transition-all shadow-2xs",
+                    "px-3 py-1.5 text-[11px] font-medium tracking-[0.05em] uppercase transition-colors",
                     activeCity === cityName
-                      ? "bg-black text-white"
-                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-black"
+                      ? "bg-[#111] text-white"
+                      : "bg-[#f5f5f5] text-[#666] hover:bg-[#eee] hover:text-[#111]"
                   )}
                 >
                   {cityName === "all" ? "Tất cả TP" : cityName}
@@ -181,7 +176,7 @@ export default function ProductGrid() {
 
             {/* Price tabs & Sort */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-bold tracking-wider text-neutral-400 uppercase mr-1 font-mono">
+              <span className="text-[11px] font-semibold tracking-wider text-[#999] uppercase mr-1">
                 Giá:
               </span>
               {priceFilters.map((p) => (
@@ -189,10 +184,10 @@ export default function ProductGrid() {
                   key={p.key}
                   onClick={() => setActivePrice(p.key)}
                   className={cn(
-                    "px-2.5 py-1.5 rounded-full text-[11px] font-bold transition-all shadow-2xs",
+                    "px-2.5 py-1.5 text-[11px] font-medium transition-colors",
                     activePrice === p.key
-                      ? "bg-black text-white"
-                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-black"
+                      ? "bg-[#111] text-white"
+                      : "bg-[#f5f5f5] text-[#666] hover:bg-[#eee] hover:text-[#111]"
                   )}
                 >
                   {p.label}
@@ -203,7 +198,7 @@ export default function ProductGrid() {
               <select
                 value={activeSort}
                 onChange={(e) => setActiveSort(e.target.value as "default" | "price_asc" | "price_desc" | "newest" | "best_seller")}
-                className="py-1.5 px-3 rounded-full text-[11px] font-bold bg-neutral-100 text-neutral-800 border border-neutral-300 focus:outline-none focus:border-black cursor-pointer shadow-2xs"
+                className="py-1.5 px-2.5 text-[11px] font-medium bg-[#f5f5f5] text-[#333] border border-[#e0e0e0] focus:outline-none cursor-pointer"
               >
                 {sortOptions.map((s) => (
                   <option key={s.key} value={s.key}>
@@ -216,7 +211,7 @@ export default function ProductGrid() {
               {hasActiveFilters && (
                 <button
                   onClick={handleResetFilters}
-                  className="flex items-center gap-1 text-[11px] font-bold text-neutral-600 hover:text-black underline px-2 py-1 transition-colors"
+                  className="flex items-center gap-1 text-[11px] text-[#888] hover:text-[#111] underline px-2 py-1"
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Xóa lọc</span>
@@ -226,20 +221,20 @@ export default function ProductGrid() {
           </div>
 
           {/* Result counter indicator */}
-          <div className="flex items-center justify-between text-[11.5px] text-neutral-500 pt-1">
+          <div className="flex items-center justify-between text-[11px] text-[#777] pt-1">
             <span>
-              Hiển thị <strong className="text-black">{filteredProducts.length}</strong> / {allProducts.length} sản phẩm
+              Hiển thị <strong className="text-[#111]">{filteredProducts.length}</strong> / {allProducts.length} sản phẩm
             </span>
             {searchQuery && (
               <span>
-                Kết quả cho từ khóa: <strong className="text-black">&quot;{searchQuery}&quot;</strong>
+                Kết quả cho từ khóa: <strong className="text-[#111]">&quot;{searchQuery}&quot;</strong>
               </span>
             )}
           </div>
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-5 sm:gap-y-10">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -247,14 +242,14 @@ export default function ProductGrid() {
 
         {/* Empty state */}
         {filteredProducts.length === 0 && (
-          <div className="text-center py-20 bg-neutral-50 rounded-2xl border border-neutral-200 my-6">
-            <p className="text-base font-bold text-black mb-2">Không tìm thấy sản phẩm phù hợp</p>
-            <p className="text-xs text-neutral-500 mb-5">
+          <div className="text-center py-20 bg-[#fafafa] border border-[#eaeaea] my-6">
+            <p className="text-base font-semibold text-[#111] mb-2">Không tìm thấy sản phẩm phù hợp</p>
+            <p className="text-xs text-[#777] mb-5">
               Thử tìm kiếm với từ khóa khác hoặc xóa bớt tiêu chí lọc
             </p>
             <button
               onClick={handleResetFilters}
-              className="px-6 py-3 rounded-xl bg-black text-white text-xs font-bold tracking-wider uppercase hover:bg-neutral-800 transition-all shadow-sm"
+              className="px-5 py-2.5 bg-[#111] text-white text-[11px] font-semibold tracking-wider uppercase hover:bg-[#333] transition-colors"
             >
               Xem tất cả sản phẩm
             </button>

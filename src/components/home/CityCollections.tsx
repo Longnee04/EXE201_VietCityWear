@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, MapPin, Sparkles, Compass } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
 interface CityItem {
@@ -15,7 +15,6 @@ interface CityItem {
   landmarksCount?: number;
   href?: string;
   exploreHref?: string;
-  coords?: string;
 }
 
 const defaultCityCollections: CityItem[] = [
@@ -29,7 +28,6 @@ const defaultCityCollections: CityItem[] = [
     landmarksCount: 5,
     href: "/#t-shirts",
     exploreHref: "/explore/hanoi",
-    coords: "21.0285°N • 105.8542°E",
   },
   {
     id: "haiphong",
@@ -37,10 +35,9 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Bắc",
     status: "second",
     badgeText: "HẢI PHÒNG CHAPTER",
-    description: "Thành phố cảng hoa phượng đỏ, đậm tinh thần phóng khoáng và kiên cường miền biển.",
+    description: "Thành phố cảng hoa phượng đỏ, đậm tinh thần phóng khoáng miền biển.",
     landmarksCount: 3,
     href: "/products/ao-thun-hai-phong-heritage-tee",
-    coords: "20.8449°N • 106.6881°E",
   },
   {
     id: "hue",
@@ -48,8 +45,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Trung",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Cố đô vàng son trầm mặc bên dòng Hương Giang và đền đài lăng tẩm cổ kính.",
-    coords: "16.4637°N • 107.5909°E",
+    description: "Cố đô vàng son trầm mặc bên dòng Hương Giang.",
   },
   {
     id: "hoian",
@@ -57,8 +53,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Trung",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Phố cổ rêu phong, ánh đèn lồng lung linh bên bờ sông Hoài và mái ngói âm dương.",
-    coords: "15.8801°N • 108.3380°E",
+    description: "Phố cổ rêu phong và ánh đèn lồng bên sông Hoài.",
   },
   {
     id: "danang",
@@ -66,8 +61,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Trung",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Thành phố biển năng động, những cây cầu biểu tượng và dãy Ngũ Hành Sơn hùng vĩ.",
-    coords: "16.0544°N • 108.2022°E",
+    description: "Thành phố biển hiện đại và những cây cầu biểu tượng.",
   },
   {
     id: "saigon",
@@ -75,8 +69,7 @@ const defaultCityCollections: CityItem[] = [
     region: "Miền Nam",
     status: "upcoming",
     badgeText: "SẮP RA MẮT",
-    description: "Nhịp sống hiện đại giao thoa kiến trúc Sài Gòn xưa và tinh thần phóng khoáng phương Nam.",
-    coords: "10.8231°N • 106.6297°E",
+    description: "Nhịp sống trẻ trung giao thoa kiến trúc Sài Gòn xưa.",
   },
 ];
 
@@ -117,7 +110,6 @@ export default function CityCollections() {
               landmarksCount: count || existingDefault?.landmarksCount || 3,
               href: existingDefault?.href || "/#t-shirts",
               exploreHref: existingDefault?.exploreHref || "/explore/hanoi",
-              coords: existingDefault?.coords,
             };
           });
 
@@ -132,24 +124,21 @@ export default function CityCollections() {
   }, []);
 
   return (
-    <section id="collections" className="py-18 sm:py-26 border-t border-neutral-200/80 bg-white">
+    <section id="collections" className="py-16 sm:py-24 border-t border-[#eaeaea] bg-white">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-14">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div>
-            <div className="flex items-center gap-2 mb-2.5">
-              <span className="w-2 h-2 bg-black rounded-full inline-block animate-ping" />
-              <p className="text-[10.5px] font-mono font-bold tracking-[0.25em] uppercase text-neutral-500">
-                HÀNH TRÌNH DI SẢN CÁC THÀNH PHỐ
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 bg-[#111] rounded-full inline-block" />
+              <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#777]">
+                Hành trình các thành phố
               </p>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-black uppercase">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111] uppercase">
               BỘ SƯU TẬP THÀNH PHỐ
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-neutral-500 max-w-md">
-            Mỗi thành phố là một câu chuyện lịch sử và văn hóa độc bản được tái hiện qua lăng kính thời trang đường phố đương đại.
-          </p>
         </div>
 
         {/* Cities Grid */}
@@ -157,84 +146,75 @@ export default function CityCollections() {
           {cityList.map((city) => (
             <div
               key={city.id}
-              className={`p-6 sm:p-7 rounded-xl border transition-all duration-300 flex flex-col justify-between group ${
+              className={`p-6 sm:p-7 border transition-all flex flex-col justify-between ${
                 city.status === "active"
-                  ? "border-black bg-gradient-to-b from-neutral-50 to-white shadow-md hover:shadow-xl hover:-translate-y-1"
+                  ? "border-[#111] bg-[#fafafa]"
                   : city.status === "second"
-                  ? "border-neutral-300 bg-white hover:border-black hover:shadow-lg hover:-translate-y-1"
-                  : "border-neutral-200/80 bg-neutral-50/60 opacity-85 hover:opacity-100 hover:border-neutral-300"
+                  ? "border-[#eaeaea] bg-white hover:border-[#111]"
+                  : "border-[#f0f0f0] bg-[#fafafa]/50 opacity-80"
               }`}
             >
               <div>
                 {/* Header tag */}
                 <div className="flex items-center justify-between mb-4">
                   <span
-                    className={`text-[9.5px] font-mono font-bold tracking-[0.14em] uppercase px-3 py-1 rounded-full shadow-2xs ${
+                    className={`text-[9px] sm:text-[10px] font-bold tracking-[0.12em] uppercase px-2.5 py-1 ${
                       city.status === "active"
-                        ? "bg-black text-white"
+                        ? "bg-[#111] text-white"
                         : city.status === "second"
-                        ? "bg-amber-100 text-amber-900 border border-amber-300"
-                        : "bg-neutral-200 text-neutral-600"
+                        ? "bg-[#e5e5e5] text-[#111]"
+                        : "bg-[#f0f0f0] text-[#888]"
                     }`}
                   >
                     {city.badgeText}
                   </span>
-                  <div className="flex items-center gap-1.5 text-[11px] font-medium text-neutral-500">
-                    <MapPin className="w-3.5 h-3.5 text-neutral-400" />
+                  <div className="flex items-center gap-1 text-[11px] text-[#888]">
+                    <MapPin className="w-3.5 h-3.5" />
                     <span>{city.region}</span>
                   </div>
                 </div>
 
                 {/* City name */}
-                <div className="flex items-baseline justify-between mb-1.5">
-                  <h3 className="text-2xl sm:text-[26px] font-black text-black tracking-tight uppercase group-hover:text-black">
-                    {city.name}
-                  </h3>
-                  {city.coords && (
-                    <span className="text-[10px] font-mono text-neutral-400 hidden sm:inline-block">
-                      {city.coords}
-                    </span>
-                  )}
-                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-[#111] tracking-tight uppercase mb-2">
+                  {city.name}
+                </h3>
 
                 {/* Description */}
-                <p className="text-xs sm:text-[13px] leading-relaxed text-neutral-600 mb-6">
+                <p className="text-xs sm:text-[13px] leading-relaxed text-[#555] mb-6">
                   {city.description}
                 </p>
               </div>
 
               {/* Actions */}
-              <div className="pt-4 border-t border-neutral-100">
+              <div className="pt-4 border-t border-[#eaeaea]">
                 {city.status === "active" ? (
-                  <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Link
                       href={city.exploreHref || "/explore/hanoi"}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-black text-white text-[11px] font-bold tracking-wider uppercase hover:bg-neutral-800 transition-all shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111] text-white text-[11px] font-bold tracking-wider uppercase hover:bg-[#333] transition-colors"
                     >
-                      <Sparkles className="w-3 h-3 text-amber-300" />
                       <span>Chạm di sản số</span>
+                      <ArrowRight className="w-3 h-3" />
                     </Link>
                     <a
                       href={city.href || "/#t-shirts"}
-                      className="inline-flex items-center gap-1 text-[11px] font-bold text-neutral-800 hover:text-black px-3 py-2 uppercase tracking-wider hover:underline"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#111] hover:underline px-2 py-2"
                     >
                       <span>Xem áo</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 ) : city.status === "second" ? (
                   <Link
                     href={city.href || "/#t-shirts"}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-neutral-300 hover:border-black text-[11px] font-bold tracking-wider uppercase text-black hover:bg-black hover:text-white transition-all shadow-xs"
+                    className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-[#111] hover:underline"
                   >
                     <span>Xem áo Hải Phòng (Coming Soon)</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3 h-3" />
                   </Link>
                 ) : (
-                  <div className="flex items-center gap-2 text-[11px] font-medium text-neutral-400 uppercase tracking-wider font-mono">
-                    <Compass className="w-3.5 h-3.5" />
-                    <span>Đang hoàn thiện thiết kế</span>
-                  </div>
+                  <span className="text-[11px] font-medium text-[#999] tracking-wider uppercase">
+                    Sắp phát hành • Coming Soon
+                  </span>
                 )}
               </div>
             </div>
